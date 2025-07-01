@@ -13,12 +13,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "scripts/content.js"
-      ],
+      "matches": ["<all_urls>"],
+      "js": ["scripts/content.js"],
       "run_at": "document_idle"
     }
   ],
@@ -29,11 +25,9 @@
     {
       "resources": [
         "scripts/page/detector.js",
-        "scripts/omaze/**"
+        "scripts/omaze/**/*.js"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ]
 }

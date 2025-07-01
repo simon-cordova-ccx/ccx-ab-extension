@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           clientEntries.forEach(clientEntry => {
-            if (!clientEntry.isDirectory || ['content.js', 'background.js'].includes(clientEntry.name)) {
+            if (!clientEntry.isDirectory || ['content.js', 'background.js', 'page'].includes(clientEntry.name)) {
               clientsProcessed++;
               if (clientsProcessed === clientEntries.length) callback(folderStructure);
               return;
@@ -206,10 +206,27 @@ document.addEventListener("DOMContentLoaded", () => {
     injectButton.disabled = !abToolSelect.value || !scriptSelect.value;
   });
 
-  // Handle tool selection
+  // Auto-select detected tool and check its validity
+  chrome.storage.local.get("detectedTool", (data) => {
+    const detectedTool = data.detectedTool;
+    if (detectedTool && abToolSelect.querySelector(`option[value="${detectedTool}"]`)) {
+      console.log(`Auto-selecting detected tool: ${detectedTool}`);
+      abToolSelect.value = detectedTool;
+      statusDiv.textContent = `${detectedTool} detected. Please select a script.`;
+      statusDiv.className = "";
+      injectButton.disabled = !scriptSelect.value;
+    } else {
+      console.log("No detected tool found in storage");
+      injectButton.disabled = true;
+      statusDiv.textContent = "Please select an A/B testing tool.";
+      statusDiv.className = "";
+    }
+  });
+
+  // Handle tool selection (manual override)
   abToolSelect.addEventListener("change", () => {
     const selectedTool = abToolSelect.value;
-    console.log(`Selected tool: ${selectedTool}`);
+    console.log(`Manually selected tool: ${selectedTool}`);
     if (selectedTool) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (!tabs[0]) {
@@ -230,8 +247,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           console.log("Received response:", response);
           if (response && response.detected) {
+            chrome.storage.local.set({ detectedTool: selectedTool }, () => {
+              console.log("🧠 Stored manually selected tool:", selectedTool);
+            });
             injectButton.disabled = !scriptSelect.value;
-            statusDiv.textContent = `${selectedTool} detected. Ready to inject script.`;
+            statusDiv.textContent = `${selectedTool} detected. Please select a script.`;
             statusDiv.className = "";
           } else {
             injectButton.disabled = true;
