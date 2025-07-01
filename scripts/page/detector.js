@@ -43,8 +43,23 @@
     return false;
   }
 
+  // Detect AB Tasty
+  function detectABTasty() {
+    if (typeof window.ABTasty !== "undefined") {
+      window.postMessage({
+        type: "ABTASTY_FOUND",
+        tool: "abtasty",
+        functions: Object.keys(window.ABTasty || {}),
+        detectedObject: "ABTasty"
+      }, "*");
+      return true;
+    }
+    return false;
+  }
+
   // Run all detections
   detectDynamicYield();
   detectOptimizely();
   detectAdobeTarget();
+  detectABTasty();
 })();

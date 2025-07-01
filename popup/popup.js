@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     injectButton.disabled = true;
     if (selectedClient && selectedTest) {
       generateFolderStructure(folderStructure => {
-        const client = folderStructure.clients.find(c => c.name == selectedClient);
+        const client = folderStructure.clients.find(c => c.name === selectedClient);
         const test = client.tests.find(t => t.name === selectedTest);
         if (test) {
           test.scripts.forEach(script => {
