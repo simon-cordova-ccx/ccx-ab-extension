@@ -26,7 +26,7 @@
       "resources": [
         "scripts/page/detector.js",
         "scripts/config.json",
-        "scripts/omaze/**/*.js"
+        "scripts/**/*.js"
       ],
       "matches": ["<all_urls>"]
     }

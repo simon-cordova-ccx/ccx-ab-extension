@@ -2,7 +2,13 @@
   "toolPriority": [
     {
       "client": "omaze",
-      "preferredTool": "dynamicyield"
+      "preferredTool": "dynamicyield",
+      "urlPattern": "omaze.co.uk"
+    },
+    {
+      "client": "davidlloyd",
+      "preferredTool": "optimizely",
+      "urlPattern": "davidlloyd.co.uk"
     }
   ]
 }

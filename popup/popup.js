@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const abToolSelect = document.getElementById("ab-tool");
   const clientSelect = document.getElementById("client");
   const testSelect = document.getElementById("test");
-  const variationSelect = document.getElementById("variation");
   const scriptSelect = document.getElementById("script");
   const injectButton = document.getElementById("inject-button");
   const statusDiv = document.getElementById("status");
@@ -51,62 +50,26 @@ document.addEventListener("DOMContentLoaded", () => {
                   return;
                 }
 
-                const test = { name: testEntry.name, variations: [] };
-                testEntry.createReader().readEntries(variationEntries => {
-                  let variationsProcessed = 0;
-
-                  if (variationEntries.length === 0) {
-                    testsProcessed++;
-                    client.tests.push(test);
-                    if (testsProcessed === testEntries.length) {
-                      clientsProcessed++;
-                      folderStructure.clients.push(client);
-                      if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                    }
-                    return;
-                  }
-
-                  variationEntries.forEach(variationEntry => {
-                    if (!variationEntry.isDirectory) {
-                      variationsProcessed++;
-                      if (variationsProcessed === variationEntries.length) {
-                        testsProcessed++;
-                        client.tests.push(test);
-                        if (testsProcessed === testEntries.length) {
-                          clientsProcessed++;
-                          folderStructure.clients.push(client);
-                          if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                        }
-                      }
-                      return;
-                    }
-
-                    const variation = { name: variationEntry.name, scripts: [] };
-                    variationEntry.createReader().readEntries(scriptEntries => {
-                      scriptEntries.forEach(scriptEntry => {
-                        if (scriptEntry.isFile && scriptEntry.name.endsWith('.js')) {
-                          variation.scripts.push({
-                            name: scriptEntry.name,
-                            script: {
-                              type: "file",
-                              src: `scripts/${clientEntry.name}/${testEntry.name}/${variationEntry.name}/${scriptEntry.name}`
-                            }
-                          });
+                const test = { name: testEntry.name, scripts: [] };
+                testEntry.createReader().readEntries(scriptEntries => {
+                  scriptEntries.forEach(scriptEntry => {
+                    if (scriptEntry.isFile && scriptEntry.name.endsWith('.js')) {
+                      test.scripts.push({
+                        name: scriptEntry.name,
+                        script: {
+                          type: "file",
+                          src: `scripts/${clientEntry.name}/${testEntry.name}/${scriptEntry.name}`
                         }
                       });
-                      variationsProcessed++;
-                      test.variations.push(variation);
-                      if (variationsProcessed === variationEntries.length) {
-                        testsProcessed++;
-                        client.tests.push(test);
-                        if (testsProcessed === testEntries.length) {
-                          clientsProcessed++;
-                          folderStructure.clients.push(client);
-                          if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                        }
-                      }
-                    });
+                    }
                   });
+                  testsProcessed++;
+                  client.tests.push(test);
+                  if (testsProcessed === testEntries.length) {
+                    clientsProcessed++;
+                    folderStructure.clients.push(client);
+                    if (clientsProcessed === clientEntries.length) callback(folderStructure);
+                  }
                 });
               });
             });
@@ -121,7 +84,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Populate client dropdown
+  // Load client configuration
+  async function loadConfig() {
+    try {
+      const response = await fetch(chrome.runtime.getURL("scripts/config.json"));
+      const config = await response.json();
+      return config;
+    } catch (error) {
+      console.error("❌ Failed to load config.json:", error.message);
+      return { toolPriority: [] };
+    }
+  }
+
+  // Match URL to client
+  async function matchClientByUrl(url) {
+    const config = await loadConfig();
+    for (const entry of config.toolPriority) {
+      if (url.includes(entry.urlPattern)) {
+        return entry.client;
+      }
+    }
+    return null;
+  }
+
+  // Populate client dropdown and pre-select based on URL
   generateFolderStructure(folderStructure => {
     console.log("Generated folder structure:", folderStructure);
     folderStructure.clients.forEach(client => {
@@ -130,13 +116,32 @@ document.addEventListener("DOMContentLoaded", () => {
       option.textContent = client.name;
       clientSelect.appendChild(option);
     });
+
+    // Pre-select client based on URL
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+      if (!tabs[0] || !tabs[0].url) {
+        console.error("❌ No active tab or URL found");
+        return;
+      }
+      const url = tabs[0].url;
+      console.log(`Current tab URL: ${url}`);
+      const matchedClient = await matchClientByUrl(url);
+      if (matchedClient && clientSelect.querySelector(`option[value="${matchedClient}"]`)) {
+        console.log(`Pre-selecting client: ${matchedClient}`);
+        clientSelect.value = matchedClient;
+        // Trigger change event to populate test dropdown
+        const event = new Event("change");
+        clientSelect.dispatchEvent(event);
+      } else {
+        console.log("No client matched for URL");
+      }
+    });
   });
 
   // Handle client selection
   clientSelect.addEventListener("change", () => {
     const selectedClient = clientSelect.value;
     testSelect.innerHTML = '<option value="">Select Test</option>';
-    variationSelect.innerHTML = '<option value="">Select Variation</option>';
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
     if (selectedClient) {
@@ -158,39 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
   testSelect.addEventListener("change", () => {
     const selectedClient = clientSelect.value;
     const selectedTest = testSelect.value;
-    variationSelect.innerHTML = '<option value="">Select Variation</option>';
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
     if (selectedClient && selectedTest) {
       generateFolderStructure(folderStructure => {
-        const client = folderStructure.clients.find(c => c.name === selectedClient);
+        const client = folderStructure.clients.find(c => c.name == selectedClient);
         const test = client.tests.find(t => t.name === selectedTest);
         if (test) {
-          test.variations.forEach(variation => {
-            const option = document.createElement("option");
-            option.value = variation.name;
-            option.textContent = variation.name;
-            variationSelect.appendChild(option);
-          });
-        }
-      });
-    }
-  });
-
-  // Handle variation selection
-  variationSelect.addEventListener("change", () => {
-    const selectedClient = clientSelect.value;
-    const selectedTest = testSelect.value;
-    const selectedVariation = variationSelect.value;
-    scriptSelect.innerHTML = '<option value="">Select Script</option>';
-    injectButton.disabled = true;
-    if (selectedClient && selectedTest && selectedVariation) {
-      generateFolderStructure(folderStructure => {
-        const client = folderStructure.clients.find(c => c.name === selectedClient);
-        const test = client.tests.find(t => t.name === selectedTest);
-        const variation = test.variations.find(v => v.name === selectedVariation);
-        if (variation) {
-          variation.scripts.forEach(script => {
+          test.scripts.forEach(script => {
             const option = document.createElement("option");
             option.value = JSON.stringify(script.script);
             option.textContent = script.name;

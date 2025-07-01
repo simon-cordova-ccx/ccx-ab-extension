@@ -40,11 +40,28 @@ async function loadConfig() {
   }
 }
 
-// Function to determine preferred tool
+// Function to determine preferred tool based on URL
 async function getPreferredTool(detectedTools) {
   const config = await loadConfig();
-  const clientConfig = config.toolPriority.find(p => p.client === "omaze") || { preferredTool: "dynamicyield" };
-  const preferredTool = detectedTools.includes(clientConfig.preferredTool) ? clientConfig.preferredTool : detectedTools[0] || null;
+  let preferredTool = detectedTools[0] || null;
+  let matchedClient = null;
+
+  // Get current URL
+  const url = window.location.href;
+  console.log(`Current page URL: ${url}`);
+
+  // Find client by matching URL pattern
+  for (const entry of config.toolPriority) {
+    if (url.includes(entry.urlPattern)) {
+      matchedClient = entry.client;
+      if (detectedTools.includes(entry.preferredTool)) {
+        preferredTool = entry.preferredTool;
+      }
+      break;
+    }
+  }
+
+  console.log(`Matched client: ${matchedClient || 'none'}, Preferred tool: ${preferredTool || 'none'}`);
   return { preferredTool, allTools: detectedTools };
 }
 

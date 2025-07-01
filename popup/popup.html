@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>CCX AB Browser Extension</title>
+  <title>CCX AB Extension</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div id="app">
-    <h1>CCX AB Extension</h1>
-    <select id="ab-tool">
-      <option value="">Select A/B Testing Tool</option>
-      <option value="dynamicyield">Dynamic Yield</option>
-      <option value="optimizely">Optimizely</option>
-    </select>
-    <select id="client">
-      <option value="">Select Client</option>
-    </select>
-    <select id="test">
-      <option value="">Select Test</option>
-    </select>
-    <select id="variation">
-      <option value="">Select Variation</option>
-    </select>
-    <select id="script">
-      <option value="">Select Script</option>
-    </select>
-    <button id="inject-button" disabled>Inject Script</button>
-    <div id="status"></div>
-  </div>
+  <h1>CCX AB Extension</h1>
+  <label for="ab-tool">Select A/B Testing Tool</label>
+  <select id="ab-tool">
+    <option value="">Select Tool</option>
+    <option value="dynamicyield">Dynamic Yield</option>
+    <option value="optimizely">Optimizely</option>
+  </select>
+
+  <label for="client">Select Client</label>
+  <select id="client">
+    <option value="">Select Client</option>
+  </select>
+
+  <label for="test">Select Test</label>
+  <select id="test">
+    <option value="">Select Test</option>
+  </select>
+
+  <label for="script">Select Script</label>
+  <select id="script">
+    <option value="">Select Script</option>
+  </select>
+
+  <button id="inject-button" disabled>Inject Script</button>
+  <div id="status"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>
