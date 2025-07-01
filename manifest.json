@@ -5,18 +5,35 @@
   "description": "A Chrome extension to inject A/B testing scripts for tools like Dynamic Yield and Optimizely.",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "background": {
     "service_worker": "scripts/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["scripts/content.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "scripts/content.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "action": {
     "default_popup": "popup/popup.html"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/page/detector.js",
+        "scripts/omaze/**"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
 }

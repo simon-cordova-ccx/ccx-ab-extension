@@ -7,15 +7,28 @@ h1 {
   font-size: 18px;
   text-align: center;
 }
-select, button {
+select,
+button {
   width: 100%;
   padding: 8px;
   margin: 10px 0;
+  font-size: 14px;
+}
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 #status {
   margin-top: 10px;
-  color: green;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
 }
 #status.error {
-  color: red;
+  color: #d8000c;
+  background-color: #ffbaba;
+}
+#status:not(.error) {
+  color: #270;
+  background-color: #dff2bf;
 }

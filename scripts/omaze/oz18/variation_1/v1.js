@@ -1,0 +1,1 @@
+console.log('OMAZE - OZ18 - V1');
