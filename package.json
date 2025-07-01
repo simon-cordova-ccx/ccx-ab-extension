@@ -1,0 +1,35 @@
+{
+  "name": "ccx-ab-extension",
+  "version": "1.0.0",
+  "description": "Welcome to the **CCX AB Browser Extension**, a powerful tool designed by [Creative CX](https://www.creative-cx.com/) to streamline A/B testing script injection for web developers and marketers. This Chrome extension detects A/B testing tools and injects custom scripts on supported webpages, styled with the sleek Creative CX branding (pink roundel icon and modern teal/dark blue UI).",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && npm run copy && npm run bundle",
+    "clean": "rm -rf dist && mkdir dist",
+    "copy": "cp -r icons popup scripts manifest.json dist/ && find dist/ -name '.DS_Store' -delete",
+    "bundle": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simon-cordova-ccx/ccx-ab-extension.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "ab-testing",
+    "creative-cx"
+  ],
+  "author": "Creative CX",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simon-cordova-ccx/ccx-ab-extension/issues"
+  },
+  "homepage": "https://github.com/simon-cordova-ccx/ccx-ab-extension#readme",
+  "dependencies": {
+    "terser": "^5.43.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.44.1"
+  }
+}

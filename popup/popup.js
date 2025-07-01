@@ -1,3 +1,5 @@
+import { minify } from 'terser';
+
 console.log("CCX AB Extension popup initialized at", new Date().toISOString());
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -6,92 +8,73 @@ document.addEventListener("DOMContentLoaded", () => {
   const testSelect = document.getElementById("test");
   const scriptSelect = document.getElementById("script");
   const injectButton = document.getElementById("inject-button");
+  const copyButton = document.getElementById("copy-button");
   const statusDiv = document.getElementById("status");
 
-  // Dynamically generate folder structure
-  function generateFolderStructure(callback) {
-    chrome.runtime.getPackageDirectoryEntry(root => {
-      root.getDirectory("scripts", {}, scriptsDir => {
-        scriptsDir.createReader().readEntries(clientEntries => {
-          const folderStructure = { clients: [] };
-          let clientsProcessed = 0;
-
-          if (clientEntries.length === 0) {
-            callback(folderStructure);
-            return;
+  // Static folder structure
+  const folderStructure = {
+    clients: [
+      {
+        name: 'allclear',
+        tests: [
+          {
+            name: 'test1',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/allclear/test1/v1.js' } }
+            ]
           }
-
-          clientEntries.forEach(clientEntry => {
-            if (!clientEntry.isDirectory || ['content.js', 'background.js', 'page'].includes(clientEntry.name)) {
-              clientsProcessed++;
-              if (clientsProcessed === clientEntries.length) callback(folderStructure);
-              return;
-            }
-
-            const client = { name: clientEntry.name, tests: [] };
-            clientEntry.createReader().readEntries(testEntries => {
-              let testsProcessed = 0;
-
-              if (testEntries.length === 0) {
-                clientsProcessed++;
-                folderStructure.clients.push(client);
-                if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                return;
-              }
-
-              testEntries.forEach(testEntry => {
-                if (!testEntry.isDirectory) {
-                  testsProcessed++;
-                  if (testsProcessed === testEntries.length) {
-                    clientsProcessed++;
-                    folderStructure.clients.push(client);
-                    if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                  }
-                  return;
-                }
-
-                const test = { name: testEntry.name, scripts: [] };
-                testEntry.createReader().readEntries(scriptEntries => {
-                  scriptEntries.forEach(scriptEntry => {
-                    if (scriptEntry.isFile && scriptEntry.name.endsWith('.js')) {
-                      test.scripts.push({
-                        name: scriptEntry.name,
-                        script: {
-                          type: "file",
-                          src: `scripts/${clientEntry.name}/${testEntry.name}/${scriptEntry.name}`
-                        }
-                      });
-                    }
-                  });
-                  testsProcessed++;
-                  client.tests.push(test);
-                  if (testsProcessed === testEntries.length) {
-                    clientsProcessed++;
-                    folderStructure.clients.push(client);
-                    if (clientsProcessed === clientEntries.length) callback(folderStructure);
-                  }
-                });
-              });
-            });
-          });
-        });
-      }, err => {
-        console.error("❌ Failed to read scripts directory:", err);
-        statusDiv.textContent = "Error: Failed to read scripts directory.";
-        statusDiv.className = "error";
-        callback({ clients: [] });
-      });
-    });
-  }
+        ]
+      },
+      {
+        name: 'davidlloyd',
+        tests: [
+          {
+            name: 'test1',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/davidlloyd/test1/v1.js' } }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'heathrow',
+        tests: [
+          {
+            name: 'test1',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/heathrow/test1/v1.js' } }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'omaze',
+        tests: [
+          {
+            name: 'oz18',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz18/v1.js' } }
+            ]
+          }
+        ]
+      }
+    ]
+  };
 
   // Load client configuration
   async function loadConfig() {
     try {
       const response = await fetch(chrome.runtime.getURL("scripts/config.json"));
+      if (!response.ok) {
+        throw new Error(`Failed to load config: ${response.statusText}`);
+      }
       const config = await response.json();
+      console.log("Loaded config:", config);
       return config;
     } catch (error) {
       console.error("❌ Failed to load config.json:", error.message);
+      statusDiv.textContent = "Error: Failed to load configuration.";
+      statusDiv.className = "error";
       return { toolPriority: [] };
     }
   }
@@ -100,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function matchClientByUrl(url) {
     const config = await loadConfig();
     for (const entry of config.toolPriority) {
-      if (url.includes(entry.urlPattern)) {
+      if (url && url.includes(entry.urlPattern)) {
         return entry.client;
       }
     }
@@ -108,23 +91,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Populate client dropdown and pre-select based on URL
-  generateFolderStructure(folderStructure => {
-    console.log("Generated folder structure:", folderStructure);
-    folderStructure.clients.forEach(client => {
-      const option = document.createElement("option");
-      option.value = client.name;
-      option.textContent = client.name;
-      clientSelect.appendChild(option);
-    });
+  console.log("Populating client dropdown with:", folderStructure);
+  folderStructure.clients.forEach(client => {
+    const option = document.createElement("option");
+    option.value = client.name;
+    option.textContent = client.name;
+    clientSelect.appendChild(option);
+  });
 
-    // Pre-select client based on URL
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-      if (!tabs[0] || !tabs[0].url) {
-        console.error("❌ No active tab or URL found");
-        return;
-      }
-      const url = tabs[0].url;
-      console.log(`Current tab URL: ${url}`);
+  // Pre-select client based on URL
+  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+    if (!tabs || !tabs[0] || !tabs[0].url) {
+      console.warn("⚠️ No active tab or URL found, skipping client pre-selection");
+      statusDiv.textContent = "No active tab found. Please select a client manually.";
+      statusDiv.className = "warning";
+      return;
+    }
+    const url = tabs[0].url;
+    console.log(`Current tab URL: ${url}`);
+    try {
       const matchedClient = await matchClientByUrl(url);
       if (matchedClient && clientSelect.querySelector(`option[value="${matchedClient}"]`)) {
         console.log(`Pre-selecting client: ${matchedClient}`);
@@ -135,7 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         console.log("No client matched for URL");
       }
-    });
+    } catch (error) {
+      console.error("❌ Error matching client by URL:", error.message);
+      statusDiv.textContent = "Error matching client. Please select a client manually.";
+      statusDiv.className = "error";
+    }
   });
 
   // Handle client selection
@@ -144,18 +133,17 @@ document.addEventListener("DOMContentLoaded", () => {
     testSelect.innerHTML = '<option value="">Select Test</option>';
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
+    copyButton.disabled = true;
     if (selectedClient) {
-      generateFolderStructure(folderStructure => {
-        const client = folderStructure.clients.find(c => c.name === selectedClient);
-        if (client) {
-          client.tests.forEach(test => {
-            const option = document.createElement("option");
-            option.value = test.name;
-            option.textContent = test.name;
-            testSelect.appendChild(option);
-          });
-        }
-      });
+      const client = folderStructure.clients.find(c => c.name === selectedClient);
+      if (client) {
+        client.tests.forEach(test => {
+          const option = document.createElement("option");
+          option.value = test.name;
+          option.textContent = test.name;
+          testSelect.appendChild(option);
+        });
+      }
     }
   });
 
@@ -165,25 +153,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedTest = testSelect.value;
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
+    copyButton.disabled = true;
     if (selectedClient && selectedTest) {
-      generateFolderStructure(folderStructure => {
-        const client = folderStructure.clients.find(c => c.name === selectedClient);
-        const test = client.tests.find(t => t.name === selectedTest);
-        if (test) {
-          test.scripts.forEach(script => {
-            const option = document.createElement("option");
-            option.value = JSON.stringify(script.script);
-            option.textContent = script.name;
-            scriptSelect.appendChild(option);
-          });
-        }
-      });
+      const client = folderStructure.clients.find(c => c.name === selectedClient);
+      const test = client.tests.find(t => t.name === selectedTest);
+      if (test) {
+        test.scripts.forEach(script => {
+          const option = document.createElement("option");
+          option.value = JSON.stringify(script.script);
+          option.textContent = script.name;
+          scriptSelect.appendChild(option);
+        });
+      }
     }
   });
 
   // Handle script selection
   scriptSelect.addEventListener("change", () => {
-    injectButton.disabled = !abToolSelect.value || !scriptSelect.value;
+    const hasSelection = abToolSelect.value && scriptSelect.value;
+    injectButton.disabled = !hasSelection;
+    copyButton.disabled = !scriptSelect.value;
   });
 
   // Auto-select detected tool and check for multiple tools
@@ -202,9 +191,11 @@ document.addEventListener("DOMContentLoaded", () => {
         statusDiv.className = "";
       }
       injectButton.disabled = !scriptSelect.value;
+      copyButton.disabled = !scriptSelect.value;
     } else {
       console.log("No detected tool found in storage");
       injectButton.disabled = true;
+      copyButton.disabled = true;
       statusDiv.textContent = "Please select an A/B testing tool.";
       statusDiv.className = "";
     }
@@ -216,11 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(`Manually selected tool: ${selectedTool}`);
     if (selectedTool) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (!tabs[0]) {
+        if (!tabs || !tabs[0]) {
           console.error("❌ No active tab found");
           statusDiv.textContent = "Error: No active tab found.";
           statusDiv.className = "error";
           injectButton.disabled = true;
+          copyButton.disabled = true;
           return;
         }
         console.log(`Sending detectTool message to tab ${tabs[0].id}`);
@@ -230,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             statusDiv.textContent = `Error: ${chrome.runtime.lastError.message}`;
             statusDiv.className = "error";
             injectButton.disabled = true;
+            copyButton.disabled = true;
             return;
           }
           console.log("Received response:", response);
@@ -249,8 +242,10 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             });
             injectButton.disabled = !scriptSelect.value;
+            copyButton.disabled = !scriptSelect.value;
           } else {
             injectButton.disabled = true;
+            copyButton.disabled = true;
             statusDiv.textContent = `${selectedTool} not found on this page.`;
             statusDiv.className = "error";
           }
@@ -258,6 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } else {
       injectButton.disabled = true;
+      copyButton.disabled = true;
       statusDiv.textContent = "Please select an A/B testing tool.";
       statusDiv.className = "";
     }
@@ -268,13 +264,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedTool = abToolSelect.value;
     const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
     console.log(`Injecting script for ${selectedTool}:`, selectedScript);
-    if (!selectedScript) {
-      statusDiv.textContent = "Error: No script selected.";
+    if (!selectedTool || !selectedScript) {
+      statusDiv.textContent = "Error: Please select a tool and script.";
       statusDiv.className = "error";
       return;
     }
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs[0]) {
+      if (!tabs || !tabs[0]) {
         console.error("❌ No active tab found");
         statusDiv.textContent = "Error: No active tab found.";
         statusDiv.className = "error";
@@ -292,10 +288,44 @@ document.addEventListener("DOMContentLoaded", () => {
           statusDiv.textContent = "Script injected successfully!";
           statusDiv.className = "";
         } else {
-          statusDiv.textContent = `Injection failed: ${response.error}`;
+          statusDiv.textContent = `Injection failed: ${response?.error || 'Unknown error'}`;
           statusDiv.className = "error";
         }
       });
     });
+  });
+
+  // Handle copy button click
+  copyButton.addEventListener("click", async () => {
+    const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
+    if (!selectedScript || selectedScript.type !== "file" || !selectedScript.src) {
+      statusDiv.textContent = "Error: No valid script selected.";
+      statusDiv.className = "error";
+      return;
+    }
+
+    try {
+      const response = await fetch(chrome.runtime.getURL(selectedScript.src));
+      if (!response.ok) {
+        throw new Error(`Failed to fetch script: ${response.statusText}`);
+      }
+      const scriptContent = await response.text();
+      const minified = await minify(scriptContent, { mangle: true, compress: true });
+      if (minified.error) {
+        console.error("❌ Minification failed:", minified.error);
+        statusDiv.textContent = `Error: Minification failed - ${minified.error.message}`;
+        statusDiv.className = "error";
+        return;
+      }
+
+      await navigator.clipboard.writeText(minified.code);
+      console.log(`✅ Copied minified script: ${selectedScript.src}`);
+      statusDiv.textContent = "Minified script copied to clipboard!";
+      statusDiv.className = "";
+    } catch (error) {
+      console.error("❌ Copy failed:", error.message);
+      statusDiv.textContent = `Error: Failed to copy script - ${error.message}`;
+      statusDiv.className = "error";
+    }
   });
 });

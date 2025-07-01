@@ -1,0 +1,7 @@
+Keyboard Shortcuts
+Description: Add shortcuts (e.g., Ctrl+Shift+I to open popup, Enter to inject) for faster interaction.
+Implementation:
+Use chrome.commands in manifest.json to define shortcuts.
+Handle commands in background.js to trigger popup actions.
+Benefit: Speeds up developer workflows.
+Effort: Medium (requires manifest and background script updates).
