@@ -28,6 +28,26 @@ function injectDetectorScript() {
   }
 }
 
+// Function to load client configuration
+async function loadConfig() {
+  try {
+    const response = await fetch(chrome.runtime.getURL("scripts/config.json"));
+    const config = await response.json();
+    return config;
+  } catch (error) {
+    console.error("❌ Failed to load config.json:", error.message);
+    return { toolPriority: [] };
+  }
+}
+
+// Function to determine preferred tool
+async function getPreferredTool(detectedTools) {
+  const config = await loadConfig();
+  const clientConfig = config.toolPriority.find(p => p.client === "omaze") || { preferredTool: "dynamicyield" };
+  const preferredTool = detectedTools.includes(clientConfig.preferredTool) ? clientConfig.preferredTool : detectedTools[0] || null;
+  return { preferredTool, allTools: detectedTools };
+}
+
 // Function to detect A/B testing tool with polling
 function detectABTool(tool, callback, maxAttempts = 30, interval = 1000) {
   console.log(`Starting detection for ${tool}`);
@@ -44,9 +64,6 @@ function detectABTool(tool, callback, maxAttempts = 30, interval = 1000) {
     const listener = (event) => {
       if (event.source !== window || !event.data || event.data.type !== toolConfig.messageType) return;
       console.log(`✅ ${tool} detected (using ${event.data.detectedObject})`);
-      chrome.storage.local.set({ detectedTool: tool }, () => {
-        console.log("🧠 Stored detectedTool:", tool);
-      });
       window.removeEventListener("message", listener);
       callback(true);
     };
@@ -100,14 +117,19 @@ function injectScript(scriptData, callback) {
 // Auto-detect A/B tools on page load
 (function () {
   injectDetectorScript();
-  window.addEventListener("message", (event) => {
+  const detectedTools = [];
+  window.addEventListener("message", async (event) => {
     if (event.source !== window || !event.data || !Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) return;
     const detectedTool = event.data.tool;
-    console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
-    console.log(`✅ Storing ${detectedTool} as detected tool`);
-    chrome.storage.local.set({ detectedTool }, () => {
-      console.log("🧠 Stored detectedTool:", detectedTool);
-    });
+    if (!detectedTools.includes(detectedTool)) {
+      detectedTools.push(detectedTool);
+      // console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
+      const { preferredTool, allTools } = await getPreferredTool(detectedTools);
+      console.log(`✅ Storing detectedTools: ${allTools}, preferredTool: ${preferredTool}`);
+      chrome.storage.local.set({ detectedTools: allTools, preferredTool }, () => {
+        console.log("🧠 Stored detectedTools and preferredTool");
+      });
+    }
   });
 })();
 
@@ -115,8 +137,8 @@ function injectScript(scriptData, callback) {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message from popup:", request);
   if (request.action === "detectTool") {
-    chrome.storage.local.get("detectedTool", (data) => {
-      if (data.detectedTool === request.tool) {
+    chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
+      if (data.detectedTools && data.detectedTools.includes(request.tool)) {
         console.log(`ℹ️ Using stored detection for ${request.tool}`);
         sendResponse({ detected: true });
       } else {
@@ -126,8 +148,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
   } else if (request.action === "injectScript") {
-    chrome.storage.local.get("detectedTool", (data) => {
-      if (data.detectedTool === request.tool) {
+    chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
+      if (data.detectedTools && data.detectedTools.includes(request.tool)) {
         injectScript(request.scriptData, (result) => {
           sendResponse(result);
         });
@@ -153,6 +175,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Listen for tool detection messages (for debugging)
 window.addEventListener("message", (event) => {
   if (event.source !== window || !event.data || !Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) return;
-  console.log(`🚀 ${event.data.type.replace('_FOUND', '')} is available! Functions:`, event.data.functions);
+  // console.log(`🚀 ${event.data.type.replace('_FOUND', '')} is available! Functions:`, event.data.functions);
   console.log(`✅ You can now run ${event.data.type.replace('_FOUND', '')}-dependent code!`);
 });

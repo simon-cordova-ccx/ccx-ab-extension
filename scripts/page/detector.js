@@ -29,6 +29,7 @@
     return false;
   }
 
-  // Run detections (stop after first successful detection)
-  detectDynamicYield() || detectOptimizely();
+  // Run all detections
+  detectDynamicYield();
+  detectOptimizely();
 })();

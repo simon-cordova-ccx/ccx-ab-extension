@@ -206,14 +206,21 @@ document.addEventListener("DOMContentLoaded", () => {
     injectButton.disabled = !abToolSelect.value || !scriptSelect.value;
   });
 
-  // Auto-select detected tool and check its validity
-  chrome.storage.local.get("detectedTool", (data) => {
-    const detectedTool = data.detectedTool;
-    if (detectedTool && abToolSelect.querySelector(`option[value="${detectedTool}"]`)) {
-      console.log(`Auto-selecting detected tool: ${detectedTool}`);
-      abToolSelect.value = detectedTool;
-      statusDiv.textContent = `${detectedTool} detected. Please select a script.`;
-      statusDiv.className = "";
+  // Auto-select detected tool and check for multiple tools
+  chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
+    const detectedTools = data.detectedTools || [];
+    const preferredTool = data.preferredTool || "";
+    if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
+      console.log(`Auto-selecting preferred tool: ${preferredTool}`);
+      abToolSelect.value = preferredTool;
+      if (detectedTools.length > 1) {
+        const otherTools = detectedTools.filter(tool => tool !== preferredTool);
+        statusDiv.textContent = `${preferredTool} detected. Warning: Other tools (${otherTools.join(", ")}) also present. Please select a script.`;
+        statusDiv.className = "warning";
+      } else {
+        statusDiv.textContent = `${preferredTool} detected. Please select a script.`;
+        statusDiv.className = "";
+      }
       injectButton.disabled = !scriptSelect.value;
     } else {
       console.log("No detected tool found in storage");
@@ -247,12 +254,21 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           console.log("Received response:", response);
           if (response && response.detected) {
-            chrome.storage.local.set({ detectedTool: selectedTool }, () => {
+            chrome.storage.local.set({ preferredTool: selectedTool }, () => {
               console.log("🧠 Stored manually selected tool:", selectedTool);
             });
+            chrome.storage.local.get("detectedTools", (data) => {
+              const detectedTools = data.detectedTools || [];
+              if (detectedTools.length > 1) {
+                const otherTools = detectedTools.filter(tool => tool !== selectedTool);
+                statusDiv.textContent = `${selectedTool} detected. Warning: Other tools (${otherTools.join(", ")}) also present. Please select a script.`;
+                statusDiv.className = "warning";
+              } else {
+                statusDiv.textContent = `${selectedTool} detected. Please select a script.`;
+                statusDiv.className = "";
+              }
+            });
             injectButton.disabled = !scriptSelect.value;
-            statusDiv.textContent = `${selectedTool} detected. Please select a script.`;
-            statusDiv.className = "";
           } else {
             injectButton.disabled = true;
             statusDiv.textContent = `${selectedTool} not found on this page.`;

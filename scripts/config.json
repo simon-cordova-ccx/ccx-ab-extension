@@ -1,0 +1,8 @@
+{
+  "toolPriority": [
+    {
+      "client": "omaze",
+      "preferredTool": "dynamicyield"
+    }
+  ]
+}

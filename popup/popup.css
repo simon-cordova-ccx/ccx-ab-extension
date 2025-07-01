@@ -28,7 +28,11 @@ button:disabled {
   color: #d8000c;
   background-color: #ffbaba;
 }
-#status:not(.error) {
+#status.warning {
+  color: #9f6000;
+  background-color: #feefb3;
+}
+#status:not(.error):not(.warning) {
   color: #270;
   background-color: #dff2bf;
 }
