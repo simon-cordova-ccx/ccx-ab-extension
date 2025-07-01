@@ -3,35 +3,46 @@
 <head>
   <title>CCX AB Extension</title>
   <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <h1>CCX AB Extension</h1>
-  <label for="ab-tool">Select A/B Testing Tool</label>
-  <select id="ab-tool">
-    <option value="">Select Tool</option>
-    <option value="dynamicyield">Dynamic Yield</option>
-    <option value="optimizely">Optimizely</option>
-    <option value="adobetarget">Adobe Target</option>
-    <option value="abtasty">AB Tasty</option>
-  </select>
+  <div class="container">
+    <h1>CCX AB Extension</h1>
+    <div class="form-group">
+      <label for="ab-tool"><i class="fas fa-tools"></i> A/B Testing Tool</label>
+      <select id="ab-tool">
+        <option value="">Select Tool</option>
+        <option value="dynamicyield">Dynamic Yield</option>
+        <option value="optimizely">Optimizely</option>
+        <option value="adobetarget">Adobe Target</option>
+        <option value="abtasty">AB Tasty</option>
+      </select>
+    </div>
 
-  <label for="client">Select Client</label>
-  <select id="client">
-    <option value="">Select Client</option>
-  </select>
+    <div class="form-group">
+      <label for="client"><i class="fas fa-user"></i> Client</label>
+      <select id="client">
+        <option value="">Select Client</option>
+      </select>
+    </div>
 
-  <label for="test">Select Test</label>
-  <select id="test">
-    <option value="">Select Test</option>
-  </select>
+    <div class="form-group">
+      <label for="test"><i class="fas fa-vial"></i> Test</label>
+      <select id="test">
+        <option value="">Select Test</option>
+      </select>
+    </div>
 
-  <label for="script">Select Script</label>
-  <select id="script">
-    <option value="">Select Script</option>
-  </select>
+    <div class="form-group">
+      <label for="script"><i class="fas fa-code"></i> Script</label>
+      <select id="script">
+        <option value="">Select Script</option>
+      </select>
+    </div>
 
-  <button id="inject-button" disabled>Inject Script</button>
-  <div id="status"></div>
+    <button id="inject-button" disabled><i class="fas fa-rocket"></i> Inject Script</button>
+    <div id="status"></div>
+  </div>
 
   <script src="popup.js"></script>
 </body>

@@ -1,38 +1,107 @@
 body {
-  width: 300px;
-  padding: 10px;
-  font-family: Arial, sans-serif;
+  width: 320px;
+  margin: 0;
+  padding: 16px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background-color: #0A1D37; /* Creative CX Dark Blue */
+  color: #FFFFFF; /* White text for contrast */
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 h1 {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 600;
   text-align: center;
+  margin: 0 0 16px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-select,
-button {
-  width: 100%;
-  padding: 8px;
-  margin: 10px 0;
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
   font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+label i {
+  color: #00C4B4; /* Creative CX Teal */
+}
+
+select, button {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+select {
+  background-color: #F5F7FA; /* Light Gray */
+  color: #0A1D37;
+}
+
+select:focus {
+  box-shadow: 0 0 0 2px #00C4B4;
+}
+
+button {
+  background-color: #00C4B4; /* Teal */
+  color: #FFFFFF;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button:hover:not(:disabled) {
+  background-color: #00A89A; /* Darker Teal */
+  transform: translateY(-1px);
+}
+
 button:disabled {
-  background-color: #cccccc;
+  background-color: #4B5E7A; /* Muted Blue-Gray */
   cursor: not-allowed;
 }
+
 #status {
-  margin-top: 10px;
-  font-size: 12px;
-  padding: 8px;
-  border-radius: 4px;
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
 }
+
 #status.error {
-  color: #d8000c;
-  background-color: #ffbaba;
+  color: #D32F2F; /* Red */
+  background-color: #FFEBEE;
 }
+
 #status.warning {
-  color: #9f6000;
-  background-color: #feefb3;
+  color: #F57C00; /* Orange */
+  background-color: #FFF3E0;
 }
+
 #status:not(.error):not(.warning) {
-  color: #270;
-  background-color: #dff2bf;
+  color: #4CAF50; /* Green */
+  background-color: #E8F5E9;
 }
