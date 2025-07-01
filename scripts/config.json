@@ -9,6 +9,11 @@
       "client": "davidlloyd",
       "preferredTool": "optimizely",
       "urlPattern": "davidlloyd.co.uk"
+    },
+    {
+      "client": "heathrow",
+      "preferredTool": "adobetarget",
+      "urlPattern": "heathrowexpress.com"
     }
   ]
 }

@@ -29,7 +29,22 @@
     return false;
   }
 
+  // Detect Adobe Target
+  function detectAdobeTarget() {
+    if (typeof window.adobe !== "undefined" && typeof window.adobe.target !== "undefined") {
+      window.postMessage({
+        type: "ADOBE_TARGET_FOUND",
+        tool: "adobetarget",
+        functions: Object.keys(window.adobe.target || {}),
+        detectedObject: "adobe.target"
+      }, "*");
+      return true;
+    }
+    return false;
+  }
+
   // Run all detections
   detectDynamicYield();
   detectOptimizely();
+  detectAdobeTarget();
 })();

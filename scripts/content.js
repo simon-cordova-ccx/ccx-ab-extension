@@ -3,7 +3,8 @@ console.log("🔍 CCX AB content script loaded at", new Date().toISOString());
 // Map of A/B tools to their global window objects
 const toolIdentifiers = {
   dynamicyield: { windowObjects: ['DY', 'DYO'], messageType: 'DY_FOUND' },
-  optimizely: { windowObject: 'optimizely', messageType: 'OPTIMIZELY_FOUND' }
+  optimizely: { windowObject: 'optimizely', messageType: 'OPTIMIZELY_FOUND' },
+  adobetarget: { windowObject: 'adobe.target', messageType: 'ADOBE_TARGET_FOUND' }
 };
 
 // Function to inject detector.js into the webpage's context
