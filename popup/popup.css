@@ -1,0 +1,21 @@
+body {
+  width: 300px;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+h1 {
+  font-size: 18px;
+  text-align: center;
+}
+select, button {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+#status {
+  margin-top: 10px;
+  color: green;
+}
+#status.error {
+  color: red;
+}

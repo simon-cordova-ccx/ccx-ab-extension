@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CCX AB Browser Extension</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <h1>CCX AB Extension</h1>
+    <select id="ab-tool">
+      <option value="">Select A/B Testing Tool</option>
+      <option value="dynamicyield">Dynamic Yield</option>
+      <option value="optimizely">Optimizely</option>
+    </select>
+    <div id="folder-structure">
+      <!-- Folder structure will be populated dynamically -->
+    </div>
+    <button id="inject-button" disabled>Inject Script</button>
+    <div id="status"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

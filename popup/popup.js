@@ -1,0 +1,1 @@
+console.log("CCX AB Extension popup initialised at", new Date().toISOString());
