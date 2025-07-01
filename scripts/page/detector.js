@@ -1,22 +1,34 @@
 (function () {
-  const toolIdentifiers = {
-    dynamicyield: { windowObjects: ['DY', 'DYO'], messageType: 'DY_FOUND' },
-    optimizely: { windowObject: 'optimizely', messageType: 'OPTIMIZELY_FOUND' }
-  };
-
-  for (const [tool, config] of Object.entries(toolIdentifiers)) {
-    const detected = config.windowObjects 
-      ? config.windowObjects.find(obj => typeof window[obj] !== "undefined")
-      : typeof window[config.windowObject] !== "undefined" ? config.windowObject : null;
-    
+  // Detect Dynamic Yield
+  function detectDynamicYield() {
+    const DYObjects = ['DY', 'DYO'];
+    const detected = DYObjects.find(obj => typeof window[obj] !== "undefined");
     if (detected) {
       window.postMessage({
-        type: config.messageType,
-        tool: tool,
+        type: "DY_FOUND",
+        tool: "dynamicyield",
         functions: Object.keys(window[detected] || {}),
         detectedObject: detected
       }, "*");
-      break; // Stop after detecting the first tool
+      return true;
     }
+    return false;
   }
+
+  // Detect Optimizely
+  function detectOptimizely() {
+    if (typeof window.optimizely !== "undefined") {
+      window.postMessage({
+        type: "OPTIMIZELY_FOUND",
+        tool: "optimizely",
+        functions: Object.keys(window.optimizely || {}),
+        detectedObject: "optimizely"
+      }, "*");
+      return true;
+    }
+    return false;
+  }
+
+  // Run detections (stop after first successful detection)
+  detectDynamicYield() || detectOptimizely();
 })();
