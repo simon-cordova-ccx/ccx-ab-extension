@@ -53,7 +53,20 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             name: 'oz18',
             scripts: [
-              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz18/v1.js' } }
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz18/v1.js' } },
+              // { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de1/v1.js' } }
+            ]
+          },
+          {
+            name: 'de1',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de1/v1.js' } }
+            ]
+          },
+          {
+            name: 'oz21',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz21/v1.js' } }
             ]
           }
         ]

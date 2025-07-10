@@ -142,7 +142,7 @@ function injectScript(scriptData, callback) {
     const detectedTool = event.data.tool;
     if (!detectedTools.includes(detectedTool)) {
       detectedTools.push(detectedTool);
-      console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
+      // console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
       const { preferredTool, allTools } = await getPreferredTool(detectedTools);
       console.log(`✅ Storing detectedTools: ${allTools}, preferredTool: ${preferredTool}`);
       chrome.storage.local.set({ detectedTools: allTools, preferredTool }, () => {
@@ -194,6 +194,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Listen for tool detection messages (for debugging)
 window.addEventListener("message", (event) => {
   if (event.source !== window || !event.data || !Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) return;
-  console.log(`🚀 ${event.data.type.replace('_FOUND', '')} is available! Functions:`, event.data.functions);
+  // console.log(`🚀 ${event.data.type.replace('_FOUND', '')} is available! Functions:`, event.data.functions);
   console.log(`✅ You can now run ${event.data.type.replace('_FOUND', '')}-dependent code!`);
 });
