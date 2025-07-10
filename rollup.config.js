@@ -1,7 +1,7 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
+const resolve = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
 
-export default {
+module.exports = {
   input: 'popup/popup.js',
   output: {
     file: 'dist/popup/popup.js',
