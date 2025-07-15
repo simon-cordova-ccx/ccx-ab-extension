@@ -6,8 +6,6 @@ const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
-// [id^="carousel-template--"][id$="__campaign-carousel"]
-
 const svgIcons = {
   tour: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_2248_2261)">
@@ -220,7 +218,7 @@ const styles = `
     #ccx-secondary-nav ul {
       justify-content: space-between;
     }
-    #ccx-secondary-nav li:nth-child(4) {
+    #ccx-secondary-nav li.separator {
       margin-right: auto;
     }
   }
@@ -327,6 +325,13 @@ function addSecondaryNav(links) {
     ul.appendChild(li);
   }
 
+  // Add separator class to the item before "More Details"
+  const moreDetailsIndex = links.findIndex(link => link.text === "More details");
+  if (moreDetailsIndex > 0) {
+    const separatorLi = ul.children[moreDetailsIndex - 1];
+    separatorLi.classList.add('separator');
+  }
+
   // Only add nav if there are items
   if (ul.children.length > 0) {
     nav.appendChild(ul);
@@ -352,13 +357,13 @@ function enableSecondaryNavActiveState() {
     const navRect = nav.getBoundingClientRect();
     underline.style.left = (linkRect.left - navRect.left + nav.scrollLeft) + "px";
     underline.style.width = linkRect.width + "px";
-    underline.style.top = "50px"; // Always 50px from the top of the nav
+    underline.style.top = "50px";
   }
 
-  links.forEach(link => {
-    link.addEventListener('click', function (e) {
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
       e.preventDefault();
-      links.forEach(l => l.classList.remove('active'));
+      links.forEach(function(l) { l.classList.remove('active'); });
       this.classList.add('active');
       moveUnderlineTo(this);
 
@@ -375,8 +380,9 @@ function enableSecondaryNavActiveState() {
           }
         }
         if (target) {
-          // Set scroll so the section is exactly 50px below the top of the viewport
-          const targetTop = target.getBoundingClientRect().top + window.scrollY - 50;
+          // Use 50px below for #hero-video, 160px above for others
+          const offset = selector === '#hero-video' ? 50 : 160;
+          const targetTop = target.getBoundingClientRect().top + window.scrollY - offset;
           window.scrollTo({ top: targetTop, behavior: 'smooth' });
         }
       }
@@ -386,39 +392,13 @@ function enableSecondaryNavActiveState() {
   links[0].classList.add('active');
   moveUnderlineTo(links[0]);
 
-  window.addEventListener('resize', () => {
+  window.addEventListener('resize', function() {
     const active = nav.querySelector('a.active');
     if (active) moveUnderlineTo(active);
   });
 
-  nav.scrollLeft = 0; // Ensure nav starts scrolled to the left
+  nav.scrollLeft = 0;
 }
-
-// const waitForElements = (elementSelector) => {
-//   customLog('[waitForElements] Starting to wait for cards...');
-
-//   // Wait for both the navigation bar and the site footer
-//   Promise.all([
-//     DYO.waitForElementAsync(elementSelector, 1, 100, 150),
-//     DYO.waitForElementAsync('.site-footer', 1, 100, 150)
-//   ])
-//     .then(function ([navElements, footerElements]) {
-//       // Both elements are ready and exist exactly once
-//       console.log('Element found:', navElements[0]);
-//       console.log('Site footer found:', footerElements[0]);
-
-//       // Add styles to the document
-//       addStyles(styles);
-
-//       // Add secondary nav
-//       addSecondaryNav(secondaryLinks);
-//       enableSecondaryNavActiveState();
-//     })
-//     .catch(function () {
-//       // One or both elements not found within 15 seconds
-//       console.warn('#main-nav or .site-footer not found within timeout.');
-//     });
-// };
 
 const waitForElements = async function(elementSelector) {
   customLog('[waitForElements] Starting to wait for elements...');
