@@ -38,14 +38,14 @@ const styles = `
     margin-bottom: 0 !important;
     font-size: 14px;
   }
-  #enter-now-material-tab-buttons-design [id*=nav-latest] h1 {
-    margin-top: 2rem;
-  }
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div:nth-child(1) > div:nth-child(4) {
     align-items: center !important;
   }
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div:nth-child(1) > div:nth-child(4) svg {
     margin: 0 !important;
+  }
+  #enter-now-material-tab-buttons-design [id*=nav-latest] > div > div:nth-child(3) {
+    display: none;
   }
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div > div:nth-child(3) > p {
     color: #626262;
@@ -57,11 +57,6 @@ const styles = `
   }
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div > div:nth-child(4) .text-base.font-bold {
     color: #626262;
-  }
-  @media (max-width: 768px) {
-    #enter-now-material-tab-buttons-design [id*=nav-latest] h1 {
-      margin-top: 2rem;
-    }
   }
 `;
 
@@ -166,7 +161,7 @@ const applyVariationChanges = (container) => {
 
   const sectionHeader = container.querySelector('h1');
   if (sectionHeader) {
-    sectionHeader.textContent = 'Wähle DEINE teilnAhme';
+    sectionHeader.textContent = 'WÄHLE, WIE DU TEILNEHMEN MÖCHTEST';
   }
 
   const sectionSubTitle = container.querySelector('p');
@@ -178,7 +173,7 @@ const applyVariationChanges = (container) => {
   if (aboveTrophyContainer) {
     const paragraph = aboveTrophyContainer.querySelector('p');
     if (paragraph) {
-      paragraph.innerHTML = `<b>Aktuelle Bonus Verlosung:</b> Porsche 911 (Wert 140.000€)`;
+      paragraph.innerHTML = `<b>Aktuelle Bonus Verlosung:</b> Audi RS 6 Avant (Wert 140.000€)`;
       paragraph.classList.remove('px-6');
     }
   }

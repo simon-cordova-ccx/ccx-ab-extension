@@ -1,13 +1,10 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "OZDE3 | Omaze DE3: Cart Signup/Login CTA";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 1";
+const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
-
-const registerURL = 'https://omaze.de/account/register?return_to=/cart';
-const loginURL = 'https://omaze.de/account/login?return_to=/cart';
 
 const styles = `
   .ccx-link {
@@ -39,9 +36,7 @@ const styles = `
 `;
 
 const selectors = {
-  ORIGINAL_LOGIN_ELEMENT: 'form#begin-checkout cart-login-widget a[href*=login]',
   ORIGINAL_REGISTER_ELEMENT: 'form#begin-checkout cart-login-widget a[href*=register]',
-  ORIGINAL_TEXT_ELEMENT: 'form#begin-checkout cart-login-widget .flex.flex-col div[class*=text-]',
 }
 
 const customLog = (...messages) => {
@@ -92,36 +87,11 @@ const addStyles = (css) => {
   customLog('[addStyles] Custom styles added.');
 };
 
-const handleOriginalLoginElement = (loginElement) => {
-  if (!loginElement) return;
-
-  customLog('[handleOriginalLoginElement] Changing text content...');
-  loginElement.textContent = 'Benutzerkonto erstellen';
-  customLog('[handleOriginalLoginElement] Changed text content:', loginElement);
-
-  loginElement.setAttribute('href', registerURL);
-}
-
 const handleOriginalRegisterElement = (registerElement) => {
   if (!registerElement) return;
 
-  customLog('[handleOriginalRegisterElement] Changing text content...');
-  registerElement.textContent = 'In dein Konto einloggen';
-  customLog('[handleOriginalRegisterElement] Changed text content:', registerElement);
-
-  customLog('[handleOriginalRegisterElement] Changing href attribute...');
-  registerElement.setAttribute('href', loginURL);
-  customLog('[handleOriginalRegisterElement] Changed href attribute:', registerElement);
-
   registerElement.classList.add('ccx-link');
   customLog('[handleOriginalRegisterElement] Added ccx-link class');
-}
-
-const handleOriginalTextElement = (textElement) => {
-  if (!textElement) return;
-  customLog('[handleOriginalTextElement] Changing text content...');
-  textElement.textContent = 'Du hast schon ein Konto?';
-  customLog('[handleOriginalTextElement] Changed text content:', textElement);
 }
 
 async function init() {
@@ -129,23 +99,17 @@ async function init() {
   customLog('[init] Current URL: ' + CURRENT_URL);
   customLog('[init] Environment: ' + ENVIRONMENT);
 
-  document.body.classList.add('omaze-oz-de-3-v1');
-  customLog('[init] Added class omaze-oz-de-3-v1 to body');
+  document.body.classList.add('omaze-oz-de-3-v2');
+  customLog('[init] Added class omaze-oz-de-3-v2 to body');
   try {
     customLog('[init] Waiting for elements...');
     Promise.all([
-      DYO.waitForElementAsync(selectors.ORIGINAL_LOGIN_ELEMENT, 1, 100, 50),
       DYO.waitForElementAsync(selectors.ORIGINAL_REGISTER_ELEMENT, 1, 100, 50),
-      DYO.waitForElementAsync(selectors.ORIGINAL_TEXT_ELEMENT, 1, 100, 50)
-    ]).then(([originalLoginElement, originalRegisterElement, originalTextElement]) => {
+    ]).then(([originalRegisterElement]) => {
       // Proceed once all three elements are available
-      console.log('All elements loaded', originalLoginElement[0], originalRegisterElement[0], originalTextElement[0]);
-
-      handleOriginalLoginElement(originalLoginElement[0]);
+      console.log('All elements loaded', originalRegisterElement[0]);
 
       handleOriginalRegisterElement(originalRegisterElement[0]);
-
-      handleOriginalTextElement(originalTextElement[0]);
 
       addStyles(styles);
 

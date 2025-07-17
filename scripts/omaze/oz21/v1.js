@@ -167,6 +167,7 @@ const styles = `
   }
   #ccx-secondary-nav li:last-child {
     padding-right: 16px;
+    margin-right: 0;
   }
   #ccx-secondary-nav a {
     display: flex;
@@ -218,6 +219,8 @@ const styles = `
     #ccx-secondary-nav ul {
       justify-content: space-between;
     }
+  }
+  @media (min-width: 991px) {
     #ccx-secondary-nav li.separator {
       margin-right: auto;
     }

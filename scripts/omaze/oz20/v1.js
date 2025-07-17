@@ -35,6 +35,19 @@ const pillSVG = `
   </svg>`;
 
 const styles = `
+  #enter-now-legacy-design post-order-discount-banner + div {
+    width: 45%;
+    margin: 0 auto;
+    padding-bottom: 1rem !important;
+    min-width: 337px !important;
+    max-width: 356px !important;
+  }
+  #enter-now-legacy-design post-order-discount-banner + div > div {
+    width: 100% !important;
+  }
+  #enter-now-legacy-design post-order-discount-banner + div span {
+    font-size: 15px !important;
+  }
   #enter-now-legacy-design .sse-main__subheader {
     display: none !important;
   }
@@ -83,6 +96,24 @@ const styles = `
     border-radius: 76px !important;
   }
 
+  #enter-now-legacy-design .draw-entry-cards [data-test="mobile-card-variant-payg"]:not(.ccx-mobile-card-variant-payg) {
+    display: none !important;
+  }
+
+  #enter-now-legacy-design .draw-entry-cards > div > div {
+    width: 100% !important;
+    box-shadow: 0px 2px 4px 0px #0000001A;
+  }
+  #enter-now-legacy-design .draw-entry-cards > div > [data-test="mobile-card-variant-payg"][class^="ccx-mobile-card"] {
+    // display: block !important;
+    width: 100% !important;
+  }
+  #enter-now-legacy-design .draw-entry-cards > div > .ccx-mobile-card-variant-subscription {
+    // display: block !important;
+    width: 100% !important;
+    margin-top: 1.75rem !important;
+  }
+
 
 
   .ccx-mobile-card-variant-payg__price {
@@ -107,6 +138,7 @@ const styles = `
     padding: 16px 24px !important;
     margin: 0 !important;
     box-shadow: 0px 2px 4px 0px #0000001A !important;
+    margin-top: 1rem !important;
   }
   .ccx-mobile-card-variant-subscription__label {
     width: 154px;
@@ -204,6 +236,39 @@ const styles = `
     text-align: right;
     vertical-align: bottom;
   }
+
+
+
+  #enter-now-legacy-design .draw-entry-cards > div > div:nth-child(10) {
+    display: none !important;
+  }
+
+
+  #enter-now-legacy-design [data-test="desktop-card-variant-payg"] .line-through {
+    display: none;
+  }
+
+  #enter-now-legacy-design [data-test="desktop-card-variant-payg"] [data-test="entry-count"] + div {
+    display: none !important;
+  }
+  #enter-now-legacy-design [data-test="desktop-card-variant-payg"] > div:first-child {
+    padding-top: .625rem !important;
+    padding-bottom: .625rem !important;
+    height: 87px !important;
+  }
+
+  #enter-now-legacy-design [data-test="desktop-card-variant-payg"] [data-test="entry-count"] + div {
+    display: none !important;
+  }
+
+  @media (min-width: 1024px) {
+    #enter-now-legacy-design .draw-entry-cards > div > [data-test="mobile-card-variant-payg"][class^="ccx-mobile-card"] {
+      display: none !important;
+    }
+    #enter-now-legacy-design .draw-entry-cards > div > .ccx-mobile-card-variant-subscription {
+      display: none !important;
+    }
+  }
 `;
 
 const addStyles = (css) => {
@@ -240,155 +305,155 @@ const newCards = [
   { price: 50, entries: 85, isPAYG: true, position: "5" },
 ];
 
+function setExclusiveOfferText() {
+  document.querySelector('#enter-now-legacy-design post-order-discount-banner + div span').textContent = 'Exclusive Offer: £5 OFF SUBSCRIPTIONS';
+}
+
 // Function to add mobile PAYG cards
-function addMobilePayGCards(containerSelector, cards) {
+function addMobilePayGCards(containerSelector, card) {
   const container = document.querySelector(containerSelector);
   if (!container) {
     console.warn('[addMobilePayGCards] Container not found:', containerSelector);
     return;
   }
 
-  // Filter PAYG cards (isPAYG: true)
-  const paygCards = cards.filter(card => card.isPAYG);
+  // Only process PAYG card
+  if (!card.isPAYG) return;
 
-  paygCards.forEach(card => {
-    // Outer container
-    const outerDiv = document.createElement('div');
-    outerDiv.className = 'ccx-mobile-card-variant-payg flex w-[348px] h-[135px] px-[24px] pt-0 pb-[6px] gap-4 flex-shrink-0 lg:hidden bg-white border-[1px] border-neutral-200 rounded-2xl text-center relative py-1 justify-between basis-1/5 flex-1';
-    outerDiv.setAttribute('data-test', 'mobile-card-variant-payg');
+  // Outer container
+  const outerDiv = document.createElement('div');
+  outerDiv.className = 'ccx-mobile-card-variant-payg flex w-[348px] h-[135px] px-[24px] pt-0 pb-[6px] gap-4 flex-shrink-0 lg:hidden bg-white border-[1px] border-neutral-200 rounded-2xl text-center relative py-1 justify-between basis-1/5 flex-1';
+  outerDiv.setAttribute('data-test', 'mobile-card-variant-payg');
 
-    // Content container
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'ccx-mobile-card-variant-payg__content flex w-full h-full justify-between items-center';
+  // Content container
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'ccx-mobile-card-variant-payg__content flex w-full h-full justify-between items-center';
 
-    // Left container
-    const leftDiv = document.createElement('div');
-    leftDiv.className = 'ccx-mobile-card-variant-payg__left flex flex-col justify-center gap-1';
+  // Left container
+  const leftDiv = document.createElement('div');
+  leftDiv.className = 'ccx-mobile-card-variant-payg__left flex flex-col justify-center gap-1';
 
-    // Price
-    const price = document.createElement('div');
-    price.className = 'ccx-mobile-card-variant-payg__price';
-    price.textContent = `£${card.price}`;
-    leftDiv.appendChild(price);
+  // Price
+  const price = document.createElement('div');
+  price.className = 'ccx-mobile-card-variant-payg__price';
+  price.textContent = `£${card.price}`;
+  leftDiv.appendChild(price);
 
-    // Entries
-    const entries = document.createElement('div');
-    entries.className = 'ccx-mobile-card-variant-payg__entries';
-    entries.textContent = `${card.entries} Entries`;
-    leftDiv.appendChild(entries);
+  // Entries
+  const entries = document.createElement('div');
+  entries.className = 'ccx-mobile-card-variant-payg__entries';
+  entries.textContent = `${card.entries} Entries`;
+  leftDiv.appendChild(entries);
 
-    // Right container
-    const rightDiv = document.createElement('div');
-    rightDiv.className = 'ccx-mobile-card-variant-payg__right flex flex-col justify-center items-end';
+  // Right container
+  const rightDiv = document.createElement('div');
+  rightDiv.className = 'ccx-mobile-card-variant-payg__right flex flex-col justify-center items-end';
 
-    // Button
-    const button = document.createElement('button');
-    button.className = 'ccx-mobile-card-variant-payg__button add-to-cart-button px-4 py-2 rounded mt-2';
-    button.textContent = 'Buy Now';
-    rightDiv.appendChild(button);
+  // Button
+  const button = document.createElement('button');
+  button.className = 'ccx-mobile-card-variant-payg__button add-to-cart-button px-4 py-2 rounded mt-2';
+  button.textContent = 'Buy Now';
+  rightDiv.appendChild(button);
 
-    // Assemble the card
-    contentDiv.appendChild(leftDiv);
-    contentDiv.appendChild(rightDiv);
-    outerDiv.appendChild(contentDiv);
-    container.appendChild(outerDiv);
-  });
+  // Assemble the card
+  contentDiv.appendChild(leftDiv);
+  contentDiv.appendChild(rightDiv);
+  outerDiv.appendChild(contentDiv);
+  container.appendChild(outerDiv);
 }
 
-function addMobileSubscriptionCards(containerSelector, cards) {
+function addMobileSubscriptionCards(containerSelector, card) {
   const container = document.querySelector(containerSelector);
   if (!container) {
     console.warn('[addMobileSubscriptionCards] Container not found:', containerSelector);
     return;
   }
 
-  // Filter subscription cards (isPAYG: false)
-  const subscriptionCards = cards.filter(card => !card.isPAYG);
+  // Only process subscription card
+  if (card.isPAYG) return;
 
-  subscriptionCards.forEach(card => {
-    // Outer container
-    const outerDiv = document.createElement('div');
-    outerDiv.className = 'ccx-mobile-card-variant-subscription flex lg:hidden w-[348px] h-[135px] px-5 pb-[6px] justify-center items-center gap-4 flex-shrink-0 rounded-[10px] border-[3px] border-[#081F28] relative py-1 bg-white shadow-[0px_4px_10px_0px_rgba(0,0,0,0.10)] mt-6';
+  // Outer container
+  const outerDiv = document.createElement('div');
+  outerDiv.className = 'ccx-mobile-card-variant-subscription flex lg:hidden w-[348px] h-[135px] px-5 pb-[6px] justify-center items-center gap-4 flex-shrink-0 rounded-[10px] border-[3px] border-[#081F28] relative py-1 bg-white shadow-[0px_4px_10px_0px_rgba(0,0,0,0.10)] mt-6';
 
-    // Label container
-    const labelDiv = document.createElement('div');
-    labelDiv.className = 'ccx-mobile-card-variant-subscription__label absolute top-[-12px] left-1/2 transform -translate-x-1/2';
-    labelDiv.textContent = 'Omaze Subscription';
-    outerDiv.appendChild(labelDiv);
+  // Label container
+  const labelDiv = document.createElement('div');
+  labelDiv.className = 'ccx-mobile-card-variant-subscription__label absolute top-[-12px] left-1/2 transform -translate-x-1/2';
+  labelDiv.textContent = 'Omaze Subscription';
+  outerDiv.appendChild(labelDiv);
 
-    // Content container
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'ccx-mobile-card-variant-subscription__content flex w-full h-full justify-between items-center gap-2';
+  // Content container
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'ccx-mobile-card-variant-subscription__content flex w-full h-full justify-between items-center gap-2';
 
-    // Left container
-    const leftDiv = document.createElement('div');
-    leftDiv.className = 'ccx-mobile-card-variant-subscription__left flex flex-col text-left gap-1';
+  // Left container
+  const leftDiv = document.createElement('div');
+  leftDiv.className = 'ccx-mobile-card-variant-subscription__left flex flex-col text-left gap-1';
 
-    // Entries
-    const entries = document.createElement('div');
-    entries.className = 'ccx-mobile-card-variant-subscription__entries';
-    entries.textContent = `${card.entries} Entries`;
-    leftDiv.appendChild(entries);
+  // Entries
+  const entries = document.createElement('div');
+  entries.className = 'ccx-mobile-card-variant-subscription__entries';
+  entries.textContent = `${card.entries} Entries`;
+  leftDiv.appendChild(entries);
 
-    // Price (strikethrough)
-    const strikeThrough = document.createElement('div');
-    strikeThrough.className = 'ccx-mobile-card-variant-subscription__strikethrough';
-    const strikeThroughSpan = document.createElement('span');
-    strikeThroughSpan.className = 'ccx-mobile-card-variant-subscription__strikethrough-price';
-    strikeThroughSpan.textContent = `£${card.price}`;
-    const strikeThroughMonthSpan = document.createElement('span');
-    strikeThroughMonthSpan.className = 'ccx-mobile-card-variant-subscription__strikethrough-month';
-    strikeThroughMonthSpan.textContent = '/month';
-    strikeThrough.appendChild(strikeThroughSpan);
-    strikeThrough.appendChild(strikeThroughMonthSpan);
-    leftDiv.appendChild(strikeThrough);
+  // Price (strikethrough)
+  const strikeThrough = document.createElement('div');
+  strikeThrough.className = 'ccx-mobile-card-variant-subscription__strikethrough';
+  const strikeThroughSpan = document.createElement('span');
+  strikeThroughSpan.className = 'ccx-mobile-card-variant-subscription__strikethrough-price';
+  strikeThroughSpan.textContent = `£${card.strikeThrough || card.price}`;
+  const strikeThroughMonthSpan = document.createElement('span');
+  strikeThroughMonthSpan.className = 'ccx-mobile-card-variant-subscription__strikethrough-month';
+  strikeThroughMonthSpan.textContent = '/month';
+  strikeThrough.appendChild(strikeThroughSpan);
+  strikeThrough.appendChild(strikeThroughMonthSpan);
+  leftDiv.appendChild(strikeThrough);
 
-    // Pill container
-    const pillContainer = document.createElement('div');
-    pillContainer.className = 'ccx-mobile-card-variant-subscription__pill-container flex items-center mt-1';
+  // Pill container
+  const pillContainer = document.createElement('div');
+  pillContainer.className = 'ccx-mobile-card-variant-subscription__pill-container flex items-center mt-1';
 
-    // Pill SVG
-    const pillSvg = document.createElement('span');
-    pillSvg.className = 'ccx-mobile-card-variant-subscription__pill-svg';
-    pillSvg.innerHTML = pillSVG;
-    pillContainer.appendChild(pillSvg);
+  // Pill SVG
+  const pillSvg = document.createElement('span');
+  pillSvg.className = 'ccx-mobile-card-variant-subscription__pill-svg';
+  pillSvg.innerHTML = pillSVG;
+  pillContainer.appendChild(pillSvg);
 
-    // Pill text
-    const pillText = document.createElement('span');
-    pillText.className = 'ccx-mobile-card-variant-subscription__pill-text';
-    pillText.textContent = '£5 OFF 1ST MONTH';
-    pillContainer.appendChild(pillText);
-    leftDiv.appendChild(pillContainer);
+  // Pill text
+  const pillText = document.createElement('span');
+  pillText.className = 'ccx-mobile-card-variant-subscription__pill-text';
+  pillText.textContent = '£5 OFF 1ST MONTH';
+  pillContainer.appendChild(pillText);
+  leftDiv.appendChild(pillContainer);
 
-    // Right container
-    const rightDiv = document.createElement('div');
-    rightDiv.className = 'ccx-mobile-card-variant-subscription__right flex flex-col justify-center items-end gap-1';
+  // Right container
+  const rightDiv = document.createElement('div');
+  rightDiv.className = 'ccx-mobile-card-variant-subscription__right flex flex-col justify-center items-end gap-1';
 
-    // Price (repeated in right)
-    const priceRight = document.createElement('div');
-    priceRight.className = 'ccx-mobile-card-variant-subscription__price';
-    const priceSpan = document.createElement('span');
-    priceSpan.className = 'ccx-mobile-card-variant-subscription__price-value';
-    priceSpan.textContent = `£${card.price}`;
-    const monthSpan = document.createElement('span');
-    monthSpan.className = 'ccx-mobile-card-variant-subscription__price-month';
-    monthSpan.textContent = '/month';
-    priceRight.appendChild(priceSpan);
-    priceRight.appendChild(monthSpan);
-    rightDiv.appendChild(priceRight);
+  // Price (repeated in right)
+  const priceRight = document.createElement('div');
+  priceRight.className = 'ccx-mobile-card-variant-subscription__price';
+  const priceSpan = document.createElement('span');
+  priceSpan.className = 'ccx-mobile-card-variant-subscription__price-value';
+  priceSpan.textContent = `£${card.price}`;
+  const monthSpan = document.createElement('span');
+  monthSpan.className = 'ccx-mobile-card-variant-subscription__price-month';
+  monthSpan.textContent = '/month';
+  priceRight.appendChild(priceSpan);
+  priceRight.appendChild(monthSpan);
+  rightDiv.appendChild(priceRight);
 
-    // Button
-    const button = document.createElement('button');
-    button.className = 'ccx-mobile-card-variant-subscription__button add-to-cart-button px-4 py-2 rounded mt-2';
-    button.textContent = 'Buy Now';
-    rightDiv.appendChild(button);
+  // Button
+  const button = document.createElement('button');
+  button.className = 'ccx-mobile-card-variant-subscription__button add-to-cart-button px-4 py-2 rounded mt-2';
+  button.textContent = 'Buy Now';
+  rightDiv.appendChild(button);
 
-    // Assemble the card
-    contentDiv.appendChild(leftDiv);
-    contentDiv.appendChild(rightDiv);
-    outerDiv.appendChild(contentDiv);
-    container.appendChild(outerDiv);
-  });
+  // Assemble the card
+  contentDiv.appendChild(leftDiv);
+  contentDiv.appendChild(rightDiv);
+  outerDiv.appendChild(contentDiv);
+  container.appendChild(outerDiv);
 }
 
 const waitForElements = async function (elementSelector) {
@@ -397,17 +462,25 @@ const waitForElements = async function (elementSelector) {
   try {
     const results = await Promise.all([
       DYO.waitForElementAsync(elementSelector, 13, 100, 150),
-
     ]);
-    const enterNowButtons = results;
-    console.log('Enter Now buttons found:', enterNowButtons);
+    const enterNowButtons = results[0]; // Access the first result
+    customLog('Enter Now buttons found:', enterNowButtons);
 
     // Add custom styles
     addStyles(styles);
 
-    // Add new cards to the page
-    addMobileSubscriptionCards('#enter-now-legacy-design .draw-entry-cards > div', newCards);
-    addMobilePayGCards('#enter-now-legacy-design .draw-entry-cards > div', newCards);
+    // Sort cards by position and append in order
+    const sortedCards = [...newCards].sort((a, b) => Number(a.position) - Number(b.position));
+    const containerSelector = '#enter-now-legacy-design .draw-entry-cards > div';
+    sortedCards.forEach(card => {
+      if (card.isPAYG) {
+        addMobilePayGCards(containerSelector, card);
+      } else {
+        addMobileSubscriptionCards(containerSelector, card);
+      }
+    });
+
+    setExclusiveOfferText();
 
   } catch (error) {
     console.warn('[waitForElements] Error waiting for elements:', error);
