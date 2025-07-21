@@ -81,9 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Load client configuration
-  async function loadConfig() {
+    async function loadConfig() {
+    console.log("Loading client configuration...");
     try {
       const response = await fetch(chrome.runtime.getURL("scripts/config.json"));
+      console.log("Received response:", response);
       if (!response.ok) {
         throw new Error(`Failed to load config: ${response.statusText}`);
       }
@@ -148,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle client selection
   clientSelect.addEventListener("change", () => {
+    console.log("Client selection changed:", clientSelect.value);
     const selectedClient = clientSelect.value;
     testSelect.innerHTML = '<option value="">Select Test</option>';
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
@@ -197,26 +200,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auto-select detected tool and check for multiple tools
   chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
     const detectedTools = data.detectedTools || [];
-    const preferredTool = data.preferredTool || "";
-    if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
-      console.log(`Auto-selecting preferred tool: ${preferredTool}`);
-      abToolSelect.value = preferredTool;
+    let toolToSelect = data.preferredTool || "";
+    if (!toolToSelect && detectedTools.length > 0) {
+      toolToSelect = detectedTools[0]; // Fallback to first detected tool
+    }
+    if (toolToSelect && abToolSelect.querySelector(`option[value="${toolToSelect}"]`)) {
+      console.log(`Auto-selecting tool: ${toolToSelect}`);
+      abToolSelect.value = toolToSelect;
       if (detectedTools.length > 1) {
-        const otherTools = detectedTools.filter(tool => tool !== preferredTool);
-        statusDiv.textContent = `${preferredTool} detected. Warning: Other tools (${otherTools.join(", ")}) also present. Please select a script.`;
+        const otherTools = detectedTools.filter(tool => tool !== toolToSelect);
+        statusDiv.textContent = `${toolToSelect} detected. Warning: Other tools (${otherTools.join(", ")}) also present.`;
         statusDiv.className = "warning";
       } else {
-        statusDiv.textContent = `${preferredTool} detected. Please select a script.`;
+        statusDiv.textContent = `${toolToSelect} detected. Please select a script.`;
         statusDiv.className = "";
       }
       injectButton.disabled = !scriptSelect.value;
       copyButton.disabled = !scriptSelect.value;
     } else {
-      console.log("No detected tool found in storage");
+      console.log("No tool to select");
       injectButton.disabled = true;
       copyButton.disabled = true;
       statusDiv.textContent = "Please select an A/B testing tool.";
-      statusDiv.className = "";
     }
   });
 
@@ -280,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle inject button click
   injectButton.addEventListener("click", () => {
+    console.log("Inject button clicked");
     const selectedTool = abToolSelect.value;
     const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
     console.log(`Injecting script for ${selectedTool}:`, selectedScript);
@@ -326,6 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle copy button click
   copyButton.addEventListener("click", async () => {
+    console.log("Copy button clicked");
     const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
     if (!selectedScript || selectedScript.type !== "file" || !selectedScript.src) {
       statusDiv.textContent = "Error: No valid script selected.";
