@@ -64,6 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
           },
           {
+            name: 'oz20',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz20/v1.js' } }
+            ]
+          },
+          {
             name: 'oz21',
             scripts: [
               { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz21/v1.js' } }
@@ -289,6 +295,16 @@ document.addEventListener("DOMContentLoaded", () => {
         statusDiv.className = "error";
         return;
       }
+
+      // --- Store auto-inject selection here ---
+      chrome.storage.local.set({
+        autoInject: {
+          tool: selectedTool,
+          scriptData: selectedScript,
+          url: tabs[0].url // or use a pattern if you want
+        }
+      });
+
       chrome.tabs.sendMessage(tabs[0].id, { action: "injectScript", tool: selectedTool, scriptData: selectedScript }, (response) => {
         if (chrome.runtime.lastError) {
           console.error("❌ Error sending message:", chrome.runtime.lastError.message);

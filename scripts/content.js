@@ -152,6 +152,34 @@ function injectScript(scriptData, callback) {
   });
 })();
 
+// --- Place the auto-inject IIFE here ---
+(async function () {
+  injectDetectorScript();
+  // Auto-inject logic
+  chrome.storage.local.get("autoInject", (data) => {
+    const autoInject = data.autoInject;
+    if (
+      autoInject &&
+      autoInject.tool &&
+      autoInject.scriptData &&
+      window.location.href.includes(autoInject.url)
+    ) {
+      chrome.runtime.sendMessage({
+        action: "injectScript",
+        tool: autoInject.tool,
+        scriptData: autoInject.scriptData
+      }, (response) => {
+        if (response && response.success) {
+          console.log("✅ Auto-injected script after reload");
+          chrome.storage.local.remove("autoInject");
+        } else {
+          console.error("❌ Auto-inject failed:", response?.error);
+        }
+      });
+    }
+  });
+})();
+
 // Listen for messages from the popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message from popup:", request);
