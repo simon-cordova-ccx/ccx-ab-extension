@@ -304,8 +304,13 @@ const mobileChanges = () => {
       }
 
       if (button) {
+        console.log('Button-----:', button);
         button.removeAttribute('data-discount-code');
         button.setAttribute('style', button.getAttribute('style') + '; font-size: 1rem !important; margin: 0 !important;');
+        const btnText = button.querySelector('.btn-text');
+        if (btnText) {
+           btnText.textContent = 'Buy Now';
+        }
       }
     });
   }
@@ -334,7 +339,14 @@ const mobileChanges = () => {
       omazeSubscriptionLeftContainer.setAttribute('style', omazeSubscriptionLeftContainer.getAttribute('style') + '; margin: 0 !important;');
 
       subscriptionButton = omazeSubscriptionRightContainer.querySelector('.add-to-cart-button');
-      subscriptionButton.setAttribute('style', subscriptionButton.getAttribute('style') + '; font-size: 1rem !important; margin: 0 !important;');
+
+      if (subscriptionButton) {
+        subscriptionButton.setAttribute('style', subscriptionButton.getAttribute('style') + '; font-size: 1rem !important; margin: 0 !important;');
+        const subscriptionButtonText = subscriptionButton.querySelector('.btn-text');
+        if (subscriptionButtonText) {
+          subscriptionButtonText.textContent = 'Buy Now';
+        }
+      }
     }
   }
 
@@ -344,6 +356,59 @@ const mobileChanges = () => {
     const postalCard = postalCardLink.parentNode;
     console.log('postal card:', postalCard);
     postalCard.setAttribute('style', postalCard.getAttribute('style') + '; width: 100% !important;');
+  }
+}
+
+const SELECTORS = {
+  ORIGINAL_CONTAINER: "#enter-now-material-tab-buttons-design",
+  SHOPIFY_CONTAINERS: "main .shopify-section > div",
+  NAV_BUTTON_FIRST: "#enter-now-material-tab-buttons-design nav button:nth-child(1)",
+};
+
+const showCorrectContainer = (containerToShow) => {
+  // customLog('[showCorrectContainer] Starting function');
+
+  const shopifySectionContainers = document.querySelectorAll(SELECTORS.SHOPIFY_CONTAINERS);
+
+  const correctContainer = document.querySelector(containerToShow);
+
+  if (!correctContainer) {
+    customLog('[showCorrectContainer] ERROR: correctContainer not found');
+    throw new Error('correctContainer not found');
+  }
+
+
+  // customLog('[showCorrectContainer] Found Shopify containers:', shopifySectionContainers);
+
+  if (shopifySectionContainers && shopifySectionContainers.length > 0) {
+    // customLog('[showCorrectContainer] Shopify containers found:', shopifySectionContainers.length);
+
+    shopifySectionContainers.forEach(shopifyContainer => {
+
+      // if the shopifyContainer has an id
+      if (shopifyContainer.id) {
+        // customLog('[showCorrectContainer]', 'ID:', shopifyContainer.id);
+
+        // add class d-none to the shopifyContainer
+        shopifyContainer.classList.add('d-none');
+        shopifyContainer.setAttribute('style', 'display: none !important;');
+
+        // customLog('[showCorrectContainer] Added d-none class and style to container');
+
+        // customLog('[showCorrectContainer] Found original main container:', correctContainer);
+
+        correctContainer.classList.remove('d-none');
+        correctContainer.setAttribute('style', 'display: block !important;');
+
+        // customLog('[showCorrectContainer] Removed d-none class and added style to original main container');
+
+      }
+    });
+
+    applyVariationChanges(correctContainer);
+
+  } else {
+    customLog('[showCorrectContainer] No Shopify containers found');
   }
 }
 

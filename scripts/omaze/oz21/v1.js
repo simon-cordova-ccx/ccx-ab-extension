@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZ21 | Homepage Navigation";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 1";
@@ -166,7 +166,7 @@ const styles = `
     flex-shrink: 0;
   }
   #ccx-secondary-nav li:last-child {
-    padding-right: 16px;
+    padding-right: 0;
     margin-right: 0;
   }
   #ccx-secondary-nav a {

@@ -2,7 +2,7 @@ const LOG_ENABLED = false;
 
 const TEST_META = {
   NUMBER: "DE1",
-  VARIATION: "VARIATION 1",
+  VARIATION: "NEW CONTROL",
   UTM_SOURCE: "",
 };
 
@@ -13,7 +13,7 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 const SELECTORS = {
   ORIGINAL_CONTAINER: "#enter-now-material-tab-buttons-design",
   SHOPIFY_CONTAINERS: "main .shopify-section > div",
-  NAV_BUTTON_SECOND: "#enter-now-material-tab-buttons-design nav button:nth-child(2)",
+  NAV_BUTTON_FIRST: "#enter-now-material-tab-buttons-design nav button:nth-child(1)",
 };
 
 const customLog = function () {
@@ -78,19 +78,19 @@ const init = async function () {
     customLog("⏳ Waiting for original main container...");
     await waitForElement(SELECTORS.ORIGINAL_CONTAINER);
 
-    const secondNavButton = await waitForElement(SELECTORS.NAV_BUTTON_SECOND);
+    const firstNavButton = await waitForElement(SELECTORS.NAV_BUTTON_FIRST);
 
-    if (secondNavButton) {
+    if (firstNavButton) {
       customLog("👆 Clicking second nav button...");
       setTimeout(() => {
-        secondNavButton.click();
+        firstNavButton.click();
         customLog("✅ Second nav button clicked");
       }, 500);
     }
 
     showCorrectContainer();
 
-    document.body.classList.add("omaze-de1-v1");
+    document.body.classList.add("omaze-de1-new-control");
     customLog("🎉 INIT COMPLETE");
   } catch (error) {
     console.error("[init] ❌ Error: " + error.message + "\nStack: " + error.stack);
