@@ -288,48 +288,6 @@ if (!IS_CART_PAGE) {
       updatePostalEntryCard();
       addStyles();
     });
-
-    // waitForElementsWithTimeout(
-    //   '#enter-now-legacy-design [data-test="card-variant-subscription"] a .add-to-cart-button',
-    //   2,
-    //   function (elements) {
-    //     elements.forEach(function (button) {
-    //       button.innerText = 'Buy Now';
-
-    //       button.addEventListener('click', function (event) {
-    //         event.preventDefault();
-
-    //         var closestLink = button.closest('a');
-    //         if (!closestLink) return;
-
-    //         var originalHref = closestLink.getAttribute('href') || '';
-    //         var isSubscription25 = originalHref.indexOf('subscriptions-25') !== -1;
-    //         var domain = IS_STAGING_ENV ? 'https://staging.omaze.co.uk' : 'https://omaze.co.uk';
-    //         var newHref;
-
-    //         if (IS_STAGING_ENV) {
-    //           newHref = domain + (isSubscription25
-    //             ? '/pages/omaze-subscriptions-25?utm_source=twitter'
-    //             : '/pages/omaze-subscriptions?utm_source=twitter');
-    //         } else {
-    //           var returnTo = isSubscription25
-    //             ? '/cart/add?items[][id]=41644844220502%26items[][quantity]=1%26items[][selling_plan]=572096598'
-    //             : '/cart/add?items[][id]=41644844187734%26items[][quantity]=1%26items[][selling_plan]=572096598';
-
-    //           newHref = domain + '/cart/clear?return_to=' + returnTo;
-    //         }
-
-    //         window.location.href = newHref;
-    //       });
-    //     });
-
-    //     updatePostalEntryCard();
-    //     addStyles();
-    //   },
-    //   200,
-    //   10000
-    // );
-
   }
 
   initiateEntryPageChanges();
