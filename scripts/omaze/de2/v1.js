@@ -49,8 +49,11 @@ const styles = `
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div:nth-child(1) > div:nth-child(4) svg {
     margin: 0 !important;
   }
-  #enter-now-material-tab-buttons-design [id*=nav-latest] > div > div:nth-child(3) {
-    // display: none;
+  #enter-now-material-tab-buttons-design #nav-latest-alpen-haus-campaign > div:first-child > div.text-center p {
+    font-family: Gellix;
+    font-weight: 400;
+    font-size: 18px !important;
+    text-align: center;
   }
   #enter-now-material-tab-buttons-design [id*=nav-latest] > div:first-child > div:nth-child(3) .text-base.font-bold {
     color: #626262 !important;
@@ -186,10 +189,19 @@ const applyVariationChanges = (container) => {
       const isAlpen = window.location.href.includes('alpen');
       if (isAlpen) {
         // BMW 420i Cabriolet (Wert 60.000€)
-        paragraph.innerHTML = `<b>Aktuelle Bonus Verlosung:</b> BMW 420i Cabriolet (Wert 60.000€)`;
+        paragraph.innerHTML = `<b>Aktuelle Bonus Verlosung:</b>&nbspBMW 420i Cabriolet (Wert 60.000€)`;
         paragraph.classList.remove('px-6');
+        paragraph.style.setProperty('font-weight', '700', 'important');
+        paragraph.style.setProperty('line-height', '16px', 'important');
+        paragraph.style.setProperty('color', '#626262', 'important');
+
+        const longHeaderElement = document.querySelector('#enter-now-material-tab-buttons-design #nav-latest-alpen-haus-campaign > div:first-child > div.text-center p');
+        if (longHeaderElement) {
+          longHeaderElement.innerHTML = `Gewinne ein Haus zwischen München und den Alpen inklusive 100.000 E Startkapital und unterstütze&nbsp<b>Plan International</b>`;
+        }
       }
-      // paragraph.innerHTML = `<b>Aktuelle Bonus Verlosung:</b> Audi RS 6 Avant (Wert 140.000€)`;
+
+
     }
   }
 

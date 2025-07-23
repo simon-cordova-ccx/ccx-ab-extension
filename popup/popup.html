@@ -44,9 +44,14 @@
 
     <div class="button-group">
       <button id="inject-button" disabled><i class="fas fa-rocket"></i> Inject Script</button>
+      <button id="reinject-button" disabled class="dev-only"><i class="fas fa-redo"></i> Re-inject Last Script</button>
       <button id="copy-button" disabled><i class="fas fa-copy"></i> Copy Variation Code</button>
     </div>
     <div id="status"></div>
+    <div id="hot-reload-status" class="dev-only"></div>
+    <div class="form-group dev-only">
+      <label><input type="checkbox" id="hot-reload-toggle"> Enable Hot Reloading (Dev Mode)</label>
+    </div>
   </div>
   <script type="module" src="./popup.js"></script>
 </body>

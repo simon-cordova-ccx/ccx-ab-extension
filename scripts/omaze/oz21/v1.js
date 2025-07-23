@@ -1,3 +1,5 @@
+console.log('-----------------------');
+
 const LOG_ENABLED = false;
 const TEST_NAME = "OZ21 | Homepage Navigation";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
@@ -363,10 +365,10 @@ function enableSecondaryNavActiveState() {
     underline.style.top = "50px";
   }
 
-  links.forEach(function(link) {
-    link.addEventListener('click', function(e) {
+  links.forEach(function (link) {
+    link.addEventListener('click', function (e) {
       e.preventDefault();
-      links.forEach(function(l) { l.classList.remove('active'); });
+      links.forEach(function (l) { l.classList.remove('active'); });
       this.classList.add('active');
       moveUnderlineTo(this);
 
@@ -395,7 +397,7 @@ function enableSecondaryNavActiveState() {
   links[0].classList.add('active');
   moveUnderlineTo(links[0]);
 
-  window.addEventListener('resize', function() {
+  window.addEventListener('resize', function () {
     const active = nav.querySelector('a.active');
     if (active) moveUnderlineTo(active);
   });
@@ -403,7 +405,7 @@ function enableSecondaryNavActiveState() {
   nav.scrollLeft = 0;
 }
 
-const waitForElements = async function(elementSelector) {
+const waitForElements = async function (elementSelector) {
   customLog('[waitForElements] Starting to wait for elements...');
 
   try {

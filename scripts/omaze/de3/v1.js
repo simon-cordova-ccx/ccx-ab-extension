@@ -42,6 +42,7 @@ const selectors = {
   ORIGINAL_LOGIN_ELEMENT: 'form#begin-checkout cart-login-widget a[href*=login]',
   ORIGINAL_REGISTER_ELEMENT: 'form#begin-checkout cart-login-widget a[href*=register]',
   ORIGINAL_TEXT_ELEMENT: 'form#begin-checkout cart-login-widget .flex.flex-col div[class*=text-]',
+  ORIGINAL_PAYPAL_ELEMENT: 'form#begin-checkout cart-login-widget > div > div.flex.flex-col.gap-6 > button',
 }
 
 const customLog = (...messages) => {
@@ -124,6 +125,28 @@ const handleOriginalTextElement = (textElement) => {
   customLog('[handleOriginalTextElement] Changed text content:', textElement);
 }
 
+const handleOriginalPayPalElement = (payPalElement) => {
+  if (!payPalElement) return;
+  customLog('[handleOriginalPayPalElement] Changing text content...');
+
+  // Get the image element
+  const imgElement = payPalElement.querySelector('img');
+
+  // Remove the text content from the element
+  payPalElement.innerHTML = '';
+
+  // Add the image element back to the element
+  payPalElement.appendChild(imgElement);
+
+  // Create a new text node with the desired text
+  const textNode = document.createTextNode(' Mit PayPal registrieren');
+
+  // Add the text node to the element
+  payPalElement.appendChild(textNode);
+
+  customLog('[handleOriginalPayPalElement] Changed text content:', payPalElement);
+}
+
 async function init() {
   customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
   customLog('[init] Current URL: ' + CURRENT_URL);
@@ -136,16 +159,19 @@ async function init() {
     Promise.all([
       DYO.waitForElementAsync(selectors.ORIGINAL_LOGIN_ELEMENT, 1, 100, 50),
       DYO.waitForElementAsync(selectors.ORIGINAL_REGISTER_ELEMENT, 1, 100, 50),
-      DYO.waitForElementAsync(selectors.ORIGINAL_TEXT_ELEMENT, 1, 100, 50)
-    ]).then(([originalLoginElement, originalRegisterElement, originalTextElement]) => {
+      DYO.waitForElementAsync(selectors.ORIGINAL_TEXT_ELEMENT, 1, 100, 50),
+      DYO.waitForElementAsync(selectors.ORIGINAL_PAYPAL_ELEMENT, 1, 100, 50)
+    ]).then(([originalLoginElement, originalRegisterElement, originalTextElement, originalPayPalElement]) => {
       // Proceed once all three elements are available
-      console.log('All elements loaded', originalLoginElement[0], originalRegisterElement[0], originalTextElement[0]);
+      console.log('All elements loaded', originalLoginElement[0], originalRegisterElement[0], originalTextElement[0], originalPayPalElement[0]);
 
       handleOriginalLoginElement(originalLoginElement[0]);
 
       handleOriginalRegisterElement(originalRegisterElement[0]);
 
       handleOriginalTextElement(originalTextElement[0]);
+
+      handleOriginalPayPalElement(originalPayPalElement[0]);
 
       addStyles(styles);
 

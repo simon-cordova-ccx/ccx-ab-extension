@@ -108,7 +108,9 @@ function injectScript(scriptData, callback) {
   try {
     const script = document.createElement("script");
     if (scriptData.type === "file" && scriptData.src) {
-      script.src = chrome.runtime.getURL(scriptData.src);
+      // Ensure fresh script by appending timestamp
+      const src = scriptData.src.includes('?') ? `${scriptData.src}&t=${Date.now()}` : `${scriptData.src}?t=${Date.now()}`;
+      script.src = chrome.runtime.getURL(src);
       script.onload = () => {
         console.log(`✅ Script ${scriptData.src} injected successfully`);
         script.remove();

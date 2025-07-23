@@ -2,6 +2,9 @@ import { minify } from 'terser';
 
 console.log("CCX AB Extension popup initialized at", new Date().toISOString());
 
+// Define IS_DEV with fallback
+const IS_DEV = typeof __IS_DEV__ !== 'undefined' ? __IS_DEV__ : false;
+
 document.addEventListener("DOMContentLoaded", () => {
   const abToolSelect = document.getElementById("ab-tool");
   const clientSelect = document.getElementById("client");
@@ -10,6 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const injectButton = document.getElementById("inject-button");
   const copyButton = document.getElementById("copy-button");
   const statusDiv = document.getElementById("status");
+  const hotReloadStatus = document.getElementById("hot-reload-status");
+  const reinjectButton = document.getElementById("reinject-button");
+  const hotReloadToggle = document.getElementById("hot-reload-toggle");
+
+  // Hide dev-only elements in production
+  if (!IS_DEV) {
+    hotReloadToggle.parentElement.style.display = 'none';
+    reinjectButton.style.display = 'none';
+    hotReloadStatus.style.display = 'none';
+  }
 
   // Static folder structure
   const folderStructure = {
@@ -53,8 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             name: 'oz18',
             scripts: [
-              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz18/v1.js' } },
-              // { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de1/v1.js' } }
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz18/v1.js' } }
             ]
           },
           {
@@ -81,11 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Load client configuration
-    async function loadConfig() {
-    console.log("Loading client configuration...");
+  async function loadConfig() {
     try {
       const response = await fetch(chrome.runtime.getURL("scripts/config.json"));
-      console.log("Received response:", response);
       if (!response.ok) {
         throw new Error(`Failed to load config: ${response.statusText}`);
       }
@@ -135,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (matchedClient && clientSelect.querySelector(`option[value="${matchedClient}"]`)) {
         console.log(`Pre-selecting client: ${matchedClient}`);
         clientSelect.value = matchedClient;
-        // Trigger change event to populate test dropdown
         const event = new Event("change");
         clientSelect.dispatchEvent(event);
       } else {
@@ -150,12 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle client selection
   clientSelect.addEventListener("change", () => {
-    console.log("Client selection changed:", clientSelect.value);
     const selectedClient = clientSelect.value;
     testSelect.innerHTML = '<option value="">Select Test</option>';
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
     copyButton.disabled = true;
+    reinjectButton.disabled = true;
     if (selectedClient) {
       const client = folderStructure.clients.find(c => c.name === selectedClient);
       if (client) {
@@ -176,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scriptSelect.innerHTML = '<option value="">Select Script</option>';
     injectButton.disabled = true;
     copyButton.disabled = true;
+    reinjectButton.disabled = true;
     if (selectedClient && selectedTest) {
       const client = folderStructure.clients.find(c => c.name === selectedClient);
       const test = client.tests.find(t => t.name === selectedTest);
@@ -195,33 +205,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const hasSelection = abToolSelect.value && scriptSelect.value;
     injectButton.disabled = !hasSelection;
     copyButton.disabled = !scriptSelect.value;
+    reinjectButton.disabled = !scriptSelect.value;
   });
 
   // Auto-select detected tool and check for multiple tools
   chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
     const detectedTools = data.detectedTools || [];
-    let toolToSelect = data.preferredTool || "";
-    if (!toolToSelect && detectedTools.length > 0) {
-      toolToSelect = detectedTools[0]; // Fallback to first detected tool
-    }
-    if (toolToSelect && abToolSelect.querySelector(`option[value="${toolToSelect}"]`)) {
-      console.log(`Auto-selecting tool: ${toolToSelect}`);
-      abToolSelect.value = toolToSelect;
+    const preferredTool = data.preferredTool || "";
+    if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
+      console.log(`Auto-selecting preferred tool: ${preferredTool}`);
+      abToolSelect.value = preferredTool;
       if (detectedTools.length > 1) {
-        const otherTools = detectedTools.filter(tool => tool !== toolToSelect);
-        statusDiv.textContent = `${toolToSelect} detected. Warning: Other tools (${otherTools.join(", ")}) also present.`;
+        const otherTools = detectedTools.filter(tool => tool !== preferredTool);
+        statusDiv.textContent = `${preferredTool} detected. Warning: Other tools (${otherTools.join(", ")}) also present. Please select a script.`;
         statusDiv.className = "warning";
       } else {
-        statusDiv.textContent = `${toolToSelect} detected. Please select a script.`;
+        statusDiv.textContent = `${preferredTool} detected. Please select a script.`;
         statusDiv.className = "";
       }
       injectButton.disabled = !scriptSelect.value;
       copyButton.disabled = !scriptSelect.value;
+      reinjectButton.disabled = !scriptSelect.value;
     } else {
-      console.log("No tool to select");
+      console.log("No detected tool found in storage");
       injectButton.disabled = true;
       copyButton.disabled = true;
+      reinjectButton.disabled = true;
       statusDiv.textContent = "Please select an A/B testing tool.";
+      statusDiv.className = "";
     }
   });
 
@@ -237,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
           statusDiv.className = "error";
           injectButton.disabled = true;
           copyButton.disabled = true;
+          reinjectButton.disabled = true;
           return;
         }
         console.log(`Sending detectTool message to tab ${tabs[0].id}`);
@@ -247,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
             statusDiv.className = "error";
             injectButton.disabled = true;
             copyButton.disabled = true;
+            reinjectButton.disabled = true;
             return;
           }
           console.log("Received response:", response);
@@ -267,9 +280,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             injectButton.disabled = !scriptSelect.value;
             copyButton.disabled = !scriptSelect.value;
+            reinjectButton.disabled = !scriptSelect.value;
           } else {
             injectButton.disabled = true;
             copyButton.disabled = true;
+            reinjectButton.disabled = true;
             statusDiv.textContent = `${selectedTool} not found on this page.`;
             statusDiv.className = "error";
           }
@@ -278,6 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       injectButton.disabled = true;
       copyButton.disabled = true;
+      reinjectButton.disabled = true;
       statusDiv.textContent = "Please select an A/B testing tool.";
       statusDiv.className = "";
     }
@@ -285,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle inject button click
   injectButton.addEventListener("click", () => {
-    console.log("Inject button clicked");
     const selectedTool = abToolSelect.value;
     const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
     console.log(`Injecting script for ${selectedTool}:`, selectedScript);
@@ -302,13 +317,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // --- Store auto-inject selection here ---
+      // Store auto-inject selection and last injected script
       chrome.storage.local.set({
         autoInject: {
           tool: selectedTool,
           scriptData: selectedScript,
-          url: tabs[0].url // or use a pattern if you want
-        }
+          url: tabs[0].url
+        },
+        lastInjectedScript: selectedScript
       });
 
       chrome.tabs.sendMessage(tabs[0].id, { action: "injectScript", tool: selectedTool, scriptData: selectedScript }, (response) => {
@@ -330,9 +346,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Handle reinject button click
+  reinjectButton.addEventListener('click', () => {
+    chrome.storage.local.get('lastInjectedScript', (data) => {
+      if (data.lastInjectedScript) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              action: 'injectScript',
+              tool: abToolSelect.value,
+              scriptData: { ...data.lastInjectedScript, src: `${data.lastInjectedScript.src}?t=${Date.now()}` }
+            }, (response) => {
+              if (response?.success) {
+                statusDiv.textContent = 'Script re-injected successfully!';
+                statusDiv.className = '';
+              } else {
+                statusDiv.textContent = `Re-injection failed: ${response?.error || 'Unknown error'}`;
+                statusDiv.className = 'error';
+              }
+            });
+          }
+        });
+      } else {
+        statusDiv.textContent = 'No script previously injected.';
+        statusDiv.className = 'error';
+      }
+    });
+  });
+
   // Handle copy button click
   copyButton.addEventListener("click", async () => {
-    console.log("Copy button clicked");
     const selectedScript = scriptSelect.value ? JSON.parse(scriptSelect.value) : null;
     if (!selectedScript || selectedScript.type !== "file" || !selectedScript.src) {
       statusDiv.textContent = "Error: No valid script selected.";
@@ -363,5 +406,18 @@ document.addEventListener("DOMContentLoaded", () => {
       statusDiv.textContent = `Error: Failed to copy script - ${error.message}`;
       statusDiv.className = "error";
     }
+  });
+
+  // Listen for status updates from background
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'updateStatus') {
+      hotReloadStatus.textContent = request.message;
+      hotReloadStatus.className = request.className;
+    }
+  });
+
+  // Toggle hot reloading
+  hotReloadToggle.addEventListener('change', () => {
+    chrome.storage.local.set({ hotReloadEnabled: hotReloadToggle.checked });
   });
 });

@@ -7,7 +7,8 @@
     "build": "npm run clean && npm run copy && npm run bundle",
     "clean": "rm -rf dist && mkdir dist",
     "copy": "cp -r icons popup scripts manifest.json dist/ && find dist/ -name '.DS_Store' -delete",
-    "bundle": "rollup -c"
+    "bundle": "rollup -c",
+    "dev": "NODE_ENV=development rollup -c --watch"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,11 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "rollup": "^4.44.1"
+    "@rollup/plugin-replace": "^6.0.1",
+    "chokidar": "^4.0.3",
+    "rollup": "^4.44.1",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-serve": "^3.0.0",
+    "ws": "^8.18.3"
   }
 }
