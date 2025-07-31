@@ -88,6 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
           }
         ]
+      },
+      {
+        name: 'theoutnet',
+        tests: [
+          {
+            name: 'web-00716',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/theoutnet/registration/v1.js' } }
+            ]
+          }
+        ]
       }
     ]
   };

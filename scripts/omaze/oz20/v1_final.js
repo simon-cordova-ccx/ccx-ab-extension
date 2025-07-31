@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZ20 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = FACEBOOK";
 const VARIATION = "VARIATION 1";
@@ -100,35 +100,35 @@ const setExclusiveOfferText = () => {
 }
 
 const desktopChanges = () => {
-  console.log('desktopChanges function started');
+  // console.log('desktopChanges function started');
 
-  if (!document) {
-    console.log('document is not available');
+  if (!document.querySelector('#enter-now-legacy-design')) {
+    // console.log('document is not available');
     return;
   }
 
-  console.log('document is available');
+  // console.log('document is available');
 
   const faceBookDesktopCards = document.querySelectorAll('#enter-now-legacy-design [data-test="desktop-card-variant-payg"]');
 
-  console.log('faceBookDesktopCards:', faceBookDesktopCards);
+  // console.log('faceBookDesktopCards:', faceBookDesktopCards);
 
   if (!faceBookDesktopCards) {
-    console.log('faceBookDesktopCards is empty');
+    // console.log('faceBookDesktopCards is empty');
     return;
   }
 
-  console.log('faceBookDesktopCards is not empty');
+  // console.log('faceBookDesktopCards is not empty');
 
   faceBookDesktopCards.forEach((card, index) => {
-    console.log('Processing card:', index);
+    // console.log('Processing card:', index);
 
     if (!card) {
-      console.log('card is not available');
+      // console.log('card is not available');
       return;
     }
 
-    console.log('card is available');
+    // console.log('card is available');
 
     const subscriptionCard15 = document.querySelector('#enter-now-legacy-design .draw-entry-cards #social-sub-card-15');
     const topContainer = card.querySelector('.flex.flex-col.items-center');
@@ -138,12 +138,12 @@ const desktopChanges = () => {
     const tagElement = card.querySelector('[data-test="entry-count"] + div');
     const priceElement = card.querySelector('[data-test="price"]');
 
-    console.log('button:', button);
-    console.log('strikeThrough:', strikeThrough);
-    console.log('entryCountElement:', entryCountElement);
-    console.log('tagElement:', tagElement);
-    console.log('priceElement:', priceElement);
-    console.log('topContainer:', topContainer);
+    // console.log('button:', button);
+    // console.log('strikeThrough:', strikeThrough);
+    // console.log('entryCountElement:', entryCountElement);
+    // console.log('tagElement:', tagElement);
+    // console.log('priceElement:', priceElement);
+    // console.log('topContainer:', topContainer);
 
 
     if (subscriptionCard15) {
@@ -156,19 +156,19 @@ const desktopChanges = () => {
       if (subscriptionCardButton) {
         const subscriptionCardButtonSpan = subscriptionCardButton.querySelector('.btn-text');
         if (subscriptionCardButtonSpan) {
-          console.log('Setting subscriptionCardButtonSpan text to "Buy Now"');
+          // console.log('Setting subscriptionCardButtonSpan text to "Buy Now"');
           subscriptionCardButtonSpan.textContent = 'Buy Now';
         } else {
-          console.log('subscriptionCardButtonSpan not found');
+          // console.log('subscriptionCardButtonSpan not found');
         }
       } else {
-        console.log('subscriptionCardButton not found');
+        // console.log('subscriptionCardButton not found');
       }
 
       const subscriptionCardEntryContainer = subscriptionCard15.querySelector('[data-test="entry-count"]');
-      console.log('subscriptionCardEntryContainer:', subscriptionCardEntryContainer);
+      // console.log('subscriptionCardEntryContainer:', subscriptionCardEntryContainer);
       const subscriptionCardTagContainerElement = subscriptionCardEntryContainer.nextElementSibling;
-      console.log('subscriptionCardTagContainerElement:', subscriptionCardTagContainerElement);
+      // console.log('subscriptionCardTagContainerElement:', subscriptionCardTagContainerElement);
       if (subscriptionCardTagContainerElement) {
         const subscriptionCardTagText = subscriptionCardTagContainerElement.querySelector('.text-white');
         if (subscriptionCardTagText) {
@@ -178,7 +178,7 @@ const desktopChanges = () => {
 
 
     } else {
-      console.log('subscriptionCard15 not found');
+      // console.log('subscriptionCard15 not found');
     }
 
     if (topContainer) {
@@ -186,60 +186,71 @@ const desktopChanges = () => {
     }
 
     if (button) {
-      console.log('Removing data-discount-code attribute from button');
+      // console.log('Removing data-discount-code attribute from button');
       button.removeAttribute('data-discount-code');
-      console.log(button);
+      // console.log(button);
       const buttonText = button.querySelector('.btn-text');
       if (buttonText) {
-        console.log('Setting button text to "Buy Now"');
+        // console.log('Setting button text to "Buy Now"');
         buttonText.textContent = 'Buy Now';
       }
     }
 
     if (entryCountElement) {
-      console.log('Setting font-size to 20px on entryCountElement');
+      // console.log('Setting font-size to 20px on entryCountElement');
       entryCountElement.setAttribute('style', 'font-size: 20px !important');
     }
 
     if (strikeThrough) {
-      console.log('Removing strikeThrough element');
+      // console.log('Removing strikeThrough element');
       strikeThrough.remove();
     }
 
     if (tagElement) {
-      console.log('Hiding tagElement');
+      // console.log('Hiding tagElement');
       tagElement.style.visibility = 'hidden';
     }
 
     if (priceElement) {
-      console.log('Price element found:', priceElement);
-      console.log('Price element text content:', priceElement.textContent.trim());
+      // console.log('Price element found:', priceElement);
+      // console.log('Price element text content:', priceElement.textContent.trim());
       const priceText = priceElement.textContent.trim();
       const priceNumber = priceText.replace('£', '');
 
-      console.log('priceNumber:', priceNumber);
+      // console.log('priceNumber:', priceNumber);
 
       if (priceNumber === '45') {
-        console.log('Price text is £45');
+        // console.log('Price text is £45');
         priceElement.textContent = '£50';
       }
 
       if (priceNumber === '25') {
-        console.log('Price text is £25');
+        // console.log('Price text is £25');
         priceElement.textContent = '£30';
       }
 
       if (priceNumber === '10') {
-        console.log('Price text is £10');
+        // console.log('Price text is £10');
         priceElement.textContent = '£15';
       }
     }
   });
+
+  const desktopSubCard25 = document.querySelector('#enter-now-legacy-design #social-sub-card-25');
+  if (desktopSubCard25) {
+    desktopSubCard25.setAttribute('style', 'display: none !important;');
+  }
+
+  const desktopSubCard145 = document.querySelector('#enter-now-legacy-design .draw-entry-cards > div > div:nth-child(1)');
+  if (desktopSubCard145) {
+    desktopSubCard145.setAttribute('style', 'display: none !important;');
+  }
+
 }
 
 const mobileChanges = () => {
   const legacyDesignContainer = document.querySelector('#enter-now-legacy-design');
-  console.log('legacyDesignContainer:', legacyDesignContainer);
+  // console.log('legacyDesignContainer:', legacyDesignContainer);
 
   const facebookMobileCards = legacyDesignContainer.querySelectorAll('[data-test="mobile-card-variant-payg"]');
   const subscriptionCard = legacyDesignContainer.querySelector('.draw-entry-cards > div > div:nth-child(10)');
@@ -250,10 +261,10 @@ const mobileChanges = () => {
       card.setAttribute('style', card.getAttribute('style') + '; width: 100% !important; padding: 1rem 1.5rem !important; box-shadow: 0px 2px 4px 0px #0000001A !important;');
 
       const leftSideContainer = card.querySelector('.flex.flex-col.items-start');
-      console.log('Left side container:', leftSideContainer);
+      // console.log('Left side container:', leftSideContainer);
 
       const rightSideContainer = card.querySelector('.flex.flex-col.items-center');
-      console.log('Right side container:', rightSideContainer);
+      // console.log('Right side container:', rightSideContainer);
 
       let entryCountElement;
       let priceElement;
@@ -263,10 +274,10 @@ const mobileChanges = () => {
 
       if (leftSideContainer) {
         entryCountElement = leftSideContainer.querySelector('[data-test="entry-count"]');
-        console.log('Entry count element:', entryCountElement);
+        // console.log('Entry count element:', entryCountElement);
 
         labelContainer = leftSideContainer.querySelector('.flex.justify-center.items-center');
-        console.log('Label container:', labelContainer);
+        // console.log('Label container:', labelContainer);
 
         leftSideContainer.setAttribute('style', leftSideContainer.getAttribute('style') + '; padding: 0 !important; gap: 0 !important; line-height: normal !important; height: 57px !important; justify-content: center !important; align-items: center !important;');
         entryCountElement.setAttribute('style', entryCountElement.getAttribute('style') + '; font-size: 1rem !important;');
@@ -277,7 +288,7 @@ const mobileChanges = () => {
         priceElement.setAttribute('style', priceElement.getAttribute('style') + '; font-size: 2rem !important; color: #081F28 !important;');
 
         strikeThroughElement = rightSideContainer.querySelector('.line-through');
-        console.log('Price element:', priceElement);
+        // console.log('Price element:', priceElement);
 
         button = rightSideContainer.querySelector('.add-to-cart-button');
 
@@ -304,12 +315,12 @@ const mobileChanges = () => {
       }
 
       if (button) {
-        console.log('Button-----:', button);
+        // console.log('Button-----:', button);
         button.removeAttribute('data-discount-code');
         button.setAttribute('style', button.getAttribute('style') + '; font-size: 1rem !important; margin: 0 !important;');
         const btnText = button.querySelector('.btn-text');
         if (btnText) {
-           btnText.textContent = 'Buy Now';
+          btnText.textContent = 'Buy Now';
         }
       }
     });
@@ -323,13 +334,13 @@ const mobileChanges = () => {
     subscriptionCard.setAttribute('style', subscriptionCard.getAttribute('style') + '; width: 100% !important; padding: 1rem 1.5rem !important; box-shadow: 0px 2px 4px 0px #0000001A !important; justify-content: space-between !important;');
 
     const omazeSubscriptionLabel = subscriptionCard.querySelector('div:first-child');
-    console.log('Omaze subscription label:', omazeSubscriptionLabel);
+    // console.log('Omaze subscription label:', omazeSubscriptionLabel);
 
     const omazeSubscriptionLeftContainer = subscriptionCard.querySelector('.flex.flex-col.items-start');
-    console.log('Omaze subscription left container:', omazeSubscriptionLeftContainer);
+    // console.log('Omaze subscription left container:', omazeSubscriptionLeftContainer);
 
     const omazeSubscriptionRightContainer = subscriptionCard.querySelector('.flex.flex-col.items-center');
-    console.log('Omaze subscription right container:', omazeSubscriptionRightContainer);
+    // console.log('Omaze subscription right container:', omazeSubscriptionRightContainer);
 
     if (omazeSubscriptionLeftContainer) {
       omazeSubscriptionLeftContainer.setAttribute('style', omazeSubscriptionLeftContainer.getAttribute('style') + '; margin: 0 !important;');
@@ -354,15 +365,31 @@ const mobileChanges = () => {
   const postalCardLink = legacyDesignContainer.querySelector('[href*=postal-entry]');
   if (postalCardLink) {
     const postalCard = postalCardLink.parentNode;
-    console.log('postal card:', postalCard);
+    // console.log('postal card:', postalCard);
     postalCard.setAttribute('style', postalCard.getAttribute('style') + '; width: 100% !important;');
   }
+
+  // if (CURRENT_URL.includes('cheshire')) {
+  const mobileSubsCard200 = document.querySelector('#enter-now-legacy-design .draw-entry-cards > div > div:nth-child(12)');
+  if (mobileSubsCard200) {
+    mobileSubsCard200.setAttribute('style', mobileSubsCard200.getAttribute('style') + '; display: none !important;');
+  }
+  // }
+
+  // if (CURRENT_URL.includes('cheshire')) {
+  const mobilePAYGCard150 = document.querySelector('#enter-now-legacy-design .draw-entry-cards > div > div:nth-child(2)');
+  if (mobilePAYGCard150) {
+    mobilePAYGCard150.setAttribute('style', mobilePAYGCard150.getAttribute('style') + '; display: none !important;');
+  }
+  // }
+
 }
 
 const SELECTORS = {
   ORIGINAL_CONTAINER: "#enter-now-material-tab-buttons-design",
   SHOPIFY_CONTAINERS: "main .shopify-section > div",
   NAV_BUTTON_FIRST: "#enter-now-material-tab-buttons-design nav button:nth-child(1)",
+  ENTER_NOW_LEGACY_DESIGN: '#enter-now-legacy-design'
 };
 
 const showCorrectContainer = (containerToShow) => {
@@ -405,8 +432,6 @@ const showCorrectContainer = (containerToShow) => {
       }
     });
 
-    applyVariationChanges(correctContainer);
-
   } else {
     customLog('[showCorrectContainer] No Shopify containers found');
   }
@@ -436,6 +461,8 @@ async function init() {
     desktopChanges();
 
     mobileChanges();
+
+    showCorrectContainer(SELECTORS.ENTER_NOW_LEGACY_DESIGN);
 
   } catch (error) {
     console.warn('[init] Error waiting for elements:', error);

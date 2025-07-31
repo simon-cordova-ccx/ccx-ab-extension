@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 
 const styles = `
   #enter-now-legacy-design post-order-discount-banner + div {
@@ -57,7 +57,7 @@ const addStyles = (css) => {
 
 const mobileChanges = () => {
   const legacyDesignContainer = document.querySelector('#enter-now-legacy-design');
-  console.log('legacyDesignContainer:', legacyDesignContainer);
+  // console.log('legacyDesignContainer:', legacyDesignContainer);
 
   if (!legacyDesignContainer) return;
 
@@ -79,10 +79,10 @@ const mobileChanges = () => {
     subscriptionCard.setAttribute('style', subscriptionCard.getAttribute('style') + '; width: 100% !important; padding: 1rem 1.5rem !important; box-shadow: 0px 2px 4px 0px #0000001A !important; justify-content: space-between !important;');
 
     const omazeSubscriptionLeftContainer = subscriptionCard.querySelector('.flex.flex-col.items-start');
-    console.log('Omaze subscription left container:', omazeSubscriptionLeftContainer);
+    // console.log('Omaze subscription left container:', omazeSubscriptionLeftContainer);
 
     const omazeSubscriptionRightContainer = subscriptionCard.querySelector('.flex.flex-col.items-center');
-    console.log('Omaze subscription right container:', omazeSubscriptionRightContainer);
+    // console.log('Omaze subscription right container:', omazeSubscriptionRightContainer);
 
     if (omazeSubscriptionLeftContainer) {
       omazeSubscriptionLeftContainer.setAttribute('style', omazeSubscriptionLeftContainer.getAttribute('style') + '; margin: 0 !important;');
@@ -100,8 +100,66 @@ const mobileChanges = () => {
   const postalCardLink = legacyDesignContainer.querySelector('[href*=postal-entry]');
   if (postalCardLink) {
     const postalCard = postalCardLink.parentNode;
-    console.log('postal card:', postalCard);
+    // console.log('postal card:', postalCard);
     postalCard.setAttribute('style', postalCard.getAttribute('style') + '; width: 100% !important;');
+  }
+
+  // new amends
+  const mobileSubCard25 = document.querySelector('#enter-now-legacy-design .draw-entry-cards > div > div:nth-child(12)');
+  if (mobileSubCard25) {
+    mobileSubCard25.setAttribute('style', mobileSubCard25.getAttribute('style') + '; width: 100% !important; justify-content: space-between !important;');
+  }
+}
+
+const SELECTORS = {
+  ORIGINAL_CONTAINER: "#enter-now-material-tab-buttons-design",
+  SHOPIFY_CONTAINERS: "main .shopify-section > div",
+  NAV_BUTTON_FIRST: "#enter-now-material-tab-buttons-design nav button:nth-child(1)",
+  ENTER_NOW_LEGACY_DESIGN: '#enter-now-legacy-design'
+};
+
+const showCorrectContainer = (containerToShow) => {
+  // customLog('[showCorrectContainer] Starting function');
+
+  const shopifySectionContainers = document.querySelectorAll(SELECTORS.SHOPIFY_CONTAINERS);
+
+  const correctContainer = document.querySelector(containerToShow);
+
+  if (!correctContainer) {
+    customLog('[showCorrectContainer] ERROR: correctContainer not found');
+    throw new Error('correctContainer not found');
+  }
+
+
+  // customLog('[showCorrectContainer] Found Shopify containers:', shopifySectionContainers);
+
+  if (shopifySectionContainers && shopifySectionContainers.length > 0) {
+    // customLog('[showCorrectContainer] Shopify containers found:', shopifySectionContainers.length);
+
+    shopifySectionContainers.forEach(shopifyContainer => {
+
+      // if the shopifyContainer has an id
+      if (shopifyContainer.id) {
+        // customLog('[showCorrectContainer]', 'ID:', shopifyContainer.id);
+
+        // add class d-none to the shopifyContainer
+        shopifyContainer.classList.add('d-none');
+        shopifyContainer.setAttribute('style', 'display: none !important;');
+
+        // customLog('[showCorrectContainer] Added d-none class and style to container');
+
+        // customLog('[showCorrectContainer] Found original main container:', correctContainer);
+
+        correctContainer.classList.remove('d-none');
+        correctContainer.setAttribute('style', 'display: block !important;');
+
+        // customLog('[showCorrectContainer] Removed d-none class and added style to original main container');
+
+      }
+    });
+
+  } else {
+    customLog('[showCorrectContainer] No Shopify containers found');
   }
 }
 
@@ -121,6 +179,8 @@ async function init() {
     addStyles(styles);
 
     mobileChanges();
+
+    showCorrectContainer(SELECTORS.ENTER_NOW_LEGACY_DESIGN);
 
   } catch (error) {
     console.warn('[init] Error waiting for elements:', error);

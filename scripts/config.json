@@ -19,6 +19,11 @@
       "client": "allclear",
       "preferredTool": "abtasty",
       "urlPattern": "allcleartravel.co.uk"
+    },
+    {
+      "client": "theoutnet",
+      "preferredTool": "optimizely",
+      "urlPattern": "https://www.theoutnet.com"
     }
   ]
 }
