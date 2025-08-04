@@ -7,7 +7,7 @@
 
 // /shop and /shop/mens
 
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 
 const TEST_META = {
   NUMBER: "web00716",
@@ -226,19 +226,68 @@ const addVariationChanges = (container) => {
   fullWidthContainer.appendChild(buttonContainer);
 
   // Sign In button
-  const signInLink = document.createElement("a");
+  const signInLink = document.createElement("button");
   signInLink.classList.add('ccx-button', 'ccx-button_login');
   signInLink.textContent = signInText;
   signInLink.href = `https://www.theoutnet.com/${regionLang}/account/login`;
   buttonContainer.appendChild(signInLink);
 
   // Register button
-  const registerLink = document.createElement("a");
+  const registerLink = document.createElement("button");
   registerLink.classList.add('ccx-button', 'ccx-button_register');
   registerLink.textContent = registerText;
   registerLink.href = `https://www.theoutnet.com/${regionLang}/account/register`;
   buttonContainer.appendChild(registerLink);
 };
+
+const attachEventListeners = function () {
+  customLog("🎯 Attaching event listeners...");
+  const logInButton = document.querySelector('.ccx-button_login');
+  if (logInButton) {
+    logInButton.addEventListener('click', () => {
+      customLog("🎯 Clicked log in button");
+
+      window['optimizely'] = window['optimizely'] || [];
+      window['optimizely'].push({
+        type: "event",
+        eventName: "web-00716_login"
+      });
+    });
+  } else {
+    customLog("❌ Log in button not found.");
+  }
+
+  const registerButton = document.querySelector('.ccx-button_register');
+  if (registerButton) {
+    registerButton.addEventListener('click', () => {
+      customLog("🎯 Clicked register button");
+
+      window['optimizely'] = window['optimizely'] || [];
+      window['optimizely'].push({
+        type: "event",
+        eventName: "web-00716_register"
+      });
+    });
+  } else {
+    customLog("❌ Register button not found.");
+  }
+};
+
+const insersectElements = (element) => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        observer.unobserve(entry.target);
+        entry.target.classList.add('ccx-inview');
+        customLog("🎯 Element in view:", entry.target);
+      } else {
+        customLog("🎯 Element out of view:", entry.target);
+      }
+    });
+  });
+
+  observer.observe(element);
+}
 
 const init = function () {
   try {
@@ -258,9 +307,10 @@ const init = function () {
     // Wait for the JUST IN element to appear in the DOM, then apply the changes
     utils.waitForElement(SELECTORS.CONTAINER_JUST_IN).then(function (containerJustIn) {
       const justInParentTopLevelContainer = containerJustIn.parentNode.parentNode.parentNode;
-      addVariationChanges(justInParentTopLevelContainer);
-
       addStyles(styles);
+      addVariationChanges(justInParentTopLevelContainer);
+      attachEventListeners();
+      insersectElements(justInParentTopLevelContainer);
     });
 
     customLog("🎉 INIT COMPLETE");

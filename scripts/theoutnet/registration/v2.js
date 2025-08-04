@@ -234,6 +234,39 @@ const addVariationChanges = (container) => {
   buttonContainer.appendChild(registerLink);
 };
 
+const attachEventListeners = function () {
+  customLog("🎯 Attaching event listeners...");
+  const logInButton = document.querySelector('.ccx-button_login');
+  if (logInButton) {
+    logInButton.addEventListener('click', () => {
+      customLog("🎯 Clicked log in button");
+
+      window['optimizely'] = window['optimizely'] || [];
+      window['optimizely'].push({
+        type: "event",
+        eventName: "web-00716_login"
+      });
+    });
+  } else {
+    customLog("❌ Log in button not found.");
+  }
+
+  const registerButton = document.querySelector('.ccx-button_register');
+  if (registerButton) {
+    registerButton.addEventListener('click', () => {
+      customLog("🎯 Clicked register button");
+
+      window['optimizely'] = window['optimizely'] || [];
+      window['optimizely'].push({
+        type: "event",
+        eventName: "web-00716_register"
+      });
+    });
+  } else {
+    customLog("❌ Register button not found.");
+  }
+};
+
 const init = function () {
   try {
     customLog("🚀 INIT STARTED");
@@ -252,9 +285,9 @@ const init = function () {
     // Wait for the JUST IN element to appear in the DOM, then apply the changes
     utils.waitForElement(SELECTORS.CONTAINER_JUST_IN).then(function (containerJustIn) {
       const justInParentTopLevelContainer = containerJustIn.parentNode.parentNode.parentNode;
-      addVariationChanges(justInParentTopLevelContainer);
-
       addStyles(styles);
+      addVariationChanges(justInParentTopLevelContainer);
+    attachEventListeners();
     });
 
     customLog("🎉 INIT COMPLETE");
