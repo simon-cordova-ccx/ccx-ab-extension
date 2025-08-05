@@ -1,11 +1,17 @@
 // TODO: NEED TO ADD LINKS FOR THE BUTTONS
 // const URL_PATTERN = /^https:\/\/www\.theoutnet\.com\/(en-gb|en-au|de-de|en-de|en-be|fr-fr|ar-ae|it-it|ja-jp|ko-kr|zh-cn)\/shop(?:\/mens)?\/?$/;
 
-const LOG_ENABLED = false;
+// TODO: NEED TO SEND ATTRIBUTES WHEN:
+//  CONTROL REACHES THE JUST IN SECTION
+//  VARIANTS REACH THE VARIATION CHANGES
+
+// /shop and /shop/mens
+
+const LOG_ENABLED = true;
 
 const TEST_META = {
   NUMBER: "web00716",
-  VARIATION: "VARIATION 1",
+  VARIATION: "variation-2",
 };
 
 const SELECTORS = {
@@ -14,18 +20,27 @@ const SELECTORS = {
 
 const styles = `
 .ccx-login-container {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f6c2;
-    width: calc(100% - 64px + 24px);
-    text-align: center;
-    margin: 0 auto;
-    padding: 32px 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem;
+  width: calc(100% - 2rem);
+  margin: 0 auto;
+  margin-top: 4rem;
+  background: #f9f6c2;
+  font-family: 'TheOutnetWebXL';
+}
+
+@media (min-width: 768px) {
+    .ccx-login-container {
+      width: calc(100% - 4rem);
+    }
 }
 
 .ccx-login-container h1 {
+    font-family: 'TheOutnetWebXL';
     font-weight: 400;
     font-size: 24px;
     line-height: 25px;
@@ -33,7 +48,7 @@ const styles = `
 }
 
 .ccx-login-container p {
-    font-family: THE OUTNET;
+    font-family: 'TheOutnetWebXL';
     font-weight: 400;
     font-size: 16px;
     line-height: 22px;
@@ -42,7 +57,6 @@ const styles = `
 
 .ccx-button-container {
     display: flex;
-    flex-wrap: wrap;
     gap: 1rem;
     font-size: 1rem;
     width: 100%;
@@ -50,7 +64,7 @@ const styles = `
 }
 
 .ccx-button {
-    font-family: THE OUTNET;
+    font-family: 'TheOutnetWebXL';
     font-weight: 400;
     font-size: 16px;
     line-height: 16px;
@@ -94,47 +108,36 @@ const styles = `
 }
 `;
 
-// Language map
 const languageContent = {
-  en: {
-    h1: "Sign in or register now",
-    p: "Enter your account to enjoy exclusive benefits and experiences",
-    or: "or"
+  "EN": {
+    "Main_copy": "SIGN IN OR REGISTER NOW",
+    "Supporting_copy": "Enter your details to create your wishlist, track orders and enjoy birthday surprises! <strong>If you are a VIP</strong>, you will also see early access to the best new arrivals, exclusive promos, and more.",
+    "Sign_in_CTA": "Sign In",
+    "Register_CTA": "Register"
   },
-  fr: {
-    h1: "Identifiez-vous ou inscrivez-vous dès maintenant",
-    p: "Connectez-vous à votre compte pour bénéficier d'expériences et avantages exclusifs",
-    or: "ou"
+  "AR": {
+    "Main_copy": "تسجيل الدخول أو تسجيل حساب جديد الآن",
+    "Supporting_copy": "أدخل بياناتك لإنشاء قائمة أمنياتك وتتبع الطلبات والاستمتاع بمفاجآت عيد الميلاد! إذا كنت من العملاء المميزين، ستتمتع أيضًا بإمكانية الوصول المبكر إلى أفضل المنتجات الجديدة والعروض الترويجية الحصرية وغير ذلك المزيد.",
+    "Sign_in_CTA": "تسجيل الدخول",
+    "Register_CTA": "تسجيل حساب جديد"
   },
-  de: {
-    h1: "Jetzt anmelden oder registrieren",
-    p: "In Ihrem Konto warten exklusive Vorteile und Erlebnisse auf Sie",
-    or: "oder"
+  "DE": {
+    "Main_copy": "JETZT ANMELDEN ODER REGISTRIEREN",
+    "Supporting_copy": "Geben Sie Ihre Daten ein und kreieren Sie Ihre Wish List, verfolgen Sie Ihre Bestellungen und lassen Sie sich zu Ihrem Geburtstag überraschen! <strong>Wenn Sie zu den VIPs gehören</strong>, erhalten Sie zudem einen vorzeitigen Zugang zu den besten Neuheiten, exklusiven Promos, und vieles mehr.",
+    "Sign_in_CTA": "Anmelden",
+    "Register_CTA": "Registrieren"
   },
-  ar: {
-    h1: "سجلي الدخول أو أنشئي حساب جديد الآن",
-    p: "أدخلي إلى حسابك لتستمتعي بالمزايا والتجارب الحصرية",
-    or: "أو"
+  "JA": {
+    "Main_copy": "サインイン/新規登録",
+    "Supporting_copy": "アカウントではご注文履歴の確認やウィッシュリストの作成ができるほか、お客様のバースデーにはサプライズもご用意しています。<strong>VIPのお客様は</strong>、新入荷アイテムやプロモーションへ先行でアクセスしていただけます。",
+    "Sign_in_CTA": "サインイン",
+    "Register_CTA": "新規登録"
   },
-  it: {
-    h1: "Accedi o registrati ora",
-    p: "Accedi al tuo account per scoprire vantaggi ed esperienze esclusive",
-    or: "o"
-  },
-  ja: {
-    h1: "サインインまたはアカウント新規登録",
-    p: "サインインして、特典満載のショッピング体験をお楽しみください",
-    or: "または"
-  },
-  ko: {
-    h1: "로그인 또는 계정 등록",
-    p: "고객님의 계정으로 특별한 혜택과 쇼핑을 경험하세요.",
-    or: "또는"
-  },
-  zh: {
-    h1: "登录/注册",
-    p: "即刻登入账号,享受独家福利与丝滑体验",
-    or: "/"
+  "KO": {
+    "Main_copy": "로그인 또는 회원 가입",
+    "Supporting_copy": "위시리스트를 만들거나 계정에서 주문 현황을 확인하고, 생일에는 서프라이즈 혜택을 즐겨보세요. 또한 <strong>VIP 회원</strong>은 신상품과 프로모션을 가장 먼저 만나보실 수 있습니다.",
+    "Sign_in_CTA": "로그인",
+    "Register_CTA": "회원 가입"
   }
 };
 
@@ -194,10 +197,9 @@ const addVariationChanges = (container) => {
   // Extract region-language and base language
   const regionLangMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})\//i);
   const regionLang = regionLangMatch ? regionLangMatch[1] : 'en-gb';
-  const baseLang = regionLang.split('-')[0];
+  const baseLang = regionLang.split('-')[0].toUpperCase();
 
-  const content = languageContent[baseLang] || languageContent['en'];
-  const [signInText, registerText] = content.h1.split(content.or).map(part => part.trim());
+  const content = languageContent[baseLang] || languageContent['EN'];
 
   // Create container
   const fullWidthContainer = document.createElement("div");
@@ -206,12 +208,13 @@ const addVariationChanges = (container) => {
 
   // Heading
   const h1Element = document.createElement("h1");
-  h1Element.textContent = content.h1;
+  h1Element.textContent = content.Main_copy;
   fullWidthContainer.appendChild(h1Element);
 
   // Paragraph
   const pElement = document.createElement("p");
-  pElement.textContent = content.p;
+  // pElement.textContent = content.Supporting_copy;
+  pElement.innerHTML = content.Supporting_copy;
   fullWidthContainer.appendChild(pElement);
 
   // Button container
@@ -220,16 +223,16 @@ const addVariationChanges = (container) => {
   fullWidthContainer.appendChild(buttonContainer);
 
   // Sign In button
-  const signInLink = document.createElement("a");
+  const signInLink = document.createElement("button");
   signInLink.classList.add('ccx-button', 'ccx-button_login');
-  signInLink.textContent = signInText;
+  signInLink.textContent = content.Sign_in_CTA;
   signInLink.href = `https://www.theoutnet.com/${regionLang}/account/login`;
   buttonContainer.appendChild(signInLink);
 
   // Register button
-  const registerLink = document.createElement("a");
+  const registerLink = document.createElement("button");
   registerLink.classList.add('ccx-button', 'ccx-button_register');
-  registerLink.textContent = registerText;
+  registerLink.textContent = content.Register_CTA;
   registerLink.href = `https://www.theoutnet.com/${regionLang}/account/register`;
   buttonContainer.appendChild(registerLink);
 };
@@ -241,11 +244,13 @@ const attachEventListeners = function () {
     logInButton.addEventListener('click', () => {
       customLog("🎯 Clicked log in button");
 
-      window['optimizely'] = window['optimizely'] || [];
-      window['optimizely'].push({
+      window.optimizely = window.optimizely || [];
+      window.optimizely.push({
         type: "event",
         eventName: "web-00716_login"
       });
+
+      window.location.href = "https://www.theoutnet.com/en-gb/account/login";
     });
   } else {
     customLog("❌ Log in button not found.");
@@ -256,22 +261,79 @@ const attachEventListeners = function () {
     registerButton.addEventListener('click', () => {
       customLog("🎯 Clicked register button");
 
-      window['optimizely'] = window['optimizely'] || [];
-      window['optimizely'].push({
+      window.optimizely = window.optimizely || [];
+      window.optimizely.push({
         type: "event",
         eventName: "web-00716_register"
       });
+
+      // Extract region-language
+      const regionLangMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})\//i);
+      const regionLang = regionLangMatch ? regionLangMatch[1] : 'en-gb';
+
+      window.location.href = `https://www.theoutnet.com/${regionLang}/account/register`;
     });
   } else {
     customLog("❌ Register button not found.");
   }
 };
 
+const insersectElements = (element) => {
+  window.optimizely = window.optimizely || [];
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      customLog("🎯 Element in view:", element);
+      observer.unobserve(entries[0].target);
+      window.optimizely.push({
+        type: 'user',
+        attributes: {
+          'web-00716': 'reached-section'
+        }
+      });
+    }
+  }, {
+    threshold: 1.0
+  });
+
+  observer.observe(element);
+};
+
+const checkUserSummary = () => {
+  const maxTime = 5000; // 5 seconds
+  const interval = 500; // Check every 500ms
+  const maxAttempts = maxTime / interval;
+  let attempts = 0;
+
+  const pollForUserSummary = () => {
+    if (window.SF && window.SF.getUserSummary) {
+      window.SF.getUserSummary()
+        .then(result => {
+          if (result === null) {
+            console.log("🚫 User summary is null");
+          } else {
+            console.log("🎯 User summary received:", result);
+          }
+        })
+        .catch(error => {
+          console.log("❌ Error calling getUserSummary:", error);
+        });
+    } else if (attempts < maxAttempts) {
+      attempts++;
+      setTimeout(pollForUserSummary, interval);
+    } else {
+      console.log("❌ window.SF.getUserSummary not found after 5 seconds");
+    }
+  };
+
+  pollForUserSummary();
+};
+
 const init = function () {
   try {
     customLog("🚀 INIT STARTED");
 
-    document.body.classList.add("ccx-outnet-web-00716");
+    document.body.classList.add(`ccx-outnet-web-00716-${TEST_META.VARIATION}`);
 
     console.log({ TEST_META });
 
@@ -287,7 +349,9 @@ const init = function () {
       const justInParentTopLevelContainer = containerJustIn.parentNode.parentNode.parentNode;
       addStyles(styles);
       addVariationChanges(justInParentTopLevelContainer);
-    attachEventListeners();
+      attachEventListeners();
+      insersectElements(justInParentTopLevelContainer);
+      checkUserSummary();
     });
 
     customLog("🎉 INIT COMPLETE");

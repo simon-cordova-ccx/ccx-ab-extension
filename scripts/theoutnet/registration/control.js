@@ -11,7 +11,7 @@ const LOG_ENABLED = true;
 
 const TEST_META = {
   NUMBER: "web00716",
-  VARIATION: "CONTROL",
+  VARIATION: "variation-control",
 };
 
 const SELECTORS = {
@@ -44,10 +44,12 @@ const insersectElements = (element) => {
 
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
+      // observer.unobserve(entries[0].target);
+      customLog("🎯 Element in view:", element);
       window.optimizely.push({
         type: 'user',
         attributes: {
-          'web-00716': 'saw-just-in'
+          'web-00716': 'reached-section'
         }
       });
     }
@@ -62,9 +64,9 @@ const init = function () {
   try {
     customLog("🚀 INIT STARTED");
 
-    document.body.classList.add("ccx-outnet-web-00716");
+    document.body.classList.add(`ccx-outnet-web-00716-${TEST_META.VARIATION}`);
 
-    console.log({ TEST_META });
+    console.log('CCX', TEST_META);
 
     const utils = window.optimizely.get('utils');
 
@@ -75,6 +77,7 @@ const init = function () {
 
     // Wait for the JUST IN element to appear in the DOM, then apply the changes
     utils.waitForElement(SELECTORS.CONTAINER_JUST_IN).then(function (containerJustIn) {
+      console.log('containerJustIn', containerJustIn);
       const justInParentTopLevelContainer = containerJustIn.parentNode.parentNode.parentNode;
       insersectElements(justInParentTopLevelContainer);
     });
