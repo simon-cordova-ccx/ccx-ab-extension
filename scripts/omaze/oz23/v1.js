@@ -7,10 +7,10 @@ const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const omaze23Data = {
-    heading: 'Introducing the Omaze Monthly Millionaire ',
-    subHeading: '1 Winner. £1 Million. Guaranteed.',
-    paragraphText: 'Every month, someone will win a life-changing £1,000,000. And that someone could be you. Enjoy 100 monthly entries, automatically included with your subscription from 1st August.',
-    imageURL: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9c509cd86023.jpg',
+  heading: 'Introducing the Omaze Monthly Millionaire ',
+  subHeading: '1 Winner. £1 Million. Guaranteed.',
+  paragraphText: 'Every month, someone will win a life-changing £1,000,000. And that someone could be you. Enjoy 100 monthly entries, automatically included with your subscription from 1st August.',
+  imageURL: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9c509cd86023.jpg',
 }
 
 const selectors = {
@@ -52,6 +52,10 @@ const styles = `
     border-width: 2px;
     margin: 0 auto;
 }
+.ccx-container-desktop-image + div {
+  padding-top: 7rem !important;
+  padding-bottom: 7rem !important;
+}
 .ccx-container-desktop .ccx-cta {
     width: 183px;
     height: 48px;
@@ -68,7 +72,6 @@ const styles = `
     font-size: 18px;
     text-align: center;
     color: #090F15;
-    margin: 0 auto;
 }
 `;
 
@@ -121,65 +124,62 @@ const addStyles = (css) => {
 };
 
 function createMobileContainer(element) {
-    const mobileContainer = document.createElement('div');
-    mobileContainer.className = 'block md:hidden w-full ccx-container-mobile bg-white';
-    mobileContainer.innerHTML = `
-        <div class="sm:px-12 px-6 py-6 ccx-container-mobile-header">
-            <h1 class="ccx-heading">${omaze23Data.heading}</h1>
-        </div>
-        <img src="${omaze23Data.imageURL}" alt="Mobile Image" class="w-full h-48 object-cover ccx-image">
-        <div class="sm:px-12 px-6 py-6 ccx-container-mobile-content">
-            <h2 class="ccx-subheading">${omaze23Data.subHeading}</h2>
-            <p class="ccx-paragraph">${omaze23Data.paragraphText}</p>
-            <button class="ccx-cta">Enter Monthly Millionaire Draw</button>
-        </div>
-    `;
-    element.insertAdjacentElement('afterend', mobileContainer);
+  const mobileContainer = document.createElement('div');
+  mobileContainer.className = 'block md:hidden w-full ccx-container-mobile bg-white';
+  mobileContainer.innerHTML =
+    '<div class="sm:px-12 px-6 py-6 ccx-container-mobile-header">' +
+    '<h1 class="ccx-heading">' + omaze23Data.heading + '</h1>' +
+    '</div>' +
+    '<img src="' + omaze23Data.imageURL + '" alt="Mobile Image" class="w-full h-48 object-cover ccx-image">' +
+    '<div class="sm:px-12 px-6 py-6 ccx-container-mobile-content">' +
+    '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
+    '<p class="ccx-paragraph">' + omaze23Data.paragraphText + '</p>' +
+    '<button class="ccx-cta">Enter Monthly Millionaire Now</button>' +
+    '</div>';
+  element.insertAdjacentElement('afterend', mobileContainer);
 }
 
 function createDesktopContainer(element) {
-    const desktopContainer = document.createElement('div');
-    desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
-    desktopContainer.innerHTML = `
-        <div class="flex w-full mx-auto sm:px-12 px-6 ccx-container-desktop-inner">
-            <div class="w-1/2 ccx-container-desktop-image">
-                <img src="${omaze23Data.imageURL}" alt="Desktop Image" class="w-full h-full object-cover ccx-image">
-            </div>
-            <div class="w-1/2 flex flex-col justify-center ccx-container-desktop-content">
-                <h1 class="ccx-heading">${omaze23Data.heading}</h1>
-                <h2 class="ccx-subheading">${omaze23Data.subHeading}</h2>
-                <p class="ccx-paragraph">${omaze23Data.paragraphText}</p>
-                <button class="ccx-cta">Enter Now</button>
-            </div>
-        </div>
-    `;
-    element.insertAdjacentElement('afterend', desktopContainer);
+  const desktopContainer = document.createElement('div');
+  desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
+  desktopContainer.innerHTML =
+    '<div class="flex w-full mx-auto ccx-container-desktop-inner">' +
+    '<div class="w-1/2 ccx-container-desktop-image">' +
+    '<img src="' + omaze23Data.imageURL + '" alt="Desktop Image" class="w-full h-full object-cover ccx-image">' +
+    '</div>' +
+    '<div class="px-12 py-12 w-1/2 flex flex-col justify-center ccx-container-desktop-content">' +
+    '<h1 class="ccx-heading">' + omaze23Data.heading + '</h1>' +
+    '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
+    '<p class="ccx-paragraph">' + omaze23Data.paragraphText + '</p>' +
+    '<button class="ccx-cta">Enter Now</button>' +
+    '</div>' +
+    '</div>';
+  element.insertAdjacentElement('afterend', desktopContainer);
 }
 
-const waitForElements = async function (elementSelector) {
+function waitForElements(elementSelector) {
   customLog('[waitForElements] Starting to wait for elements...');
 
+  Promise.all([
+    DYO.waitForElementAsync(elementSelector, 1, 100, 150)
+  ])
+    .then(function (results) {
+      const homeCarousel = results[0];
+
+      customLog('Carousel found:', homeCarousel[0]);
+
+      createMobileContainer(homeCarousel[0]);
+      createDesktopContainer(homeCarousel[0]);
+
+      addStyles(styles);
+    })
+    .catch(function (error) {
+      console.warn('[waitForElements] Main nav or site footer not found within timeout.');
+    });
+}
+
+function init() {
   try {
-    const results = await Promise.all([
-      DYO.waitForElementAsync(elementSelector, 1, 100, 150)
-    ]);
-    const homeCarousel = results[0];
-
-    customLog('Carousel found:', homeCarousel[0]);
-
-    createMobileContainer(homeCarousel[0]);
-    createDesktopContainer(homeCarousel[0]);
-
-    addStyles(styles);
-
-  } catch (error) {
-    console.warn('[waitForElements] Main nav or site footer not found within timeout.');
-  }
-};
-
-async function init() {
-  try {
-
     customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
     customLog('[init] Current URL: ' + CURRENT_URL);
     customLog('[init] Environment: ' + ENVIRONMENT);
@@ -188,7 +188,6 @@ async function init() {
     customLog('[init] Added class omaze-oz23-v1 to body');
 
     waitForElements(selectors.SELECTOR_HOME_CAROUSEL);
-
   } catch (error) {
     console.error(error.message);
   }
