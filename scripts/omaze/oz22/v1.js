@@ -1,26 +1,14 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
+const TEST_NAME = "OZ23 | Monthly Millionaire Landing Page";
+const SOURCE_TYPE = "SOURCE = NO SOURCE";
+const VARIATION = "VARIATION 1";
+const CURRENT_URL = window.location.href;
+const IS_STAGING_ENV = CURRENT_URL.includes('staging');
+const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
-const customLog = (...messages) => {
-    if (!LOG_ENABLED) return;
-
-    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
-    const parts = [];
-    const values = [];
-
-    messages.forEach(msg => {
-        if (msg instanceof Element) {
-            parts.push("%o");
-            values.push(msg);
-        } else {
-            // Wrap each text message with %c to apply the style
-            parts.push("%c" + String(msg).toUpperCase());
-            values.push(style);
-        }
-    });
-
-    // Join parts with spaces so the log is more readable
-    console.log(parts.join(" "), ...values);
-};
+const selectors = {
+  SELECTOR_SUBS_FIRST_STEP_BUTTON_NEXT: 'nav[aria-label="Progress"] + div > .next-button',
+}
 
 const styles = `
 .ccx-step-1 .next-button {
@@ -66,6 +54,28 @@ const styles = `
   font-weight: normal !important;
 }
 `;
+
+const customLog = (...messages) => {
+    if (!LOG_ENABLED) return;
+
+    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
+    const parts = [];
+    const values = [];
+
+    messages.forEach(msg => {
+        if (msg instanceof Element) {
+            parts.push("%o");
+            values.push(msg);
+        } else {
+            // Wrap each text message with %c to apply the style
+            parts.push("%c" + String(msg).toUpperCase());
+            values.push(style);
+        }
+    });
+
+    // Join parts with spaces so the log is more readable
+    console.log(parts.join(" "), ...values);
+};
 
 const addStyles = (css) => {
     customLog('[addStyles] Starting the addStyles function...');
@@ -286,7 +296,39 @@ function observeActiveListItems(containerSelector) {
     });
 }
 
-// Example usage: Call this with the container's selector
-observeActiveListItems('nav[aria-label="Progress"]');
+function waitForElements(elementSelector) {
+  customLog('[waitForElements] Starting to wait for elements...');
 
-addStyles(styles);
+  Promise.all([
+    DYO.waitForElementAsync(elementSelector, 1, 100, 150)
+  ])
+    .then(function (results) {
+      const nextButton = results[0];
+
+      customLog('[waitForElements] - SUBS - First step next button found:', nextButton[0]);
+
+      observeActiveListItems('nav[aria-label="Progress"]');
+
+    addStyles(styles);
+    })
+    .catch(function (error) {
+        console.warn('[waitForElements] - SUBS - First step next button NOT found:');
+    });
+}
+
+function init() {
+  try {
+    customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
+    customLog('[init] Current URL: ' + CURRENT_URL);
+    customLog('[init] Environment: ' + ENVIRONMENT);
+
+    document.body.classList.add('omaze-oz22-v1');
+    customLog('[init] Added class omaze-oz22-v1 to body');
+
+    waitForElements(selectors.SELECTOR_SUBS_FIRST_STEP_BUTTON_NEXT);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+init();
