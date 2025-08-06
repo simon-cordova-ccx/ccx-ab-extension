@@ -7,12 +7,11 @@ const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const selectors = {
-    SELECTOR_NAV_LIST: 'nav[aria-label="Progress"] > ol:last-child',
     SELECTOR_SUBS_FIRST_STEP_BUTTON_NEXT: 'nav[aria-label="Progress"] + div > .next-button',
 }
 
 const styles = `
-.ccx-button-container {
+.ccx-step-1 .next-button {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -20,11 +19,6 @@ const styles = `
   width: 100%;
   margin: 0 !important;
   z-index: 9999;
-}
-.ccx-button-container > button.next-button {
-  border-radius: 0 !important;
-  width: 100%;
-  margin: 0 !important;
 }
 
 .ccx-step-2-container {
@@ -117,78 +111,45 @@ function replaceClass(element, oldClass, newClass) {
     }
 }
 
-function createCCXButtonContainer() {
-    let buttonContainer = document.querySelector('.ccx-button-container');
-    if (buttonContainer) return;
-
-    customLog('[createCCXButtonContainer] Creating CCX container...');
-    buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('ccx-button-container');
-    document.body.appendChild(buttonContainer);
-}
-
 function handleHouseDraw() {
     console.log('[handleHouseDraw] Running House Draw specific logic');
 
-    createCCXButtonContainer();
+    const container = document.querySelector('nav[aria-label="Progress"] + div');
 
-    let buttonContainer = document.querySelector('.ccx-button-container');
-    const stepOneButtonNext = document.querySelector('.next-button');
-
-    if (stepOneButtonNext && buttonContainer) {
-        buttonContainer.appendChild(stepOneButtonNext);
+    if (!container) {
+        console.warn('[handleHouseDraw] Container not found');
+        return;
     }
+
+    replaceClass(container, 'ccx-step-1', 'ccx-step-1');
 }
 
-// function handlePrizeBooster() {
-//     console.log('[handlePrizeBooster] Running Prize Booster specific logic');
-
-//     const container = document.querySelector('nav[aria-label="Progress"] + div + div');
-//     console.log('[handlePrizeBooster] Container query result:', container);
-
-//     if (!container) {
-//         console.warn('[handlePrizeBooster] Container not found');
-//         return;
-//     }
-
-//     console.log('[handlePrizeBooster] Replacing class on container...');
-//     replaceClass(container, 'ccx-step-1', 'ccx-step-2');
-//     console.log('[handlePrizeBooster] Class replaced on container');
-
-//     const ccxStepTwoContainer = document.querySelector('.ccx-step-2-container');
-
-//     if (ccxStepTwoContainer) return;
-
-//     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
-//     const buttonContainer = document.createElement('div');
-//     console.log('[handlePrizeBooster] Creating bottom container...');
-//     buttonContainer.classList.add('ccx-step-2-container');
-//     console.log('[handlePrizeBooster] Adding bottom container to DOM...');
-//     container.appendChild(buttonContainer);
-//     console.log('[handlePrizeBooster] Bottom container added to DOM');
-
-//     const buttonPrizeBooster = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button:first-of-type');
-//     console.log('[handlePrizeBooster] Button Prize Booster query result:', buttonPrizeBooster);
-
-//     const buttonNoThanks = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button[type="submit"]');
-//     console.log('[handlePrizeBooster] Button No Thanks query result:', buttonNoThanks);
-
-//     // add the button to the bottom container
-//     console.log('[handlePrizeBooster] Adding buttons to bottom container...');
-//     buttonContainer.appendChild(buttonPrizeBooster);
-//     buttonContainer.appendChild(buttonNoThanks);
-//     console.log('[handlePrizeBooster] Buttons added to bottom container');
-// }
-
 function handlePrizeBooster() {
-    customLog('[handlePrizeBooster] Running Prize Booster specific logic');
-    const nextButton = document.querySelector('.ccx-button-container .next-button');
-    if (nextButton) {
-        nextButton.remove();
+    console.log('[handlePrizeBooster] Running Prize Booster specific logic');
+
+    const container = document.querySelector('nav[aria-label="Progress"] + div + div');
+    console.log('[handlePrizeBooster] Container query result:', container);
+
+    if (!container) {
+        console.warn('[handlePrizeBooster] Container not found');
+        return;
     }
 
-    createCCXButtonContainer();
-    const buttonContainer = document.querySelector('.ccx-button-container');
+    console.log('[handlePrizeBooster] Replacing class on container...');
+    replaceClass(container, 'ccx-step-1', 'ccx-step-2');
+    console.log('[handlePrizeBooster] Class replaced on container');
+
+    const ccxStepTwoContainer = document.querySelector('.ccx-step-2-container');
+
+    if (ccxStepTwoContainer) return;
+
+    // create a container with position fixed, bottom 0, left 0, and add it to the DOM
+    const bottomContainer = document.createElement('div');
+    console.log('[handlePrizeBooster] Creating bottom container...');
+    bottomContainer.classList.add('ccx-step-2-container');
+    console.log('[handlePrizeBooster] Adding bottom container to DOM...');
+    container.appendChild(bottomContainer);
+    console.log('[handlePrizeBooster] Bottom container added to DOM');
 
     const buttonPrizeBooster = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button:first-of-type');
     console.log('[handlePrizeBooster] Button Prize Booster query result:', buttonPrizeBooster);
@@ -198,14 +159,11 @@ function handlePrizeBooster() {
 
     // add the button to the bottom container
     console.log('[handlePrizeBooster] Adding buttons to bottom container...');
-    buttonContainer.appendChild(buttonPrizeBooster);
-    buttonContainer.appendChild(buttonNoThanks);
+    bottomContainer.appendChild(buttonPrizeBooster);
+    bottomContainer.appendChild(buttonNoThanks);
     console.log('[handlePrizeBooster] Buttons added to bottom container');
 }
 
-function handleBonusEntries()  {
-    customLog('[handleBonusEntries] Running Bonus Entries specific logic');
-}
 function handleWeeklyDraw() {
     console.log('[handleWeeklyDraw] Running Weekly Draw specific logic');
 
@@ -227,11 +185,11 @@ function handleWeeklyDraw() {
 
     /////
     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
-    const buttonContainer = document.createElement('div');
+    const bottomContainer = document.createElement('div');
     console.log('[handleWeeklyDraw] Creating bottom container...');
-    buttonContainer.classList.add('ccx-step-2-container');
+    bottomContainer.classList.add('ccx-step-2-container');
     console.log('[handleWeeklyDraw] Adding bottom container to DOM...');
-    container.appendChild(buttonContainer);
+    container.appendChild(bottomContainer);
     console.log('[handleWeeklyDraw] Bottom container added to DOM');
 
     const buttonPrizeBooster = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button:first-of-type');
@@ -242,8 +200,8 @@ function handleWeeklyDraw() {
 
     // add the button to the bottom container
     console.log('[handleWeeklyDraw] Adding buttons to bottom container...');
-    buttonContainer.appendChild(buttonPrizeBooster);
-    buttonContainer.appendChild(buttonNoThanks);
+    bottomContainer.appendChild(buttonPrizeBooster);
+    bottomContainer.appendChild(buttonNoThanks);
     console.log('[handleWeeklyDraw] Buttons added to bottom container');
 }
 
@@ -267,11 +225,11 @@ function handleSummary() {
     if (ccxStepFourContainer) return;
 
     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
-    const buttonContainer = document.createElement('div');
+    const bottomContainer = document.createElement('div');
     console.log('[handleSummary] Creating bottom container...');
-    buttonContainer.classList.add('ccx-step-4-container');
+    bottomContainer.classList.add('ccx-step-4-container');
     console.log('[handleSummary] Adding bottom container to DOM...');
-    container.appendChild(buttonContainer);
+    container.appendChild(bottomContainer);
     console.log('[handleSummary] Bottom container added to DOM');
 
     const buttonCheckout = document.querySelector('.ccx-step-4 button[type="submit"]');
@@ -279,15 +237,12 @@ function handleSummary() {
 
     // add the button to the bottom container
     console.log('[handleSummary] Adding buttons to bottom container...');
-    buttonContainer.appendChild(buttonCheckout);
+    bottomContainer.appendChild(buttonCheckout);
     console.log('[handleSummary] Buttons added to bottom container');
 }
 
 function observeActiveListItems(containerSelector) {
-    customLog("🎯 [observeActiveListItems] called with selector:", containerSelector);
-
     const itemOrder = ['House Draw', 'Prize Booster', 'Weekly Draw', 'Summary'];
-    customLog("[observeActiveListItems] Expected item order:", itemOrder.join(" → "));
 
     const container = document.querySelector(containerSelector);
     if (!container) {
@@ -295,52 +250,41 @@ function observeActiveListItems(containerSelector) {
         return;
     }
 
-    customLog("[observeActiveListItems] Container found:", container);
-
     const listItems = container.querySelectorAll('li.group');
     if (listItems.length === 0) {
         console.warn('[observeActiveListItems] No list items found in container:', containerSelector);
         return;
     }
 
-    customLog(`[observeActiveListItems] Found ${listItems.length} list items.`);
-
+    // Map item text to corresponding functions
     const itemHandlers = {
         'House Draw': handleHouseDraw,
         'Prize Booster': handlePrizeBooster,
-        'Bonus Entries': handleBonusEntries,
         'Weekly Draw': handleWeeklyDraw,
         'Summary': handleSummary
     };
 
+    // Function to process active items and call the handler for the last one
     function processActiveItems() {
         const activeItems = Array.from(listItems)
             .filter(li => li.classList.contains('active'))
-            .map(li => li.querySelector('div').textContent.trim());
-
-        customLog("[observeActiveListItems] Active items:", activeItems);
+            .map(li => li.querySelector('div').textContent);
 
         const lastActive = activeItems.sort((a, b) => itemOrder.indexOf(b) - itemOrder.indexOf(a))[0];
 
-        customLog("[observeActiveListItems] Last active item detected:", lastActive);
-
         if (lastActive && itemHandlers[lastActive]) {
-            customLog(`[observeActiveListItems] Invoking handler for: "${lastActive}"`);
+            console.log(`[observeActiveListItems] Last active list item: "${lastActive}"`);
             itemHandlers[lastActive]();
-        } else {
-            customLog("[observeActiveListItems] No handler found or no active item.");
         }
     }
 
-    // Initial check
-    customLog("[observeActiveListItems] Processing initial state...");
+    // Check initial state
     processActiveItems();
 
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 if (mutation.target.classList.contains('active')) {
-                    customLog("[observeActiveListItems] Detected class change on item, reprocessing...");
                     processActiveItems();
                 }
             }
@@ -349,39 +293,26 @@ function observeActiveListItems(containerSelector) {
 
     listItems.forEach((li) => {
         observer.observe(li, { attributes: true, attributeFilter: ['class'] });
-        customLog("[observeActiveListItems] Observer attached to:", li);
     });
 }
 
-function detectPageType() {
-    customLog('[detectPageType] Detecting PAYG vs SUBS...');
+function waitForElements(elementSelector) {
+    customLog('[waitForElements] Starting to wait for elements...');
 
-    const paygPromise = DYO.waitForElementAsync('payg-cart-container', 1, 100, 30)
-        .then(() => 'payg')
-        .catch(() => null);
+    Promise.all([
+        DYO.waitForElementAsync(elementSelector, 1, 100, 150)
+    ])
+        .then(function (results) {
+            const nextButton = results[0];
 
-    const subsPromise = DYO.waitForElementAsync('subscription-cart-container', 1, 100, 30)
-        .then(() => 'subs')
-        .catch(() => null);
+            customLog('[waitForElements] - SUBS - First step next button found:', nextButton[0]);
 
-    Promise.all([paygPromise, subsPromise])
-        .then(results => {
-            const pageType = results.find(result => result !== null);
+            observeActiveListItems('nav[aria-label="Progress"]');
 
-            if (pageType === 'payg') {
-                customLog('[detectPageType] PAYG page detected');
-
-                addStyles(styles);
-                observeActiveListItems(selectors.SELECTOR_NAV_LIST);
-
-            } else if (pageType === 'subs') {
-                customLog('[detectPageType] SUBS page detected');
-
-                addStyles(styles);
-                observeActiveListItems(selectors.SELECTOR_NAV_LIST);
-            } else {
-                console.warn('[detectPageType] No matching page detected.');
-            }
+            addStyles(styles);
+        })
+        .catch(function (error) {
+            console.warn('[waitForElements] - SUBS - First step next button NOT found:');
         });
 }
 
@@ -394,7 +325,7 @@ function init() {
         document.body.classList.add('omaze-oz22-v1');
         customLog('[init] Added class omaze-oz22-v1 to body');
 
-        detectPageType();
+        waitForElements(selectors.SELECTOR_SUBS_FIRST_STEP_BUTTON_NEXT);
     } catch (error) {
         console.error(error.message);
     }
