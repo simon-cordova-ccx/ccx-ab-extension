@@ -157,6 +157,22 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
+function attachEventsListeners() {
+  customLog('[attachEventsListeners] Starting to attach events listeners...');
+  const heroLink = document.querySelector('.campaign-hero__content a.yellow-btn');
+
+  if (!heroLink) return;
+
+  const href = heroLink.getAttribute('href');
+  customLog('[attachEventsListeners] Found hero link href:', href);
+
+  document.querySelectorAll('.ccx-cta').forEach(button => {
+    button.addEventListener('click', () => {
+      window.location.href = href;
+    });
+  });
+}
+
 function waitForElements(elementSelector) {
   customLog('[waitForElements] Starting to wait for elements...');
 
@@ -171,10 +187,12 @@ function waitForElements(elementSelector) {
       createMobileContainer(homeCarousel[0]);
       createDesktopContainer(homeCarousel[0]);
 
+      attachEventsListeners();
+
       addStyles(styles);
     })
     .catch(function (error) {
-      console.warn('[waitForElements] Main nav or site footer not found within timeout.');
+      console.warn('[waitForElements] Home carousel not found within timeout.');
     });
 }
 

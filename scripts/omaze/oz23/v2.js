@@ -38,7 +38,6 @@ const styles = `
   font-family: Showtime;
   font-weight: 500;
   font-size: 26px;
-  line-height: 52px;
   vertical-align: middle;
   text-transform: uppercase;
   color: #FFFFFF;
@@ -91,18 +90,30 @@ const styles = `
   .ccx-container {
     flex-flow: row !important;
     justify-content: center;
+    gap: 0 !important;
+    height: 152px !important;
   }
   .ccx-container .ccx-image {
     width: 157px;
     height: 94px;
+    object-fit: contain;
   }
-  .ccx-container-header {
+  .ccx-container .ccx-container-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 !important;
-    padding: 4rem;
+    padding-top: 0 !important;
   }
+  .ccx-container .ccx-container-content {
+    padding-bottom: 0 !important;
+  }
+  .ccx-subheading {
+    margin-bottom: 0 !important;
+  }
+  .ccx-paragraph {
+    margin-bottom: 0.5rem !important;
+  }
+
 }
 `;
 
@@ -158,16 +169,33 @@ function createCCXContainer(element) {
   const ccxContainer = document.createElement('div');
   ccxContainer.className = 'flex flex-col w-full lg:flex-row lg:justify-center ccx-container gap-4';
   ccxContainer.innerHTML = 
-    '<div class="ccx-container-header px-8 py-6">' +
+    '<div class="ccx-container-header sm:px-12 px-12 py-6">' +
       '<img src="' + omaze23Data.foregroundImage + '" alt="Mobile Image" class="ccx-image">' +
     '</div>' +
-    '<div class="ccx-container-content px-12 py-6 sm:pt-0 md:p-4">' +
+    '<div class="ccx-container-content px-12 py-6 pt-0 md:p-4">' +
       '<h1 class="ccx-heading"><span>' + omaze23Data.headingSpan + ' </span>' + omaze23Data.headingText + '</h1>' +
       '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
       '<p class="ccx-paragraph">' + omaze23Data.paragraphText + '</p>' +
       '<button class="ccx-cta">Enter Now</button>' +
     '</div>';
   element.insertAdjacentElement('afterend', ccxContainer);
+}
+
+function attachEventsListeners() {
+  customLog('[attachEventsListeners] Starting to attach events listeners...');
+  const heroLink = document.querySelector('.campaign-hero__content a.yellow-btn');
+
+  if (!heroLink) return;
+
+  const href = heroLink.getAttribute('href');
+  customLog('[attachEventsListeners] Found hero link href:', href);
+
+  const ccxCTA = document.querySelector('.ccx-cta');
+  if (!ccxCTA) return;
+
+  ccxCTA.addEventListener('click', () => {
+    window.location.href = href;
+  });
 }
 
 function waitForElements(elementSelector) {
@@ -184,6 +212,8 @@ function waitForElements(elementSelector) {
       createCCXContainer(heroVideo[0]);
 
       addStyles(styles);
+
+      attachEventsListeners();
     })
     .catch(function(error) {
       console.warn('[waitForElements] Main nav or site footer not found within timeout.');
