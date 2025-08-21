@@ -137,6 +137,12 @@ const styles = `
 .ccx-mobile-search-close-icon:hover {
     cursor: pointer;
 }
+
+.mobile.menu-open .navbar .search-link {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
 `;
 
 const customLog = (...messages) => {
