@@ -56,21 +56,30 @@ const styles = `
   }
 
   /* Search bar: Auto layout */
-  .ccx-mobile-search-bar-mobile {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 15px;
-    gap: 10px;
-    height: 40px;
-    background: #F9F9F9;
-    border: 1px solid #E9E9E9;
-    border-radius: 25px;
-    flex: none;
-    order: 0;
-    flex-grow: 1;
-  }
+.ccx-mobile-search-bar-mobile {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+  height: 40px;
+  background: #F9F9F9;
+  border: 1px solid #E9E9E9;
+  border-radius: 25px;
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+}
+
+.ccx-mobile-search-bar-mobile:focus-within {
+  border: 1px solid #757575;
+  color: #000000;
+}
+
+.ccx-mobile-search-bar-mobile:focus-within .ccx-mobile-search-input {
+  color: #000000;
+}
 
   /* Search icon */
   .ccx-mobile-search-icon {
