@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
-const TEST_NAME = "OZ23 | Monthly Millionaire Landing Page";
+const TEST_NAME = "OZ22 | Sticky button on cart page";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 1";
+const VARIATION = "VARIATION 1 - SUBS";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -28,7 +28,12 @@ const styles = `
   width: 100%;
   z-index: 9999;
 }
-
+.omaze-oz22-v1 {
+    a[href="/pages/postal-entry-route"].underline {
+        color: #666666 !important;
+    }
+    
+}
 .ccx-step-4-container {
   position: fixed;
   bottom: 0;
@@ -273,7 +278,7 @@ function observeActiveListItems(containerSelector) {
         const lastActive = activeItems.sort((a, b) => itemOrder.indexOf(b) - itemOrder.indexOf(a))[0];
 
         if (lastActive && itemHandlers[lastActive]) {
-            console.log(`[observeActiveListItems] Last active list item: "${lastActive}"`);
+            console.log('[observeActiveListItems] Last active list item: "' + lastActive + '"');
             itemHandlers[lastActive]();
         }
     }
@@ -322,8 +327,8 @@ function init() {
         customLog('[init] Current URL: ' + CURRENT_URL);
         customLog('[init] Environment: ' + ENVIRONMENT);
 
-        document.body.classList.add('omaze-oz22-v1');
-        customLog('[init] Added class omaze-oz22-v1 to body');
+        document.body.classList.add('omaze-oz22-v1-subs');
+        customLog('[init] Added class omaze-oz22-v1-subs to body');
 
         waitForElements(selectors.SELECTOR_SUBS_FIRST_STEP_BUTTON_NEXT);
     } catch (error) {

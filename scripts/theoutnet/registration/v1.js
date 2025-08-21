@@ -16,9 +16,10 @@ const styles = `
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 4rem;
+    padding: 2rem 1rem;
     width: calc(100% - 2rem);
     margin: 0 auto;
+    margin-top: 4rem;
     padding-bottom: 0;
 }
 
@@ -42,6 +43,7 @@ const styles = `
     line-height: 22px;
     letter-spacing: 0px;
     font-family: 'TheOutnetWebXL';
+    max-width: 484px;
 }
 
 .ccx-button-container {
@@ -50,6 +52,12 @@ const styles = `
     font-size: 1rem;
     width: 100%;
     justify-content: center;
+    flex-direction: column;
+}
+@media (min-width: 768px) {
+    .ccx-button-container {
+        flex-direction: row;
+    }
 }
 
 .ccx-button {
@@ -59,18 +67,18 @@ const styles = `
     line-height: 16px;
     letter-spacing: 1px;
     text-align: center;
-    height: 46px;
-    max-width: 233px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 163.5px;
-    flex: 1 1 150px;
+		flex: 0 0 46px;
 }
 
 @media (min-width: 768px) {
     .ccx-button {
         width: 233px;
+        height: 46px;
+        max-width: 233px;
+        flex: 1 1 46px;
     }
 }
 
@@ -210,6 +218,14 @@ const addVariationChanges = (container) => {
   const buttonContainer = document.createElement("div");
   buttonContainer.classList.add("ccx-button-container");
   fullWidthContainer.appendChild(buttonContainer);
+  
+  
+  // Register button
+  const registerLink = document.createElement("button");
+  registerLink.classList.add('ccx-button', 'ccx-button_register');
+  registerLink.textContent = content.Register_CTA;
+  registerLink.href = `https://www.theoutnet.com/${regionLang}/account/register`;
+  buttonContainer.appendChild(registerLink);
 
   // Sign In button
   const signInLink = document.createElement("button");
@@ -218,12 +234,6 @@ const addVariationChanges = (container) => {
   signInLink.href = `https://www.theoutnet.com/${regionLang}/account/login`;
   buttonContainer.appendChild(signInLink);
 
-  // Register button
-  const registerLink = document.createElement("button");
-  registerLink.classList.add('ccx-button', 'ccx-button_register');
-  registerLink.textContent = content.Register_CTA;
-  registerLink.href = `https://www.theoutnet.com/${regionLang}/account/register`;
-  buttonContainer.appendChild(registerLink);
 };
 
 const attachEventListeners = function () {
@@ -260,7 +270,11 @@ const attachEventListeners = function () {
       const regionLangMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})\//i);
       const regionLang = regionLangMatch ? regionLangMatch[1] : 'en-gb';
 
-      window.location.href = `https://www.theoutnet.com/${regionLang}/account/register`;
+      setTimeout(() => {
+        window.location.href = `https://www.theoutnet.com/${regionLang}/account/register`;
+      }, 250);
+
+      
     });
   } else {
     customLog("❌ Register button not found.");

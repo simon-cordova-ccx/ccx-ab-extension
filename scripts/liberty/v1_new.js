@@ -133,6 +133,10 @@ const styles = `
   user-select: none;
   background-color: transparent;
 }
+
+.ccx-mobile-search-close-icon:hover {
+    cursor: pointer;
+}
 `;
 
 const customLog = (...messages) => {
@@ -281,6 +285,7 @@ function appendSearchComponent() {
 
     console.log('Element found, creating and appending search component.');
     const searchComponent = createSearchComponent();
+    setupSearchCloseBehavior(searchComponent);
 
     if (!searchComponent) {
         console.error('Search component creation failed. Nothing appended.');
@@ -290,6 +295,46 @@ function appendSearchComponent() {
     logoHome.insertAdjacentElement('afterend', searchComponent);
     console.log('Search component appended successfully.');
 }
+
+function setupSearchCloseBehavior(searchContainer) {
+    if (!searchContainer) {
+        console.error('No search container provided.');
+        return;
+    }
+
+    const ccxMobileCloseIcon = searchContainer.querySelector('.ccx-mobile-search-close-icon');
+    const ccxMobileSearchInput = searchContainer.querySelector('.ccx-mobile-search-input');
+
+    if (!ccxMobileCloseIcon || !ccxMobileSearchInput) {
+        console.error('Required elements not found in search container.');
+        return;
+    }
+
+    // Hide closeIcon initially if input is empty
+    if (ccxMobileSearchInput.value.length === 0) {
+        ccxMobileCloseIcon.style.display = 'none';
+    }
+
+    // Show or hide closeIcon based on input value
+    ccxMobileSearchInput.addEventListener('input', () => {
+        if (ccxMobileSearchInput.value.length > 0) {
+            ccxMobileCloseIcon.style.display = 'block';
+        } else {
+            ccxMobileCloseIcon.style.display = 'none';
+        }
+    });
+
+    // On close icon click: hide icon, clear input, focus input
+    ccxMobileCloseIcon.addEventListener('click', () => {
+        ccxMobileCloseIcon.style.display = 'none';
+        ccxMobileSearchInput.value = '';
+        ccxMobileSearchInput.focus();
+
+        // Trigger input event to update any other listeners/UI
+        ccxMobileSearchInput.dispatchEvent(new Event('input'));
+    });
+}
+
 
 function init() {
     try {
