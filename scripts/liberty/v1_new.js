@@ -155,7 +155,7 @@ const styles = `
     z-index: 100;
 }
 
-.search-panel.panel.algolia-search-panel.active {
+.mobile .search-panel.panel.algolia-search-panel.active {
     margin-top: 15.5rem;
 }
 
@@ -169,6 +169,18 @@ const styles = `
     width: 0;
     height: 0;
     visibility: hidden;
+}
+
+@media screen and (min-width: 768px) {
+    .mobile .search-panel.panel.algolia-search-panel.active {
+        margin-top: 9.5rem;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .desktop .app-tray-panels > div.active {
+        margin-top: 6rem;
+    }
 }
 `;
 
@@ -428,6 +440,9 @@ function appendSearchComponent() {
 
     // Apply "algq" parameter if exists
     applyAlgqParamValue();
+
+    // Add responsive behavior
+    setupResizeListener();
 }
 
 function setupSearchCloseBehavior(searchContainer) {
@@ -500,6 +515,62 @@ function applyAlgqParamValue() {
     }
 }
 
+
+function handleResize() {
+    const searchContainer = document.querySelector('.ccx-mobile-search-container');
+    const navContainer = document.querySelector('.nav-container');
+    const brandElement = document.querySelector('header > .nav-container > nav[aria-label="main-menu"] > .brand');
+    const controlDesktopCategoriesList = document.querySelector('#sg-navbar-collapse');
+
+    if (!searchContainer || !navContainer) {
+        console.warn('[handleResize] Required elements not found.');
+        return;
+    }
+
+    // Mobile placement
+    if (window.innerWidth <= 767) {
+        // Check if the search container is already after navContainer
+        if (navContainer.nextElementSibling !== searchContainer) {
+            navContainer.insertAdjacentElement('afterend', searchContainer);
+            customLog('[handleResize] Moved search container -> after .nav-container (mobile).');
+        } else {
+            customLog('[handleResize] Search container already in correct mobile position.');
+        }
+    }
+
+    // Tablet placement (768px to 991px)
+    if (window.innerWidth >= 768 && window.innerWidth < 992) {
+        customLog('[handleResize] Window width in tablet range (768px–991px). Applying tablet placement...');
+
+        const tabletLogoHome = document.querySelector('.nav-container > nav.js-header-mobile.app-tray-menu .logo-home');
+
+        if (tabletLogoHome) {
+            // Check if the search container is already after .logo-home
+            if (tabletLogoHome.nextElementSibling !== searchContainer) {
+                tabletLogoHome.insertAdjacentElement('afterend', searchContainer);
+                customLog('[handleResize] Moved search container -> after .logo-home (tablet).');
+            } else {
+                customLog('[handleResize] Search container already in correct tablet position.');
+            }
+        } else {
+            console.warn('[handleResize] Tablet target element (.logo-home inside nav.js-header-mobile.app-tray-menu) not found.');
+        }
+    }
+
+    // Desktop placement (992px and above)
+    // if (window.innerWidth > 991) {
+
+    // }
+}
+
+function setupResizeListener() {
+    // Run once immediately
+    handleResize();
+
+    // Attach listener
+    window.addEventListener('resize', handleResize);
+    customLog('[setupResizeListener] Resize listener attached.');
+}
 
 function init() {
     try {
