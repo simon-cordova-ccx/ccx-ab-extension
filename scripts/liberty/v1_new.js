@@ -30,6 +30,13 @@ const variationSearchIconSVG = `<svg width="20" height="20" viewBox="0 0 20 20" 
 </svg>
 `;
 
+const variationCloseIconSVG = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="39" height="39" rx="19.5" fill="#F9F9F9" stroke="#E9E9E9"/>
+<path d="M15 25L25 15" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
+<path d="M15.025 15.025L24.971 24.971" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
+</svg>
+`;
+
 const selectors = {
 
 }
@@ -38,7 +45,7 @@ const styles = `
 /* Container: Auto layout */
   .ccx-mobile-search-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 10px 20px;
@@ -87,7 +94,7 @@ const styles = `
 
   /* Placeholder text */
   .ccx-mobile-search-input {
-    width: 204px;
+    width: 65%;
     height: 19px;
 
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
@@ -202,18 +209,24 @@ function createSearchComponent() {
     const input = document.createElement('input');
     input.classList.add('ccx-mobile-search-input');
     input.type = 'text';
-    input.placeholder = "Find what you’re looking for…";
+    input.placeholder = "Find what you’re looking for...";
+
+    // Close icon container and insert SVG (placed after input)
+    const closeIcon = document.createElement('div');
+    closeIcon.classList.add('ccx-mobile-search-close-icon');
+    closeIcon.innerHTML = variationCloseIconSVG;
 
     // Defensive check
-    if (!container || !searchBar || !searchIcon || !input) {
+    if (!container || !searchBar || !searchIcon || !input || !closeIcon) {
         console.error('Failed to create some search component elements.');
         return null;
     }
 
-    // Assemble elements
+    // Assemble elements in correct order
     searchBar.appendChild(searchIcon);
     searchBar.appendChild(input);
     container.appendChild(searchBar);
+    container.appendChild(closeIcon);  // Close icon after input
 
     console.log('Search component created successfully.');
     return container;
