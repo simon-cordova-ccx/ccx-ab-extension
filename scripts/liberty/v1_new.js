@@ -17,7 +17,7 @@ When the mobile menu is open, and the menu's user icon is clicked, the element w
     - Closing this panel removes the "menu-open" class from the html element and the inline style "overflow: hidden" from the body, and the mobile menu closes
 */
 
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -54,6 +54,8 @@ const styles = `
     width: 100%;
     height: 60px;
     background: #FFFFFF;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   /* Search bar: Auto layout */
@@ -175,10 +177,19 @@ const styles = `
     .mobile .search-panel.panel.algolia-search-panel.active {
         margin-top: 9.5rem;
     }
+    .nav-container .ccx-mobile-search-container {
+        padding-bottom: 10px;
+    }
 }
 
 @media screen and (min-width: 992px) {
     .desktop .app-tray-panels > div.active {
+        margin-top: 6rem;
+    }
+    .desktop .search-panel.panel.algolia-search-panel.active {
+        margin-top: 6rem;
+    }
+    .desktop #sg-navbar-collapse .navbar-nav .slideout-menu {
         margin-top: 6rem;
     }
 }
@@ -522,14 +533,17 @@ function handleResize() {
     const brandElement = document.querySelector('header > .nav-container > nav[aria-label="main-menu"] > .brand');
     const controlDesktopCategoriesList = document.querySelector('#sg-navbar-collapse');
 
-    if (!searchContainer || !navContainer) {
+    if (!searchContainer || !navContainer || !controlDesktopCategoriesList) {
         console.warn('[handleResize] Required elements not found.');
         return;
     }
 
-    // Mobile placement
+    /** ------------------------------
+     * Mobile placement for SEARCH
+     * Width: ≤767px
+     * Place searchContainer AFTER navContainer
+     --------------------------------*/
     if (window.innerWidth <= 767) {
-        // Check if the search container is already after navContainer
         if (navContainer.nextElementSibling !== searchContainer) {
             navContainer.insertAdjacentElement('afterend', searchContainer);
             customLog('[handleResize] Moved search container -> after .nav-container (mobile).');
@@ -538,14 +552,17 @@ function handleResize() {
         }
     }
 
-    // Tablet placement (768px to 991px)
+    /** ------------------------------
+     * Tablet placement for SEARCH
+     * Width: 768px–991px
+     * Place searchContainer AFTER .logo-home inside nav.js-header-mobile.app-tray-menu
+     --------------------------------*/
     if (window.innerWidth >= 768 && window.innerWidth < 992) {
         customLog('[handleResize] Window width in tablet range (768px–991px). Applying tablet placement...');
 
         const tabletLogoHome = document.querySelector('.nav-container > nav.js-header-mobile.app-tray-menu .logo-home');
 
         if (tabletLogoHome) {
-            // Check if the search container is already after .logo-home
             if (tabletLogoHome.nextElementSibling !== searchContainer) {
                 tabletLogoHome.insertAdjacentElement('afterend', searchContainer);
                 customLog('[handleResize] Moved search container -> after .logo-home (tablet).');
@@ -557,11 +574,52 @@ function handleResize() {
         }
     }
 
-    // Desktop placement (992px and above)
-    // if (window.innerWidth > 991) {
+    /** ------------------------------
+     * Desktop placement for #sg-navbar-collapse
+     * Width: ≥992px
+     * Place it AFTER navContainer
+     --------------------------------*/
+    if (window.innerWidth >= 992) {
+        if (navContainer.nextElementSibling !== controlDesktopCategoriesList) {
+            navContainer.insertAdjacentElement('afterend', controlDesktopCategoriesList);
+            customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');
+        } else {
+            customLog('[handleResize] #sg-navbar-collapse already in correct desktop position.');
+        }
 
-    // }
+        // get the ccx search container and place it after the element "nav[aria-label="main-menu"] > .brand"
+        if (brandElement) {
+            if (brandElement.nextElementSibling !== searchContainer) {
+                brandElement.insertAdjacentElement('afterend', searchContainer);
+                customLog('[handleResize] Moved ccx search container -> after .brand (desktop).');
+            } else {
+                customLog('[handleResize] ccx search container already in correct desktop position.');
+            }
+        } else {
+            console.warn('[handleResize] .brand element not found for desktop placement.');
+        }
+    }
+
+    /** ------------------------------
+     * Mobile + Tablet placement for #sg-navbar-collapse
+     * Width: ≤991px
+     * Place it AFTER brandElement
+     --------------------------------*/
+    if (window.innerWidth <= 991) {
+        if (brandElement) {
+            if (brandElement.nextElementSibling !== controlDesktopCategoriesList) {
+                brandElement.insertAdjacentElement('afterend', controlDesktopCategoriesList);
+                customLog('[handleResize] Moved #sg-navbar-collapse -> after .brand (mobile/tablet).');
+            } else {
+                customLog('[handleResize] #sg-navbar-collapse already in correct mobile/tablet position.');
+            }
+        } else {
+            console.warn('[handleResize] .brand element not found for mobile/tablet placement.');
+        }
+
+    }
 }
+
 
 function setupResizeListener() {
     // Run once immediately
