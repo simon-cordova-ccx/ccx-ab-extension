@@ -193,10 +193,11 @@ const addStyles = (css) => {
     customLog('Custom styles added.');
 };
 
-function waitForElements(elementSelector) {
+function waitForElements(selectors, callback) {
     customLog('[waitForElements] Starting to wait for elements...');
-    if (!elementSelector) {
-        customLog('[waitForElements] No element selector provided.');
+
+    if (!selectors || !Array.isArray(selectors) || selectors.length === 0) {
+        customLog('[waitForElements] No selectors provided.');
         return;
     }
 
@@ -205,20 +206,30 @@ function waitForElements(elementSelector) {
         return;
     }
 
-    Promise.all([
-        DYO.waitForElementAsync(elementSelector, 1, 100, 150)
-    ])
-        .then(function (results) {
-            addStyles(styles);
-            appendSearchComponent();
+    // Create promises for each selector
+    const promises = selectors.map(selector =>
+        DYO.waitForElementAsync(selector, 1, 100, 150)
+    );
+
+    Promise.all(promises)
+        .then(results => {
+            customLog('[waitForElements] All elements found:', results);
+            if (typeof callback === 'function') callback(results);
         })
-        .catch(function (error) {
-            console.warn('[waitForElements] Selector not found within timeout.');
+        .catch(error => {
+            console.warn('[waitForElements] Some selectors not found within timeout.', error);
         });
 }
 
 function createSearchComponent() {
     console.log('Creating search component...');
+
+    const containerExists = document.querySelector('.ccx-mobile-search-container');
+    if (containerExists) {
+        console.warn('Search component already exists. Aborting creation.');
+        return null;
+    }
+    
     // Container
     const container = document.createElement('div');
     container.classList.add('ccx-mobile-search-container');
@@ -265,7 +276,7 @@ function createSearchComponent() {
     closeIcon.innerHTML = variationCloseIconSVG;
 
     if (!container || !searchBar || !searchIcon || !input || !clearBtn || !closeIcon) {
-        console.error('Failed to create some search component elements.');
+        console.warn('Failed to create some search component elements.');
         return null;
     }
 
@@ -278,6 +289,39 @@ function createSearchComponent() {
 
     console.log('Search component created successfully with clear button.');
     return container;
+}
+
+function bindMobileSearchInput() {
+    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
+    const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
+
+    if (!ccxMobileSearchInput) {
+        console.warn('Required elements not found: ccxMobileSearchInput');
+        return;
+    }
+    
+    if (!controlSearchInput) {
+        console.warn('Required elements not found: controlSearchInput');
+        return;
+    }
+
+    ccxMobileSearchInput.addEventListener('input', () => {
+        // Toggle panels
+        const controlAppTrayPanel = document.querySelector('.app-tray-panels');
+        if (controlAppTrayPanel) controlAppTrayPanel.classList.add('active');
+
+        const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
+        if (controlAlgoliaSearchPanel) controlAlgoliaSearchPanel.classList.add('active');
+
+        // Update search input
+        if (controlSearchInput) {
+            controlSearchInput.value = ccxMobileSearchInput.value;
+            const event = new Event('input', { bubbles: true });
+            controlSearchInput.dispatchEvent(event);
+        } else {
+            console.warn('controlSearchInput element not found');
+        }
+    });
 }
 
 function appendSearchComponent() {
@@ -294,17 +338,20 @@ function appendSearchComponent() {
     setupSearchCloseBehavior(searchComponent);
 
     if (!searchComponent) {
-        console.error('Search component creation failed. Nothing appended.');
+        console.warn('Search component creation failed. Nothing appended.');
         return;
     }
 
     logoHome.insertAdjacentElement('afterend', searchComponent);
     console.log('Search component appended successfully.');
+
+    bindMobileSearchInput();
+    customLog('Search component initialized and bound to input events.');
 }
 
 function setupSearchCloseBehavior(searchContainer) {
     if (!searchContainer) {
-        console.error('No search container provided.');
+        console.warn('No search container provided.');
         return;
     }
 
@@ -312,7 +359,7 @@ function setupSearchCloseBehavior(searchContainer) {
     const ccxMobileSearchInput = searchContainer.querySelector('.ccx-mobile-search-input');
 
     if (!ccxMobileCloseIcon || !ccxMobileSearchInput) {
-        console.error('Required elements not found in search container.');
+        console.warn('Required elements not found in search container.');
         return;
     }
 
@@ -341,7 +388,6 @@ function setupSearchCloseBehavior(searchContainer) {
     });
 }
 
-
 function init() {
     try {
         customLog(TEST_NAME + ' | ' + VARIATION);
@@ -350,10 +396,18 @@ function init() {
         document.body.classList.add('ccx-liberty-l01-v1');
         customLog('[init] Added class ccx-liberty-l01-v1 to body');
 
-        waitForElements('#footercontent');
+        // waitForElements('#footercontent');
+
+        waitForElements(
+            ['#footercontent', '#algolia-searchbox-placeholder input'],
+            function () {
+                addStyles(styles);
+                appendSearchComponent();
+            }
+        );
 
     } catch (error) {
-        console.error(error.message);
+        console.warn(error.message);
     }
 }
 
