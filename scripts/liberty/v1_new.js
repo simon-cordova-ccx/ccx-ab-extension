@@ -49,6 +49,7 @@ const styles = `
     justify-content: space-around;
     align-items: center;
     padding: 10px 20px;
+    padding-bottom: 2rem;
     gap: 10px;
     width: 100%;
     height: 60px;
@@ -154,9 +155,20 @@ const styles = `
     z-index: 100;
 }
 
-
 .search-panel.panel.algolia-search-panel.active {
-    margin-top: 15rem;
+    margin-top: 15.5rem;
+}
+
+#algolia-search-header-wrapper {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.algolia-search-panel > .panel-title {
+    width: 0;
+    height: 0;
+    visibility: hidden;
 }
 `;
 
@@ -413,6 +425,9 @@ function appendSearchComponent() {
 
     bindMobileSearchInput();
     customLog('Search component initialized and bound to input events.');
+
+    // Apply "algq" parameter if exists
+    applyAlgqParamValue();
 }
 
 function setupSearchCloseBehavior(searchContainer) {
@@ -453,6 +468,38 @@ function setupSearchCloseBehavior(searchContainer) {
         ccxMobileSearchInput.dispatchEvent(new Event('input'));
     });
 }
+
+function applyAlgqParamValue() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const algqValue = urlParams.get('algq');
+
+    if (!algqValue) {
+        customLog('[applyAlgqParamValue] No "algq" param found in URL.');
+        return;
+    }
+
+    customLog('[applyAlgqParamValue] Found algq param:', algqValue);
+
+    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
+    const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
+
+    if (ccxMobileSearchInput) {
+        ccxMobileSearchInput.value = algqValue;
+        ccxMobileSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        customLog('[applyAlgqParamValue] Applied value to ccxMobileSearchInput.');
+    } else {
+        console.warn('[applyAlgqParamValue] ccxMobileSearchInput not found.');
+    }
+
+    if (controlSearchInput) {
+        controlSearchInput.value = algqValue;
+        controlSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        customLog('[applyAlgqParamValue] Applied value to controlSearchInput.');
+    } else {
+        console.warn('[applyAlgqParamValue] controlSearchInput not found.');
+    }
+}
+
 
 function init() {
     try {
