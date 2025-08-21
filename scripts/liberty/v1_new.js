@@ -46,39 +46,30 @@ const styles = `
   .ccx-mobile-search-container {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     padding: 10px 20px;
     gap: 10px;
     width: 100%;
     height: 60px;
     background: #FFFFFF;
-
-    flex: none;
-    order: 2;
-    flex-grow: 0;
   }
 
   /* Search bar: Auto layout */
   .ccx-mobile-search-bar-mobile {
     box-sizing: border-box;
-
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 10px 15px;
     gap: 10px;
-
-    width: 334px;
     height: 40px;
-
     background: #F9F9F9;
     border: 1px solid #E9E9E9;
     border-radius: 25px;
-
     flex: none;
     order: 0;
-    flex-grow: 0;
+    flex-grow: 1;
   }
 
   /* Search icon */
@@ -93,10 +84,8 @@ const styles = `
   }
 
   /* Placeholder text */
-  .ccx-mobile-search-input {
-    width: 65%;
+.ccx-mobile-search-input {
     height: 19px;
-
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
     font-style: normal;
     font-weight: 400;
@@ -104,18 +93,37 @@ const styles = `
     line-height: 19px;
     display: flex;
     align-items: center;
-    text-align: center;
-
+    text-align: left;
     color: #757575;
-
     border: none;
     background: transparent;
     outline: none;
-
     flex: none;
     order: 1;
-    flex-grow: 0;
-  }
+    flex-grow: 1;
+}
+
+.ccx-mobile-clear-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Akzidenz-Grotesk Pro', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0;
+  text-align: center;
+  color: #757575;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+  display: none; /* hidden by default */
+  user-select: none;
+  background-color: transparent;
+}
 `;
 
 const customLog = (...messages) => {
@@ -199,6 +207,7 @@ function createSearchComponent() {
     // Search bar wrapper
     const searchBar = document.createElement('div');
     searchBar.classList.add('ccx-mobile-search-bar-mobile');
+    searchBar.style.position = 'relative';
 
     // Search icon container and insert SVG
     const searchIcon = document.createElement('div');
@@ -209,26 +218,46 @@ function createSearchComponent() {
     const input = document.createElement('input');
     input.classList.add('ccx-mobile-search-input');
     input.type = 'text';
-    input.placeholder = "Find what you’re looking for...";
+    input.placeholder = "Find what you’re looking for…";
 
-    // Close icon container and insert SVG (placed after input)
+    // Clear button inside input field (absolute positioned)
+    const clearBtn = document.createElement('button');
+    clearBtn.classList.add('ccx-mobile-clear-btn');
+    clearBtn.textContent = 'Clear';
+
+    // Show or hide clear button based on input content
+    input.addEventListener('input', () => {
+        if (input.value.length > 0) {
+            clearBtn.style.display = 'block';
+        } else {
+            clearBtn.style.display = 'none';
+        }
+    });
+
+    // Clear input & hide button on click
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        input.focus();
+        clearBtn.style.display = 'none';
+    });
+
     const closeIcon = document.createElement('div');
     closeIcon.classList.add('ccx-mobile-search-close-icon');
     closeIcon.innerHTML = variationCloseIconSVG;
 
-    // Defensive check
-    if (!container || !searchBar || !searchIcon || !input || !closeIcon) {
+    if (!container || !searchBar || !searchIcon || !input || !clearBtn || !closeIcon) {
         console.error('Failed to create some search component elements.');
         return null;
     }
 
-    // Assemble elements in correct order
+    // Preserve your append order exactly
     searchBar.appendChild(searchIcon);
     searchBar.appendChild(input);
+    searchBar.appendChild(clearBtn);
     container.appendChild(searchBar);
-    container.appendChild(closeIcon);  // Close icon after input
+    container.appendChild(closeIcon);
 
-    console.log('Search component created successfully.');
+    console.log('Search component created successfully with clear button.');
     return container;
 }
 
