@@ -7,7 +7,7 @@ When a navigation item is clicked, except for the menu item, the element with cl
 
 When the mobile menu icon is clicked, the html element gets a class of "menu-open" and the body an inline style of "overflow: hidden;"
     - Depending on the clicked item, the element with class .mini-cart. .search-panel, .account-panel, .wishlist-panel also gets an "active" class
-    - All of this
+    - All of this happens when the mobile menu is open
 
 When the mobile menu is open, and the menu's user icon is clicked, the element with class "app-tray-panels" gets an "active" class, as does the element with class .account-panel
     - Closing this panel shows the mobile menu again
@@ -143,6 +143,21 @@ const styles = `
     height: 0;
     visibility: hidden;
 }
+
+.app-tray-menu .app-tray-buttons > .search {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.app-tray-panels.active {
+    z-index: 100;
+}
+
+
+.search-panel.panel.algolia-search-panel.active {
+    margin-top: 15rem;
+}
 `;
 
 const customLog = (...messages) => {
@@ -229,7 +244,7 @@ function createSearchComponent() {
         console.warn('Search component already exists. Aborting creation.');
         return null;
     }
-    
+
     // Container
     const container = document.createElement('div');
     container.classList.add('ccx-mobile-search-container');
@@ -296,12 +311,13 @@ function bindMobileSearchInput() {
     const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
     const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
     const controlClearBtn = document.querySelector('.ais-SearchBox-reset.algolia-clear-button');
+    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
 
     if (!ccxMobileSearchInput) {
         console.warn('Required element not found: ccxMobileSearchInput');
         return;
     }
-    
+
     if (!controlSearchInput) {
         console.warn('Required element not found: controlSearchInput');
         return;
@@ -309,6 +325,11 @@ function bindMobileSearchInput() {
 
     if (!ccxMobileClearButton) {
         console.warn('Required element not found: ccx-mobile-clear-btn');
+        // Not fatal, continue
+    }
+
+    if (!ccxMobileCloseIcon) {
+        console.warn('Required element not found: ccx-mobile-search-close-icon');
         // Not fatal, continue
     }
 
@@ -340,6 +361,33 @@ function bindMobileSearchInput() {
             }
         });
     }
+
+    if (ccxMobileCloseIcon) {
+        ccxMobileCloseIcon.addEventListener('click', () => {
+            console.log('[ccxMobileCloseIcon] Click event triggered.');
+
+            const appTrayPanel = document.querySelector('.app-tray-panels.active');
+            if (appTrayPanel) {
+                appTrayPanel.classList.remove('active');
+                console.log('[ccxMobileCloseIcon] Removed .active from app-tray-panels:', appTrayPanel);
+            } else {
+                console.warn('[ccxMobileCloseIcon] No .app-tray-panels.active found.');
+            }
+
+            const activeSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
+            if (activeSearchPanel) {
+                activeSearchPanel.classList.remove('active');
+                console.log('[ccxMobileCloseIcon] Removed .active from search panel:', activeSearchPanel);
+            } else {
+                console.warn('[ccxMobileCloseIcon] No .search-panel.panel.algolia-search-panel.active found.');
+            }
+        });
+
+        console.log('[ccxMobileCloseIcon] Event listener attached successfully:', ccxMobileCloseIcon);
+    } else {
+        console.warn('[ccxMobileCloseIcon] Element not found — listener not attached.');
+    }
+
 }
 
 function appendSearchComponent() {
