@@ -294,15 +294,22 @@ function createSearchComponent() {
 function bindMobileSearchInput() {
     const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
     const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
+    const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
+    const controlClearBtn = document.querySelector('.ais-SearchBox-reset.algolia-clear-button');
 
     if (!ccxMobileSearchInput) {
-        console.warn('Required elements not found: ccxMobileSearchInput');
+        console.warn('Required element not found: ccxMobileSearchInput');
         return;
     }
     
     if (!controlSearchInput) {
-        console.warn('Required elements not found: controlSearchInput');
+        console.warn('Required element not found: controlSearchInput');
         return;
+    }
+
+    if (!ccxMobileClearButton) {
+        console.warn('Required element not found: ccx-mobile-clear-btn');
+        // Not fatal, continue
     }
 
     ccxMobileSearchInput.addEventListener('input', () => {
@@ -313,15 +320,26 @@ function bindMobileSearchInput() {
         const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
         if (controlAlgoliaSearchPanel) controlAlgoliaSearchPanel.classList.add('active');
 
-        // Update search input
-        if (controlSearchInput) {
-            controlSearchInput.value = ccxMobileSearchInput.value;
-            const event = new Event('input', { bubbles: true });
-            controlSearchInput.dispatchEvent(event);
-        } else {
-            console.warn('controlSearchInput element not found');
-        }
+        // Update search input value and dispatch input event for Algolia
+        controlSearchInput.value = ccxMobileSearchInput.value;
+        controlSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
     });
+
+    if (ccxMobileClearButton) {
+        ccxMobileClearButton.addEventListener('click', () => {
+            // Clear our custom input
+            ccxMobileSearchInput.value = '';
+            const inputEvent = new Event('input', { bubbles: true });
+            ccxMobileSearchInput.dispatchEvent(inputEvent);
+
+            // Also trigger click on original clear button if found
+            if (controlClearBtn) {
+                controlClearBtn.click();
+            } else {
+                console.warn('Original clear button .ais-SearchBox-reset.algolia-clear-button not found');
+            }
+        });
+    }
 }
 
 function appendSearchComponent() {
