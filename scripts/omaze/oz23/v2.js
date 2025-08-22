@@ -377,15 +377,27 @@ function attachEventsListeners() {
   customLog('[attachEventsListeners] Starting to attach events listeners...');
   const heroLink = document.querySelector('.campaign-hero__content a.yellow-btn');
 
-  if (!heroLink) return;
+  if (!heroLink) {
+    customLog('[attachEventsListeners] Hero link not found');
+    return;
+  }
 
   const href = heroLink.getAttribute('href');
   customLog('[attachEventsListeners] Found hero link href:', href);
 
   const ccxCTA = document.querySelector('.ccx-cta');
-  if (!ccxCTA) return;
+  if (!ccxCTA) {
+    customLog('[attachEventsListeners] CTA button not found');
+    return;
+  }
 
-  ccxCTA.addEventListener('click', () => {
+  ccxCTA.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent immediate redirect
+    DY.API('event', {
+      name: 'omaze_23_mm_cta_click'
+    });
+    customLog('[attachEventsListeners] CTA click event sent: omaze_23_mm_cta_click');
+    // Redirect after event is sent
     window.location.href = href;
   });
 }
