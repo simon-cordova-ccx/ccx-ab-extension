@@ -249,7 +249,7 @@ const styles = `
 const customLog = (...messages) => {
     if (!LOG_ENABLED) return;
 
-    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
+    const style = "background: #000; color: #e07200; padding: 4px 8px; border-radius: 4px;";
     const parts = [];
     const values = [];
 
