@@ -1,0 +1,369 @@
+html.mobile div.minicart {
+    padding-top: 15rem !important
+}
+
+html.mobile .app-tray-panels.active .panel-title {
+    display: none !important
+}
+
+@media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: portrait) {
+    .L01-persistent-search-variation-1 .filters-mobile {
+        padding-top: 0rem !important
+    }
+
+    .L01-persistent-search-variation-1 #algolia-search-header-wrapper+.row {
+        padding-top: 4rem !important
+    }
+}
+
+@media screen and (min-width: 666px) and (max-height: 450px) and (orientation: landscape) {
+    .L01-persistent-search-variation-1 .panel-body {
+        padding-top: 5rem !important
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .L01-persistent-search-variation-1 .navbar-nav .level-1>.slideout-menu {
+        top: 14.6rem !important
+    }
+}
+
+.L01-persistent-search-variation-1 .app-tray-buttons .search {
+    opacity: 0 !important
+}
+
+.L01-persistent-search-variation-1 #algolia-search-header-wrapper {
+    display: none !important
+}
+
+.L01-persistent-search-variation-1 .ccx-search-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 38px;
+    transform: translateX(-50%) translateZ(0);
+    z-index: 1500
+}
+
+.L01-persistent-search-variation-1 .ccx-search-bar {
+    width: 600px;
+    height: 40px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative
+}
+
+.L01-persistent-search-variation-1 .ccx-search-icon {
+    margin-right: 15px;
+    flex-shrink: 0
+}
+
+.L01-persistent-search-variation-1 .ccx-search-icon svg {
+    width: 20px !important;
+    height: 20px !important
+}
+
+.L01-persistent-search-variation-1 .ccx-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: transparent
+}
+
+.L01-persistent-search-variation-1 .ccx-clear-button,
+.L01-persistent-search-variation-1 .ccx-close-button {
+    display: none
+}
+
+.L01-persistent-search-variation-1 .ccx-clear-button.ccx-visible,
+.L01-persistent-search-variation-1 .ccx-close-button.ccx-visible {
+    display: block
+}
+
+.L01-persistent-search-variation-1 .ccx-clear-button {
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    margin-left: 10px;
+    white-space: nowrap
+}
+
+.L01-persistent-search-variation-1 .ccx-close-button {
+    cursor: pointer;
+    flex-shrink: 0;
+    position: absolute;
+    right: -50px
+}
+
+.L01-persistent-search-variation-1 .ccx-search-bar:hover,
+.L01-persistent-search-variation-1 .ccx-search-bar.ccx-hovered {
+    border-color: #d0d0d0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+}
+
+.L01-persistent-search-variation-1 .ccx-search-bar:focus-within,
+.L01-persistent-search-variation-1 .ccx-search-bar.ccx-focused {
+    border-color: #4F0341 !important;
+    box-shadow: 0 4px 12px rgba(79, 3, 65, 0.2) !important
+}
+
+.L01-persistent-search-variation-1 .navbar-nav.main-menu-swiper,
+.L01-persistent-search-variation-1 .prev-arrow,
+.L01-persistent-search-variation-1 .next-arrow {
+    margin-top: 6.89rem
+}
+
+.L01-persistent-search-variation-1 .algolia-sorting-actions {
+    padding-top: 7rem !important
+}
+
+.L01-persistent-search-variation-1.modal-open .ccx-search-wrapper {
+    display: none !important
+}
+
+@media screen and (min-width: 1441px) {
+    .L01-persistent-search-variation-1 .ccx-search-wrapper {
+        padding-top: 10px !important
+    }
+}
+
+@media screen and (min-width: 1281px) {
+    .L01-persistent-search-variation-1 .close-icon.icon {
+        display: none !important
+    }
+}
+
+@media screen and (min-width: 993px) {
+    .L01-persistent-search-variation-1 .app-tray-buttons-container {
+        margin-top: -6rem !important
+    }
+
+    .L01-persistent-search-variation-1 .close-icon.icon {
+        display: none !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-noresult-wrapper {
+        margin-top: 0px !important
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 992px) {
+    .L01-persistent-search-variation-1 .ccx-search-wrapper {
+        margin-left: 179px;
+        top: 43px !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100%;
+        max-width: 353px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        background: transparent !important
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-bar {
+        width: 440px
+    }
+
+    .L01-persistent-search-variation-1 .app-tray-panels.active {
+        z-index: 10 !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-refinement-bar.d-flex {
+        padding-top: 9rem !important;
+        padding-bottom: 0rem !important
+    }
+
+    .L01-persistent-search-variation-1 #algolia-current-refinements-filter {
+        display: none !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-sorting-actions {
+        padding-top: 5rem !important
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 767px) {
+    .L01-persistent-search-variation-1 .ccx-search-wrapper {
+        top: 91px !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 8px;
+        background-color: white !important
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-bar {
+        width: 400px;
+        height: 40px
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-input {
+        font-size: 14px
+    }
+
+    .L01-persistent-search-variation-1 .ccx-close-button {
+        right: -45px
+    }
+
+    .L01-persistent-search-variation-1 .app-tray-panels.active {
+        z-index: 10 !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-sorting-actions {
+        padding-top: 5rem !important
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .L01-persistent-search-variation-1 .ccx-search-wrapper {
+        top: 96px !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 8px;
+        background-color: white !important
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-bar {
+        width: 85%;
+        height: 40px;
+        padding: 0 15px;
+        transition: width 0.3s ease
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-bar.ccx-focused {
+        width: 281px
+    }
+
+    .L01-persistent-search-variation-1 .ccx-search-input {
+        font-size: 13px
+    }
+
+    .L01-persistent-search-variation-1 .ccx-close-button {
+        right: -40px
+    }
+
+    .L01-persistent-search-variation-1 .ccx-close-button svg {
+        width: 35px;
+        height: 35px
+    }
+
+    .L01-persistent-search-variation-1 .app-tray-panels.active {
+        z-index: 10 !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-noresult-wrapper {
+        margin-top: 5rem !important
+    }
+
+    .L01-persistent-search-variation-1 .algolia-refinement-bar.d-flex {
+        padding-top: 12.5rem !important;
+        padding-bottom: 0rem !important
+    }
+}
+
+@media screen and (max-width: 480px) and (hover: none) and (pointer: coarse) {
+    .L01-persistent-search-variation-1 .ccx-search-bar.ccx-hovered {
+        width: 85%
+    }
+}
+
+.L01-persistent-search-variation-1 .app-tray-buttons .search .custom-search-input {
+    position: absolute;
+    top: -40px;
+    left: 50px;
+    width: calc(100% - 70px);
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    z-index: 15;
+    padding: 0;
+    margin: 0
+}
+
+.L01-persistent-search-variation-1 .app-tray-buttons .search::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    background-size: 16px 16px
+}
+
+.L01-persistent-search-variation-1 .app-tray-buttons .search:focus-within::after,
+.L01-persistent-search-variation-1 .app-tray-buttons .search.has-input::after {
+    display: none
+}
+
+.L01-persistent-search-variation-1 .app-tray-buttons .search.search-focused::before {
+    border-color: #4F0341 !important;
+    box-shadow: 0 4px 12px rgba(79, 3, 65, 0.2) !important
+}
+
+@media (max-width: 768px) {
+    .L01-persistent-search-variation-1 .app-tray-buttons .search .custom-search-input {
+        left: 40px;
+        width: calc(100% - 60px);
+        height: 36px;
+        top: -36px !important;
+        font-size: 14px
+    }
+
+    .L01-persistent-search-variation-1 #maincontent {
+        margin-top: 3rem !important
+    }
+}
+
+@media (max-width: 480px) {
+    .L01-persistent-search-variation-1 .app-tray-buttons .search .custom-search-input {
+        left: 35px;
+        width: calc(100% - 50px);
+        height: 34px;
+        top: -34px;
+        font-size: 13px
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1280px) {
+    html.mobile .algolia-search-panel.active:has(.ais-SearchBox-input:not(:placeholder-shown)) .search-sticky-header-wrapper {
+        padding-top: 15rem !important
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    #search-sticky-header-wrapper {
+        position: relative !important;
+        padding-top: 150px !important
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .ais-InstantSearch.active {
+        margin-top: 6rem !important
+    }
+
+    #search-sticky-header-wrapper {
+        position: relative !important;
+        padding-top: 150px !important
+    }
+
+    .menu-open .ccx-search-wrapper {
+        display: none !important
+    }
+}
