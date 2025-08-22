@@ -17,7 +17,7 @@ When the mobile menu is open, and the menu's user icon is clicked, the element w
     - Closing this panel removes the "menu-open" class from the html element and the inline style "overflow: hidden" from the body, and the mobile menu closes
 */
 
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -73,6 +73,11 @@ const styles = `
   flex: none;
   order: 0;
   flex-grow: 1;
+}
+
+.ccx-mobile-search-bar-mobile:hover {
+    border-color: #757575;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .ccx-mobile-search-bar-mobile:focus-within {
@@ -137,13 +142,24 @@ const styles = `
   background-color: transparent;
 }
 
-.ccx-mobile-search-close-icon:hover {
-    cursor: pointer;
+.ccx-mobile-clear-btn:hover {
+    color: #000;
+    text-decoration: underline;
+}   
+
+.ccx-mobile-search-close-icon {
+    border-radius: 50%;
 }
 
-.mobile.menu-open .navbar .search-link {
+.ccx-mobile-search-close-icon:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.menu-open .navbar .search-link {
     width: 0;
     height: 0;
+    padding: 0;
     visibility: hidden;
 }
 
@@ -263,7 +279,7 @@ function waitForElements(selectors, callback) {
 
     Promise.all(promises)
         .then(results => {
-            customLog('[waitForElements] All elements found:', results);
+            customLog('[waitForElements] All elements found:', results[0]);
             if (typeof callback === 'function') callback(results);
         })
         .catch(error => {
@@ -298,7 +314,7 @@ function createSearchComponent() {
     const input = document.createElement('input');
     input.classList.add('ccx-mobile-search-input');
     input.type = 'text';
-    input.placeholder = "Find what you’re looking for…";
+    input.placeholder = `Find what you're looking for…`;
 
     // Clear button inside input field (absolute positioned)
     const clearBtn = document.createElement('button');
@@ -620,7 +636,6 @@ function handleResize() {
     }
 }
 
-
 function setupResizeListener() {
     // Run once immediately
     handleResize();
@@ -628,6 +643,40 @@ function setupResizeListener() {
     // Attach listener
     window.addEventListener('resize', handleResize);
     customLog('[setupResizeListener] Resize listener attached.');
+}
+
+function setupSearchPanelToggle() {
+    const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
+
+    if (!searchPanel) {
+        console.warn('[setupSearchPanelToggle] Active search panel not found.');
+        return;
+    }
+
+    // 1. Hide search panel when clicking ".mobile .app-tray-buttons li:last-child"
+    const controlHamburgerCloseButton = document.querySelector('.mobile .app-tray-buttons li:last-child');
+    if (controlHamburgerCloseButton) {
+        controlHamburgerCloseButton.addEventListener('click', () => {
+            console.log('[setupSearchPanelToggle] Hiding search panel (hamburger close button).');
+            searchPanel.style.display = 'none';
+        });
+    } else {
+        console.warn('[setupSearchPanelToggle] .mobile .app-tray-buttons li:last-child not found.');
+    }
+
+    // 2. Show search panel when clicking the last menu item (delegated, since it may not exist yet)
+    document.addEventListener('click', (event) => {
+        // const lastMenuItem = document.querySelector('.menu-open .nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
+        const lastMenuItem = document.querySelector('.nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
+        if (!lastMenuItem) {
+            console.warn('[setupSearchPanelToggle] Last menu item not found.');
+            return;
+        }
+        if (lastMenuItem && lastMenuItem.contains(event.target)) {
+            console.log('[setupSearchPanelToggle] Last menu item clicked, showing search panel.');
+            searchPanel.style.display = 'block';
+        }
+    });
 }
 
 function init() {
@@ -638,13 +687,12 @@ function init() {
         document.body.classList.add('ccx-liberty-l01-v1');
         customLog('[init] Added class ccx-liberty-l01-v1 to body');
 
-        // waitForElements('#footercontent');
-
         waitForElements(
             ['#footercontent', '#algolia-searchbox-placeholder input'],
             function () {
                 addStyles(styles);
                 appendSearchComponent();
+                setupSearchPanelToggle();
             }
         );
 
