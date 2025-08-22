@@ -143,7 +143,7 @@ const stylesEnterNowPage = `
   font-family: Gellix;
   font-weight: 700;
   font-style: Bold;
-  font-size: 17px;
+  font-size: 20px;
   leading-trim: NONE;
   line-height: 20px;
   letter-spacing: 0%;
@@ -152,12 +152,19 @@ const stylesEnterNowPage = `
   color: #FFFFFF;
 }
 
-.ccx-enter-now-banner-section .text-yellow {
-  color: #F0D204
+.ccx-enter-now-banner-section .text-white > .text-yellow {
+  color: #F0D204;
+  font-size: 20px;
 }
 
 @media only screen and (min-width: 768px) {
-  
+  .ccx-enter-now-banner-section .text-white {
+    font-size: 17px;
+  }
+
+  .ccx-enter-now-banner-section .text-white > .text-yellow {
+    font-size: 20px;
+  }
 }
 `;
 
@@ -243,11 +250,11 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
-function createEnterNowPageChangesSubscription() {
-  customLog('[createEnterNowPageChangesSubscription] Creating Enter Now page changes...');
+function createEnterNowPageChanges() {
+  customLog('[createEnterNowPageChanges] Creating Enter Now page changes...');
 
   const header = document.querySelector('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .text-3xl.font-bold');
-  customLog('[createEnterNowPageChangesSubscription] Header found:', header);
+  customLog('[createEnterNowPageChanges] Header found:', header);
 
   if (header) {
     // Create h2 element
@@ -272,18 +279,18 @@ function createEnterNowPageChangesSubscription() {
     
     // Create first paragraph for container
     var paragraph1 = document.createElement('p');
-    paragraph1.textContent = 'Enter now for your chance to win £1,000,000!';
     paragraph1.classList.add('text-white');
+    paragraph1.innerHTML = 'Enter now for your chance to win <span class="text-yellow">£1,000,000!</span>';
     
     // Create second paragraph for container
     var paragraph2 = document.createElement('p');
-    paragraph2.innerHTML = '£1,000,000';
+    paragraph2.innerHTML = 'Become a subscriber and receive free entries every month.&nbsp;';
     paragraph2.classList.add('text-yellow');
     
     // Append elements to container
     container.appendChild(img);
     container.appendChild(paragraph1);
-    container.appendChild(paragraph2);
+    // container.appendChild(paragraph2);
     
     // Insert elements after the header
     header.insertAdjacentElement('afterend', container);
@@ -292,7 +299,6 @@ function createEnterNowPageChangesSubscription() {
   }
 }
 
-// --- CASE 1: EnterHouseCampaign pages ---
 async function waitForEnterHouseCampaign() {
   customLog('[waitForEnterHouseCampaign] Waiting for .dy-page-category...');
 
@@ -336,7 +342,7 @@ async function waitForEnterHouseCampaign() {
       if (enterNowButtons?.[0]) {
         customLog('[waitForEnterHouseCampaign] Subscription tab button found:', enterNowButtons[0]);
         addStyles(stylesEnterNowPage);
-        createEnterNowPageChangesSubscription();
+        createEnterNowPageChanges();
       } else {
         customLog('[waitForEnterHouseCampaign] Subscription tab button NOT found');
       }
