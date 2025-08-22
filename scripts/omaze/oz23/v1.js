@@ -116,6 +116,10 @@ const stylesHomepage = `
 `;
 
 const stylesEnterNowPage = `
+[id*=subscription-tab-pane]  {
+  padding-top: 1.5rem !important;
+}
+  
 .ccx-enter-now-banner-section {
   text-align: center;
   padding-top: 1rem;
@@ -127,6 +131,40 @@ const stylesEnterNowPage = `
   height: 140px;
   margin: 0 auto;
   border-radius: 8px;
+}
+
+h2.ccx-monthly-draw-heading {
+  font-family: Gellix;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  vertical-align: middle;
+  color: #081F28;
+}
+
+[id*=enter-now-material-tab-buttons-design] [id*=subscription-tab-pane] .ccx-subscriber-paragraph {
+    font-family: Gellix;
+    font-weight: 500;
+    font-size: 15px;
+    text-align: center;
+    vertical-align: middle;
+    color: #081F28;
+    width: 228px;
+    margin: 0 auto;
+    margin-top: 0 !important;
+}
+
+#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .ccx-subscriber-paragraph {
+    font-family: Gellix;
+    font-weight: 500;
+    font-size: 15px;
+    text-align: center;
+    vertical-align: middle;
+    color: #081F28;
+    width: 228px;
+    margin: 0 auto;
+    margin-top: 0 !important;
 }
 
 .ccx-enter-now-banner-section img {
@@ -250,20 +288,22 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
-function createEnterNowPageChanges() {
-  customLog('[createEnterNowPageChanges] Creating Enter Now page changes...');
+function createSubscriptionEnterNowPageChanges() {
+  customLog('[createSubscriptionEnterNowPageChanges] Creating Enter Now page changes...');
 
   const header = document.querySelector('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .text-3xl.font-bold');
-  customLog('[createEnterNowPageChanges] Header found:', header);
+  customLog('[createSubscriptionEnterNowPageChanges] Header found:', header);
 
   if (header) {
     // Create h2 element
     var h2 = document.createElement('h2');
     h2.textContent = 'New! Omaze Monthly Millionaire Draw';
+    h2.classList.add('ccx-monthly-draw-heading');
     
     // Create paragraph element
     var paragraph = document.createElement('p');
     paragraph.textContent = 'Become a subscriber and receive free entries every month.';
+    paragraph.classList.add('ccx-subscriber-paragraph');
     
     // Create container div
     var container = document.createElement('div');
@@ -276,26 +316,66 @@ function createEnterNowPageChanges() {
     img.src = omaze23Data.imageYellowPart;
     img.style.display = 'block';
     img.style.margin = '0 auto';
+    img.classList.add('ccx-banner-image');
     
     // Create first paragraph for container
     var paragraph1 = document.createElement('p');
-    paragraph1.classList.add('text-white');
+    paragraph1.classList.add('ccx-banner-paragraph-first', 'text-white');
     paragraph1.innerHTML = 'Enter now for your chance to win <span class="text-yellow">£1,000,000!</span>';
-    
-    // Create second paragraph for container
-    var paragraph2 = document.createElement('p');
-    paragraph2.innerHTML = 'Become a subscriber and receive free entries every month.&nbsp;';
-    paragraph2.classList.add('text-yellow');
     
     // Append elements to container
     container.appendChild(img);
     container.appendChild(paragraph1);
-    // container.appendChild(paragraph2);
     
     // Insert elements after the header
     header.insertAdjacentElement('afterend', container);
     header.insertAdjacentElement('afterend', paragraph);
     header.insertAdjacentElement('afterend', h2);
+  }
+}
+
+function createPAYGEnterNowPageChanges() {
+  customLog('[createPAYGEnterNowPageChanges] Creating Enter Now page changes...');
+
+  const image = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > img');
+
+  if (image) {
+    // Create h2 element
+    var h2 = document.createElement('h2');
+    h2.textContent = 'New! Omaze Monthly Millionaire Draw';
+    h2.classList.add('ccx-monthly-draw-heading');
+    
+    // Create paragraph element
+    var paragraph = document.createElement('p');
+    paragraph.textContent = 'Become a subscriber and receive free entries every month.';
+    paragraph.classList.add('ccx-subscriber-paragraph');
+    
+    // Create container div
+    var container = document.createElement('div');
+    container.className = 'ccx-enter-now-banner-section';
+    container.style.background = 'url(' + omaze23Data.imageBackground + ')';
+    container.style.textAlign = 'center';
+    
+    // Create img element
+    var img = document.createElement('img');
+    img.src = omaze23Data.imageYellowPart;
+    img.style.display = 'block';
+    img.style.margin = '0 auto';
+    img.classList.add('ccx-banner-image');
+    
+    // Create first paragraph for container
+    var paragraph1 = document.createElement('p');
+    paragraph1.classList.add('ccx-banner-paragraph-first', 'text-white');
+    paragraph1.innerHTML = 'Enter now for your chance to win <span class="text-yellow">£1,000,000</span>';
+    
+    // Append elements to container
+    container.appendChild(img);
+    container.appendChild(paragraph1);
+    
+    // Insert elements before the image
+    image.insertAdjacentElement('beforebegin', h2);
+    image.insertAdjacentElement('beforebegin', paragraph);
+    image.insertAdjacentElement('beforebegin', container);
   }
 }
 
@@ -332,20 +412,37 @@ async function waitForEnterHouseCampaign() {
       customLog('[waitForEnterHouseCampaign] ✅ Running EnterHouseCampaign code...');
 
       // --- Now wait for the subscription tab button ---
-      const enterNowButtons = await DYO.waitForElementAsync(
+      const subscriptionEnterNowButtons = await DYO.waitForElementAsync(
         '#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button',
         3,
         100,
         150
       );
 
-      if (enterNowButtons?.[0]) {
-        customLog('[waitForEnterHouseCampaign] Subscription tab button found:', enterNowButtons[0]);
+      if (subscriptionEnterNowButtons?.[0]) {
+        customLog('[waitForEnterHouseCampaign] Subscription tab button found:', subscriptionEnterNowButtons[0]);
         addStyles(stylesEnterNowPage);
-        createEnterNowPageChanges();
+        createSubscriptionEnterNowPageChanges();
       } else {
         customLog('[waitForEnterHouseCampaign] Subscription tab button NOT found');
       }
+
+      // --- Now wait for the PAYG tab button ---
+      const paygEnterNowButtons = await DYO.waitForElementAsync(
+        '#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button',
+        8,
+        100,
+        150
+      );
+
+      if (paygEnterNowButtons?.[0]) {
+        customLog('[waitForEnterHouseCampaign] PAYG tab button found:', paygEnterNowButtons[0]);
+        addStyles(stylesEnterNowPage);
+        createPAYGEnterNowPageChanges();
+      } else {
+        customLog('[waitForEnterHouseCampaign] PAYG tab button NOT found');
+      }
+
     } else {
       customLog('[waitForEnterHouseCampaign] ❌ Not EnterHouseCampaign, skipping...');
     }
