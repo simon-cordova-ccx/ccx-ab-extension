@@ -225,6 +225,7 @@ const styles = `
     }
     .desktop .refinement-bar.active {
         margin-top: 6rem;
+        height: calc(100dvh - 16rem);
     }
     .desktop .search-panel.panel.algolia-search-panel.active {
         margin-top: 6rem;
