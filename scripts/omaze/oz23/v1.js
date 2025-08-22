@@ -280,24 +280,6 @@ function createMobileContainer(element) {
   element.insertAdjacentElement('afterend', mobileContainer);
 }
 
-// function createDesktopContainer(element) {
-//   const desktopContainer = document.createElement('div');
-//   desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
-//   desktopContainer.innerHTML =
-//     '<div class="flex w-full mx-auto ccx-container-desktop-inner">' +
-//     '<div class="w-1/2 ccx-container-desktop-image">' +
-//     '<img src="' + omaze23Data.imageURLDesktop + '" alt="Desktop Image" class="object-cover ccx-image ccx-new-img">' +
-//     '</div>' +
-//     '<div class="px-12 w-1/2 flex flex-col justify-center ccx-container-desktop-content">' +
-//     '<h1 class="ccx-heading">' + omaze23Data.headingDesktop + '</h1>' +
-//     '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
-//     '<p class="ccx-paragraph">' + omaze23Data.paragraphTextDesktop + '</p>' +
-//     '<a href="https://omaze.co.uk/pages/enter-cornwall-v" class="ccx-desktop-only yellow-btn hide-on-mobile">Enter Now</a>' +
-//     '</div>' +
-//     '</div>';
-//   element.insertAdjacentElement('afterend', desktopContainer);
-// }
-
 function createDesktopContainer(element) {
   const desktopContainer = document.createElement('div');
   desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
@@ -407,6 +389,44 @@ function createPAYGEnterNowPageChanges() {
   }
 }
 
+function setupOmazeEventTracking() {
+  customLog('[setupOmazeEventTracking] Setting up event tracking for Omaze mobile and desktop links...');
+
+  // Track mobile link clicks
+  const mobileLink = document.querySelector('.ccx-container-mobile-content > a');
+  if (mobileLink) {
+    mobileLink.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent immediate redirect
+      const href = this.href; // Store the link's href
+      DY.API('event', {
+        name: 'omaze_23_mm_mobile_click'
+      });
+      customLog('[setupOmazeEventTracking] Mobile click event sent: omaze_23_mm_mobile_click');
+      // Redirect after event is sent
+      window.location.href = href;
+    });
+  } else {
+    customLog('[setupOmazeEventTracking] Mobile link not found');
+  }
+
+  // Track desktop link clicks
+  const desktopLink = document.querySelector('.ccx-container-desktop-content > a');
+  if (desktopLink) {
+    desktopLink.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent immediate redirect
+      const href = this.href; // Store the link's href
+      DY.API('event', {
+        name: 'omaze_23_mm_desktop_click'
+      });
+      customLog('[setupOmazeEventTracking] Desktop click event sent: omaze_23_mm_desktop_click');
+      // Redirect after event is sent
+      window.location.href = href;
+    });
+  } else {
+    customLog('[setupOmazeEventTracking] Desktop link not found');
+  }
+}
+
 async function waitForEnterHouseCampaign() {
   customLog('[waitForEnterHouseCampaign] Waiting for .dy-page-category...');
 
@@ -494,6 +514,7 @@ function waitForHomeCarousel(elementSelector) {
         createMobileContainer(homeCarousel[0]);
         createDesktopContainer(homeCarousel[0]);
         addStyles(stylesHomepage);
+        setupOmazeEventTracking();
       } else {
         customLog('[waitForHomeCarousel] No carousel found, skipping...');
       }
