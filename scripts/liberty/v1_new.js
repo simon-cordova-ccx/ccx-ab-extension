@@ -1,4 +1,14 @@
 /*
+Gbenga's findings:
+// [x] On mobile devices, the text input is getting cut off (needs more height?)
+// [x] On mobile devices, the text inside the text input is overlaying the clear button
+// [x] On PLP, click in the filters in the page, make same adjustments as the other panels
+// [] On mobile devices, when clicking the hamburger menu, the search panel is not hiding
+// [] [setupSearchPanelToggle] Hiding search panel (hamburger close button).
+
+*/
+
+/*
 HTML element has class mobile when screen size is less than 992px
 
 HTML element has class desktop when screen size is greater than or equal to 991px
@@ -102,7 +112,6 @@ const styles = `
 
   /* Placeholder text */
 .ccx-mobile-search-input {
-    height: 19px;
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
     font-style: normal;
     font-weight: 400;
@@ -118,6 +127,11 @@ const styles = `
     flex: none;
     order: 1;
     flex-grow: 1;
+    line-height: normal;
+    min-height: 19px;
+    padding: 0 10px;
+    height: auto;
+    padding-right: 6rem;
 }
 
 .ccx-mobile-clear-btn {
@@ -181,12 +195,17 @@ const styles = `
     width: 0;
     height: 0;
     visibility: hidden;
+    padding: 0 !important;
 }
 
 .algolia-search-panel > .panel-title {
     width: 0;
     height: 0;
     visibility: hidden;
+}
+
+.brand-category-letters {
+    top: 15.5rem;
 }
 
 @media screen and (min-width: 768px) {
@@ -196,18 +215,35 @@ const styles = `
     .nav-container .ccx-mobile-search-container {
         padding-bottom: 10px;
     }
+    .brand-category-letters {
+        top: 9.5rem;
+    }
 }
 
 @media screen and (min-width: 992px) {
     .desktop .app-tray-panels > div.active {
         margin-top: 6rem;
     }
+    .desktop .refinement-bar.active {
+        margin-top: 6rem;
+    }
     .desktop .search-panel.panel.algolia-search-panel.active {
         margin-top: 6rem;
+    }
+    .desktop #sg-navbar-collapse .navbar-nav {
+        background: #F9F9F9;
     }
     .desktop #sg-navbar-collapse .navbar-nav .slideout-menu {
         margin-top: 6rem;
     }
+    .brand-category-letters {
+        top: 13.5rem;
+    }
+
+    @media screen and (min-width: 1441px) {    
+        .brand-category-letters {
+            top: 15.5rem;
+        }
 }
 `;
 
@@ -542,7 +578,6 @@ function applyAlgqParamValue() {
     }
 }
 
-
 function handleResize() {
     const searchContainer = document.querySelector('.ccx-mobile-search-container');
     const navContainer = document.querySelector('.nav-container');
@@ -688,7 +723,7 @@ function init() {
         customLog('[init] Added class ccx-liberty-l01-v1 to body');
 
         waitForElements(
-            ['#footercontent', '#algolia-searchbox-placeholder input'],
+            ['#algolia-searchbox-placeholder input'],
             function () {
                 addStyles(styles);
                 appendSearchComponent();
