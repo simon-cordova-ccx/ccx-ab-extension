@@ -44,7 +44,7 @@ const stylesHomepage = `
 .ccx-container .ccx-heading {
   font-family: Showtime;
   font-weight: 500;
-  font-size: 26px;
+  font-size: 24px;
   vertical-align: middle;
   text-transform: uppercase;
   color: #FFFFFF;
@@ -56,7 +56,6 @@ const stylesHomepage = `
 .ccx-subheading {
   font-family: Gellix;
   font-weight: 700;
-  font-style: Bold;
   font-size: 16px;
   line-height: 20px;
   vertical-align: middle;
@@ -65,10 +64,11 @@ const stylesHomepage = `
 .ccx-paragraph {
   font-family: Gellix;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   vertical-align: middle;
   color: white;
+  margin-bottom: 0.5rem !important;
 }
  .ccx-cta {
   border: 2px solid #FFFFFF;
@@ -104,6 +104,9 @@ const stylesHomepage = `
     width: 157px;
     height: 94px;
     object-fit: contain;
+  }
+  .ccx-container .ccx-heading {
+    font-size: 26px;
   }
   .ccx-container .ccx-container-header {
     display: flex;
