@@ -3,8 +3,7 @@ Gbenga's findings:
 // [x] On mobile devices, the text input is getting cut off (needs more height?)
 // [x] On mobile devices, the text inside the text input is overlaying the clear button
 // [x] On PLP, click in the filters in the page, make same adjustments as the other panels
-// [] On mobile devices, when clicking the hamburger menu, the search panel is not hiding
-// [] [setupSearchPanelToggle] Hiding search panel (hamburger close button).
+// [x] On mobile devices, when clicking the hamburger menu, the search panel is not hiding
 
 */
 
@@ -60,7 +59,6 @@ const styles = `
     align-items: center;
     padding: 10px 20px;
     padding-bottom: 2rem;
-    gap: 10px;
     width: 100%;
     height: 60px;
     background: #FFFFFF;
@@ -163,6 +161,7 @@ const styles = `
 
 .ccx-mobile-search-close-icon {
     border-radius: 50%;
+    margin-left: 10px;
 }
 
 .ccx-mobile-search-close-icon:hover {
@@ -694,6 +693,17 @@ function setupSearchPanelToggle() {
         controlHamburgerCloseButton.addEventListener('click', () => {
             console.log('[setupSearchPanelToggle] Hiding search panel (hamburger close button).');
             searchPanel.style.display = 'none';
+            // Close the keyboard by blurring the active input
+            const ccxInput = document.querySelector('.ccx-mobile-search-input');
+            if (ccxInput) {
+                console.log('[setupSearchPanelToggle] Blurring input to close keyboard.');
+                ccxInput.blur();
+            }
+        });
+        controlHamburgerCloseButton.addEventListener('touchend', (event) => {
+            event.preventDefault(); // Prevent duplicate click events
+            console.log('[setupSearchPanelToggle] Hiding search panel (hamburger close button - touch).');
+            searchPanel.style.display = 'none';
         });
     } else {
         console.warn('[setupSearchPanelToggle] .mobile .app-tray-buttons li:last-child not found.');
@@ -701,14 +711,26 @@ function setupSearchPanelToggle() {
 
     // 2. Show search panel when clicking the last menu item (delegated, since it may not exist yet)
     document.addEventListener('click', (event) => {
-        // const lastMenuItem = document.querySelector('.menu-open .nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
         const lastMenuItem = document.querySelector('.nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
         if (!lastMenuItem) {
             console.warn('[setupSearchPanelToggle] Last menu item not found.');
             return;
         }
-        if (lastMenuItem && lastMenuItem.contains(event.target)) {
+        if (lastMenuItem.contains(event.target)) {
             console.log('[setupSearchPanelToggle] Last menu item clicked, showing search panel.');
+            searchPanel.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('touchend', (event) => {
+        const lastMenuItem = document.querySelector('.nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
+        if (!lastMenuItem) {
+            console.warn('[setupSearchPanelToggle] Last menu item not found.');
+            return;
+        }
+        if (lastMenuItem.contains(event.target)) {
+            event.preventDefault(); // Prevent duplicate click events
+            console.log('[setupSearchPanelToggle] Last menu item touched, showing search panel.');
             searchPanel.style.display = 'block';
         }
     });
