@@ -80,12 +80,22 @@ const stylesHomepage = `
 
 @media only screen and (min-width: 768px) {
   .ccx-container-desktop {
+    height: 600px;
     max-height: 600px;
   }
-  .ccx-container-desktop-image .ccx-image {
-    height: 600px !important;
-    width: 100% !important;
+  .ccx-container-desktop-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
+
+  .ccx-container-desktop-image-yellow {
+    object-fit: contain;
+  }
+
   .ccx-paragraph {
     margin-bottom: 1.5rem;
   }
@@ -270,13 +280,31 @@ function createMobileContainer(element) {
   element.insertAdjacentElement('afterend', mobileContainer);
 }
 
+// function createDesktopContainer(element) {
+//   const desktopContainer = document.createElement('div');
+//   desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
+//   desktopContainer.innerHTML =
+//     '<div class="flex w-full mx-auto ccx-container-desktop-inner">' +
+//     '<div class="w-1/2 ccx-container-desktop-image">' +
+//     '<img src="' + omaze23Data.imageURLDesktop + '" alt="Desktop Image" class="object-cover ccx-image ccx-new-img">' +
+//     '</div>' +
+//     '<div class="px-12 w-1/2 flex flex-col justify-center ccx-container-desktop-content">' +
+//     '<h1 class="ccx-heading">' + omaze23Data.headingDesktop + '</h1>' +
+//     '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
+//     '<p class="ccx-paragraph">' + omaze23Data.paragraphTextDesktop + '</p>' +
+//     '<a href="https://omaze.co.uk/pages/enter-cornwall-v" class="ccx-desktop-only yellow-btn hide-on-mobile">Enter Now</a>' +
+//     '</div>' +
+//     '</div>';
+//   element.insertAdjacentElement('afterend', desktopContainer);
+// }
+
 function createDesktopContainer(element) {
   const desktopContainer = document.createElement('div');
   desktopContainer.className = 'hidden md:flex w-full ccx-container-desktop';
   desktopContainer.innerHTML =
     '<div class="flex w-full mx-auto ccx-container-desktop-inner">' +
-    '<div class="w-1/2 ccx-container-desktop-image">' +
-    '<img src="' + omaze23Data.imageURLDesktop + '" alt="Desktop Image" class="object-cover ccx-image ccx-new-img">' +
+    '<div class="w-1/2 ccx-container-desktop-image" style="background-image: url(' + omaze23Data.imageBackground + ');">' +
+      '<img src="' + omaze23Data.imageYellowPart + '" alt="Desktop Image" class="ccx-container-desktop-image-yellow" style="width: 260px; height: 216px;">' +
     '</div>' +
     '<div class="px-12 w-1/2 flex flex-col justify-center ccx-container-desktop-content">' +
     '<h1 class="ccx-heading">' + omaze23Data.headingDesktop + '</h1>' +
