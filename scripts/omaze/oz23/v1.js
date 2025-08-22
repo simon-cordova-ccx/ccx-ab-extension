@@ -15,6 +15,7 @@ const omaze23Data = {
   imageURLMobile: 'https://cdn.optimizely.com/img/8395960748/5fc2c84b0d854044a32c2d585df41f0f.png',
   imageURLDesktop: 'https://cdn.optimizely.com/img/8395960748/953d9f33b4cb4b20a1491ee173bf5710.png',
   imageYellowPart: 'https://cdn-eu.dynamicyield.com/api/9880449/images/d464e02ef748.png',
+  imageBackground: 'https://cdn-eu.dynamicyield.com/api/9880449/images/85826243eaeb.png',
 }
 
 const selectors = {
@@ -22,7 +23,7 @@ const selectors = {
   SELECTOR_HOME_CAROUSEL: '[id*="campaign-carousel"].shopify-section'
 }
 
-const styles = `
+const stylesHomepage = `
 .ccx-desktop-only {
   max-width: 200px;
   margin: 0;
@@ -114,6 +115,52 @@ const styles = `
 }
 `;
 
+const stylesEnterNowPage = `
+.ccx-enter-now-banner-section {
+  text-align: center;
+  padding-top: 1rem;
+  max-height: 140px;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  width: 340px;
+  height: 140px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.ccx-enter-now-banner-section img {
+  width: 90px;
+  height: 54px;
+  margin: 0 auto;
+}
+
+.ccx-enter-now-banner-section p {
+  margin: 0;
+}
+
+.ccx-enter-now-banner-section .text-white {
+  font-family: Gellix;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 17px;
+  leading-trim: NONE;
+  line-height: 20px;
+  letter-spacing: 0%;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFFFFF;
+}
+
+.ccx-enter-now-banner-section .text-yellow {
+  color: #F0D204
+}
+
+@media only screen and (min-width: 768px) {
+  
+}
+`;
+
 const customLog = (...messages) => {
   if (!LOG_ENABLED) return;
 
@@ -196,6 +243,55 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
+function createEnterNowPageChangesSubscription() {
+  customLog('[createEnterNowPageChangesSubscription] Creating Enter Now page changes...');
+
+  const header = document.querySelector('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .text-3xl.font-bold');
+  customLog('[createEnterNowPageChangesSubscription] Header found:', header);
+
+  if (header) {
+    // Create h2 element
+    var h2 = document.createElement('h2');
+    h2.textContent = 'New! Omaze Monthly Millionaire Draw';
+    
+    // Create paragraph element
+    var paragraph = document.createElement('p');
+    paragraph.textContent = 'Become a subscriber and receive free entries every month.';
+    
+    // Create container div
+    var container = document.createElement('div');
+    container.className = 'ccx-enter-now-banner-section';
+    container.style.background = 'url(' + omaze23Data.imageBackground + ')';
+    container.style.textAlign = 'center';
+    
+    // Create img element
+    var img = document.createElement('img');
+    img.src = omaze23Data.imageYellowPart;
+    img.style.display = 'block';
+    img.style.margin = '0 auto';
+    
+    // Create first paragraph for container
+    var paragraph1 = document.createElement('p');
+    paragraph1.textContent = 'Enter now for your chance to win £1,000,000!';
+    paragraph1.classList.add('text-white');
+    
+    // Create second paragraph for container
+    var paragraph2 = document.createElement('p');
+    paragraph2.innerHTML = '£1,000,000';
+    paragraph2.classList.add('text-yellow');
+    
+    // Append elements to container
+    container.appendChild(img);
+    container.appendChild(paragraph1);
+    container.appendChild(paragraph2);
+    
+    // Insert elements after the header
+    header.insertAdjacentElement('afterend', container);
+    header.insertAdjacentElement('afterend', paragraph);
+    header.insertAdjacentElement('afterend', h2);
+  }
+}
+
 // --- CASE 1: EnterHouseCampaign pages ---
 async function waitForEnterHouseCampaign() {
   customLog('[waitForEnterHouseCampaign] Waiting for .dy-page-category...');
@@ -227,8 +323,23 @@ async function waitForEnterHouseCampaign() {
     customLog('[waitForEnterHouseCampaign] Page category resolved:', PAGE_CATEGORY);
 
     if (PAGE_CATEGORY === "EnterHouseCampaign") {
-      customLog('[waitForEnterHouseCampaign] Running EnterHouseCampaign code...');
-      // 🔹 TODO: Insert brand new code for EnterHouseCampaign pages here
+      customLog('[waitForEnterHouseCampaign] ✅ Running EnterHouseCampaign code...');
+
+      // --- Now wait for the subscription tab button ---
+      const enterNowButtons = await DYO.waitForElementAsync(
+        '#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button',
+        3,
+        100,
+        150
+      );
+
+      if (enterNowButtons?.[0]) {
+        customLog('[waitForEnterHouseCampaign] Subscription tab button found:', enterNowButtons[0]);
+        addStyles(stylesEnterNowPage);
+        createEnterNowPageChangesSubscription();
+      } else {
+        customLog('[waitForEnterHouseCampaign] Subscription tab button NOT found');
+      }
     } else {
       customLog('[waitForEnterHouseCampaign] ❌ Not EnterHouseCampaign, skipping...');
     }
@@ -251,7 +362,7 @@ function waitForHomeCarousel(elementSelector) {
         customLog('[waitForHomeCarousel] Carousel found:', homeCarousel[0]);
         createMobileContainer(homeCarousel[0]);
         createDesktopContainer(homeCarousel[0]);
-        addStyles(styles);
+        addStyles(stylesHomepage);
       } else {
         customLog('[waitForHomeCarousel] No carousel found, skipping...');
       }
