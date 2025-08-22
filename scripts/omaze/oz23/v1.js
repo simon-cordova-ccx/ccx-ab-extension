@@ -1,5 +1,3 @@
-// Does the mobile container no longer have a CTA under the paragraph?
-
 const LOG_ENABLED = true;
 const TEST_NAME = "OZ23 | Monthly Millionaire Landing Page";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
@@ -198,8 +196,50 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
-function waitForElements(elementSelector) {
-  customLog('[waitForElements] Starting to wait for elements...');
+// --- CASE 1: EnterHouseCampaign pages ---
+async function waitForEnterHouseCampaign() {
+  customLog('[waitForEnterHouseCampaign] Waiting for .dy-page-category...');
+
+  try {
+    const elements = await DYO.waitForElementAsync('.dy-page-category', 1, 100, 150);
+    const target = elements?.[0];
+
+    if (!target) {
+      customLog('[waitForEnterHouseCampaign] .dy-page-category not found.');
+      return;
+    }
+
+    // Poll until dataset.category is available
+    let retries = 20; // ~2 seconds (20 * 100ms)
+    const checkCategory = () =>
+      new Promise(resolve => {
+        const interval = setInterval(() => {
+          const category = target.dataset?.category ?? "";
+          if (category === "EnterHouseCampaign" || retries <= 0) {
+            clearInterval(interval);
+            resolve(category);
+          }
+          retries--;
+        }, 100);
+      });
+
+    const PAGE_CATEGORY = await checkCategory();
+    customLog('[waitForEnterHouseCampaign] Page category resolved:', PAGE_CATEGORY);
+
+    if (PAGE_CATEGORY === "EnterHouseCampaign") {
+      customLog('[waitForEnterHouseCampaign] Running EnterHouseCampaign code...');
+      // 🔹 TODO: Insert brand new code for EnterHouseCampaign pages here
+    } else {
+      customLog('[waitForEnterHouseCampaign] ❌ Not EnterHouseCampaign, skipping...');
+    }
+  } catch (error) {
+    console.warn('[waitForEnterHouseCampaign] Error:', error);
+  }
+}
+
+// --- CASE 1: Home pages ---
+function waitForHomeCarousel(elementSelector) {
+  customLog('[waitForHomeCarousel] Starting check...');
 
   Promise.all([
     DYO.waitForElementAsync(elementSelector, 1, 100, 150)
@@ -207,15 +247,17 @@ function waitForElements(elementSelector) {
     .then(function (results) {
       const homeCarousel = results[0];
 
-      customLog('Carousel found:', homeCarousel[0]);
-
-      createMobileContainer(homeCarousel[0]);
-      createDesktopContainer(homeCarousel[0]);
-
-      addStyles(styles);
+      if (homeCarousel?.[0]) {
+        customLog('[waitForHomeCarousel] Carousel found:', homeCarousel[0]);
+        createMobileContainer(homeCarousel[0]);
+        createDesktopContainer(homeCarousel[0]);
+        addStyles(styles);
+      } else {
+        customLog('[waitForHomeCarousel] No carousel found, skipping...');
+      }
     })
     .catch(function (error) {
-      console.warn('[waitForElements] Main nav or site footer not found within timeout.');
+      console.warn('[waitForHomeCarousel] Error while waiting for carousel:', error);
     });
 }
 
@@ -228,7 +270,12 @@ function init() {
     document.body.classList.add('omaze-oz23-v1');
     customLog('[init] Added class omaze-oz23-v1 to body');
 
-    waitForElements(selectors.SELECTOR_HOME_CAROUSEL);
+    // EnterHouseCampaign pages
+    waitForEnterHouseCampaign();
+
+    // Homepage carousel pages
+    waitForHomeCarousel(selectors.SELECTOR_HOME_CAROUSEL);
+
   } catch (error) {
     console.error(error.message);
   }
