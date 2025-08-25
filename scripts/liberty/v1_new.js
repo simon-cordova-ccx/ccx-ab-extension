@@ -225,7 +225,7 @@ const styles = `
     }
     .desktop .refinement-bar.active {
         margin-top: 6rem;
-        height: calc(100dvh - 16rem);
+        height: calc(100dvh - 13rem);
     }
     .desktop .search-panel.panel.algolia-search-panel.active {
         margin-top: 6rem;
@@ -236,6 +236,13 @@ const styles = `
     .desktop #sg-navbar-collapse .navbar-nav .slideout-menu {
         margin-top: 6rem;
     }
+    .desktop #sg-navbar-collapse .navbar-nav {
+        justify-content: center;
+    }
+    #sg-navbar-collapse > .navbar > div > span.prev-arrow,
+    #sg-navbar-collapse > .navbar > div > span.next-arrow {
+        display: none;
+    }
     .brand-category-letters {
         top: 13.5rem;
     }
@@ -244,7 +251,11 @@ const styles = `
         .brand-category-letters {
             top: 15.5rem;
         }
-}
+        .desktop .refinement-bar.active {
+            margin-top: 6rem;
+            height: calc(100dvh - 15rem);
+        }
+    }
 `;
 
 const customLog = (...messages) => {
@@ -324,7 +335,7 @@ function waitForElements(selectors, callback) {
 }
 
 function createSearchComponent() {
-    console.log('Creating search component...');
+    customLog('Creating search component...');
 
     const containerExists = document.querySelector('.ccx-mobile-search-container');
     if (containerExists) {
@@ -389,7 +400,7 @@ function createSearchComponent() {
     container.appendChild(searchBar);
     container.appendChild(closeIcon);
 
-    console.log('Search component created successfully with clear button.');
+    customLog('Search component created successfully with clear button.');
     return container;
 }
 
@@ -451,12 +462,12 @@ function bindMobileSearchInput() {
 
     if (ccxMobileCloseIcon) {
         ccxMobileCloseIcon.addEventListener('click', () => {
-            console.log('[ccxMobileCloseIcon] Click event triggered.');
+            customLog('[ccxMobileCloseIcon] Click event triggered.');
 
             const appTrayPanel = document.querySelector('.app-tray-panels.active');
             if (appTrayPanel) {
                 appTrayPanel.classList.remove('active');
-                console.log('[ccxMobileCloseIcon] Removed .active from app-tray-panels:', appTrayPanel);
+                customLog('[ccxMobileCloseIcon] Removed .active from app-tray-panels:', appTrayPanel);
             } else {
                 console.warn('[ccxMobileCloseIcon] No .app-tray-panels.active found.');
             }
@@ -464,13 +475,13 @@ function bindMobileSearchInput() {
             const activeSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
             if (activeSearchPanel) {
                 activeSearchPanel.classList.remove('active');
-                console.log('[ccxMobileCloseIcon] Removed .active from search panel:', activeSearchPanel);
+                customLog('[ccxMobileCloseIcon] Removed .active from search panel:', activeSearchPanel);
             } else {
                 console.warn('[ccxMobileCloseIcon] No .search-panel.panel.algolia-search-panel.active found.');
             }
         });
 
-        console.log('[ccxMobileCloseIcon] Event listener attached successfully:', ccxMobileCloseIcon);
+        customLog('[ccxMobileCloseIcon] Event listener attached successfully:', ccxMobileCloseIcon);
     } else {
         console.warn('[ccxMobileCloseIcon] Element not found — listener not attached.');
     }
@@ -478,7 +489,7 @@ function bindMobileSearchInput() {
 }
 
 function appendSearchComponent() {
-    console.log('Looking for ".nav-container" element...');
+    customLog('Looking for ".nav-container" element...');
     const logoHome = document.querySelector('.nav-container');
 
     if (!logoHome) {
@@ -486,7 +497,7 @@ function appendSearchComponent() {
         return;
     }
 
-    console.log('Element found, creating and appending search component.');
+    customLog('Element found, creating and appending search component.');
     const searchComponent = createSearchComponent();
     setupSearchCloseBehavior(searchComponent);
 
@@ -496,16 +507,7 @@ function appendSearchComponent() {
     }
 
     logoHome.insertAdjacentElement('afterend', searchComponent);
-    console.log('Search component appended successfully.');
-
-    bindMobileSearchInput();
-    customLog('Search component initialized and bound to input events.');
-
-    // Apply "algq" parameter if exists
-    applyAlgqParamValue();
-
-    // Add responsive behavior
-    setupResizeListener();
+    customLog('Search component appended successfully.');
 }
 
 function setupSearchCloseBehavior(searchContainer) {
@@ -680,60 +682,101 @@ function setupResizeListener() {
     customLog('[setupResizeListener] Resize listener attached.');
 }
 
-function setupSearchPanelToggle() {
-    const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
+// function setupSearchPanelVisibility() {
+//     customLog('[setupSearchPanelVisibility] Setting up MutationObserver for html class changes...');
 
-    if (!searchPanel) {
-        console.warn('[setupSearchPanelToggle] Active search panel not found.');
-        return;
-    }
+//     const htmlElement = document.documentElement;
+//     if (!htmlElement) {
+//         console.warn('[setupSearchPanelVisibility] HTML element not found.');
+//         return;
+//     }
+//     customLog('[setupSearchPanelVisibility] HTML element found:', htmlElement);
 
-    // 1. Hide search panel when clicking ".mobile .app-tray-buttons li:last-child"
-    const controlHamburgerCloseButton = document.querySelector('.mobile .app-tray-buttons li:last-child');
-    if (controlHamburgerCloseButton) {
-        controlHamburgerCloseButton.addEventListener('click', () => {
-            console.log('[setupSearchPanelToggle] Hiding search panel (hamburger close button).');
-            searchPanel.style.display = 'none';
-            // Close the keyboard by blurring the active input
-            const ccxInput = document.querySelector('.ccx-mobile-search-input');
-            if (ccxInput) {
-                console.log('[setupSearchPanelToggle] Blurring input to close keyboard.');
-                ccxInput.blur();
+//     const observer = new MutationObserver((mutations) => {
+//         mutations.forEach((mutation) => {
+//             if (mutation.attributeName === 'class') {
+//                 customLog('[setupSearchPanelVisibility] Class attribute change detected on HTML element.');
+//                 const hasMobile = htmlElement.classList.contains('mobile');
+//                 const hasMenuOpen = htmlElement.classList.contains('menu-open');
+//                 // const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
+//                 const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
+
+//                 if (hasMobile && hasMenuOpen) {
+//                     customLog('[setupSearchPanelVisibility] Mobile and menu-open classes detected.');
+//                     if (searchPanel) {
+//                         customLog('[setupSearchPanelVisibility] Search panel found:', searchPanel);
+//                         const currentStyles = searchPanel.getAttribute('style') || '';
+//                         const newStyles = currentStyles.includes('display:')
+//                             ? currentStyles.replace(/display:[^;]+;?/, 'display: none !important;')
+//                             : currentStyles + (currentStyles.endsWith(';') ? '' : ';') + 'display: none !important;';
+//                         searchPanel.setAttribute('style', newStyles);
+//                         customLog('[setupSearchPanelVisibility] Search panel set to display: none !important');
+//                     } else {
+//                         console.warn('[setupSearchPanelVisibility] Search panel (.search-panel.panel.algolia-search-panel.active) not found.');
+//                     }
+//                 } else if (!hasMenuOpen) {
+//                     customLog('[setupSearchPanelVisibility] Menu-open class removed.');
+//                     if (searchPanel) {
+//                         customLog('[setupSearchPanelVisibility] Search panel found, restoring display:', searchPanel);
+//                         const currentStyles = searchPanel.getAttribute('style') || '';
+//                         const newStyles = currentStyles.includes('display:')
+//                             ? currentStyles.replace(/display:[^;]+;?/, 'display: block;')
+//                             : currentStyles + (currentStyles.endsWith(';') ? '' : ';') + 'display: block;';
+//                         searchPanel.setAttribute('style', newStyles);
+//                         customLog('[setupSearchPanelVisibility] Search panel set to display: block');
+//                     } else {
+//                         console.warn('[setupSearchPanelVisibility] Search panel (.search-panel.panel.algolia-search-panel.active) not found for restore.');
+//                     }
+//                 }
+//             }
+//         });
+//     });
+
+//     observer.observe(htmlElement, { attributes: true, attributeFilter: ['class'] });
+//     customLog('[setupSearchPanelVisibility] MutationObserver set up to monitor class changes on HTML element.');
+// }
+
+function setupSearchPanelVisibility() {
+    const htmlElement = document.documentElement;
+    const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
+    const searchInput = document.querySelector('.ccx-mobile-search-input');
+    let hadMenuOpen = htmlElement.classList.contains('menu-open');
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const hasMenuOpen = htmlElement.classList.contains('menu-open');
+                const hasMobile = htmlElement.classList.contains('mobile');
+
+                if (hasMobile) {
+                    if (hasMenuOpen) {
+                        console.log('HTML element has both .menu-open and .mobile classes');
+                        if (searchPanel) {
+                            console.log('Hiding search panel');
+                            searchPanel.style.cssText = 'display: none !important';
+                        }
+                    } else {
+                        console.log('HTML element has .mobile class but .menu-open class was removed');
+                        if (searchPanel) {
+                            console.log('Showing search panel');
+                            searchPanel.style.cssText = '';
+                            if (hadMenuOpen && !hasMenuOpen && searchInput && searchInput.type === 'text' && searchInput.value.trim() !== '') {
+                                console.log('Adding active class to search panel due to non-empty text input on menu-open removal');
+                                searchPanel.classList.add('active');
+                            }
+                        } else {
+                            console.log('Search panel element not found');
+                        }
+                    }
+                    hadMenuOpen = hasMenuOpen;
+                }
             }
         });
-        controlHamburgerCloseButton.addEventListener('touchend', (event) => {
-            event.preventDefault(); // Prevent duplicate click events
-            console.log('[setupSearchPanelToggle] Hiding search panel (hamburger close button - touch).');
-            searchPanel.style.display = 'none';
-        });
-    } else {
-        console.warn('[setupSearchPanelToggle] .mobile .app-tray-buttons li:last-child not found.');
-    }
-
-    // 2. Show search panel when clicking the last menu item (delegated, since it may not exist yet)
-    document.addEventListener('click', (event) => {
-        const lastMenuItem = document.querySelector('.nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
-        if (!lastMenuItem) {
-            console.warn('[setupSearchPanelToggle] Last menu item not found.');
-            return;
-        }
-        if (lastMenuItem.contains(event.target)) {
-            console.log('[setupSearchPanelToggle] Last menu item clicked, showing search panel.');
-            searchPanel.style.display = 'block';
-        }
     });
 
-    document.addEventListener('touchend', (event) => {
-        const lastMenuItem = document.querySelector('.nav-container [aria-label="main-menu"] .navbar-header-m ul > li:last-child');
-        if (!lastMenuItem) {
-            console.warn('[setupSearchPanelToggle] Last menu item not found.');
-            return;
-        }
-        if (lastMenuItem.contains(event.target)) {
-            event.preventDefault(); // Prevent duplicate click events
-            console.log('[setupSearchPanelToggle] Last menu item touched, showing search panel.');
-            searchPanel.style.display = 'block';
-        }
+    observer.observe(htmlElement, {
+        attributes: true,
+        attributeFilter: ['class']
     });
 }
 
@@ -750,7 +793,15 @@ function init() {
             function () {
                 addStyles(styles);
                 appendSearchComponent();
-                setupSearchPanelToggle();
+                bindMobileSearchInput();
+                customLog('Search component initialized and bound to input events.');
+
+                // Apply "algq" parameter if exists
+                applyAlgqParamValue();
+
+                // Add responsive behavior
+                setupResizeListener();
+                setupSearchPanelVisibility();
             }
         );
 
