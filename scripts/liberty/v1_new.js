@@ -1,31 +1,3 @@
-/*
-Gbenga's findings:
-// [x] On mobile devices, the text input is getting cut off (needs more height?)
-// [x] On mobile devices, the text inside the text input is overlaying the clear button
-// [x] On PLP, click in the filters in the page, make same adjustments as the other panels
-// [x] On mobile devices, when clicking the hamburger menu, the search panel is not hiding
-
-*/
-
-/*
-HTML element has class mobile when screen size is less than 992px
-
-HTML element has class desktop when screen size is greater than or equal to 991px
-
-When a navigation item is clicked, except for the menu item, the element with class "app-tray-panels" and "modal-background" get an "active" class 
-
-When the mobile menu icon is clicked, the html element gets a class of "menu-open" and the body an inline style of "overflow: hidden;"
-    - Depending on the clicked item, the element with class .mini-cart. .search-panel, .account-panel, .wishlist-panel also gets an "active" class
-    - All of this happens when the mobile menu is open
-
-When the mobile menu is open, and the menu's user icon is clicked, the element with class "app-tray-panels" gets an "active" class, as does the element with class .account-panel
-    - Closing this panel shows the mobile menu again
-When the mobile menu is open, and the menu's user icon is clicked, the element with class "app-tray-panels" gets an "active" class, as does the element with class .wishlist-panel
-    - Closing this panel shows the mobile menu again
-When the mobile menu is open, and the menu's user icon is clicked, the element with class "app-tray-panels" gets an "active" class, as does the element with class .wishlist-panel
-    - Closing this panel removes the "menu-open" class from the html element and the inline style "overflow: hidden" from the body, and the mobile menu closes
-*/
-
 const LOG_ENABLED = true;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
@@ -682,101 +654,50 @@ function setupResizeListener() {
     customLog('[setupResizeListener] Resize listener attached.');
 }
 
-// function setupSearchPanelVisibility() {
-//     customLog('[setupSearchPanelVisibility] Setting up MutationObserver for html class changes...');
-
-//     const htmlElement = document.documentElement;
-//     if (!htmlElement) {
-//         console.warn('[setupSearchPanelVisibility] HTML element not found.');
-//         return;
-//     }
-//     customLog('[setupSearchPanelVisibility] HTML element found:', htmlElement);
-
-//     const observer = new MutationObserver((mutations) => {
-//         mutations.forEach((mutation) => {
-//             if (mutation.attributeName === 'class') {
-//                 customLog('[setupSearchPanelVisibility] Class attribute change detected on HTML element.');
-//                 const hasMobile = htmlElement.classList.contains('mobile');
-//                 const hasMenuOpen = htmlElement.classList.contains('menu-open');
-//                 // const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
-//                 const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
-
-//                 if (hasMobile && hasMenuOpen) {
-//                     customLog('[setupSearchPanelVisibility] Mobile and menu-open classes detected.');
-//                     if (searchPanel) {
-//                         customLog('[setupSearchPanelVisibility] Search panel found:', searchPanel);
-//                         const currentStyles = searchPanel.getAttribute('style') || '';
-//                         const newStyles = currentStyles.includes('display:')
-//                             ? currentStyles.replace(/display:[^;]+;?/, 'display: none !important;')
-//                             : currentStyles + (currentStyles.endsWith(';') ? '' : ';') + 'display: none !important;';
-//                         searchPanel.setAttribute('style', newStyles);
-//                         customLog('[setupSearchPanelVisibility] Search panel set to display: none !important');
-//                     } else {
-//                         console.warn('[setupSearchPanelVisibility] Search panel (.search-panel.panel.algolia-search-panel.active) not found.');
-//                     }
-//                 } else if (!hasMenuOpen) {
-//                     customLog('[setupSearchPanelVisibility] Menu-open class removed.');
-//                     if (searchPanel) {
-//                         customLog('[setupSearchPanelVisibility] Search panel found, restoring display:', searchPanel);
-//                         const currentStyles = searchPanel.getAttribute('style') || '';
-//                         const newStyles = currentStyles.includes('display:')
-//                             ? currentStyles.replace(/display:[^;]+;?/, 'display: block;')
-//                             : currentStyles + (currentStyles.endsWith(';') ? '' : ';') + 'display: block;';
-//                         searchPanel.setAttribute('style', newStyles);
-//                         customLog('[setupSearchPanelVisibility] Search panel set to display: block');
-//                     } else {
-//                         console.warn('[setupSearchPanelVisibility] Search panel (.search-panel.panel.algolia-search-panel.active) not found for restore.');
-//                     }
-//                 }
-//             }
-//         });
-//     });
-
-//     observer.observe(htmlElement, { attributes: true, attributeFilter: ['class'] });
-//     customLog('[setupSearchPanelVisibility] MutationObserver set up to monitor class changes on HTML element.');
-// }
-
 function setupSearchPanelVisibility() {
-    const htmlElement = document.documentElement;
-    const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
-    const searchInput = document.querySelector('.ccx-mobile-search-input');
-    let hadMenuOpen = htmlElement.classList.contains('menu-open');
+    customLog('[setupSearchPanelVisibility] Setting up search panel visibility...');
 
+    // Select the HTML element
+    const htmlElement = document.documentElement;
+
+    // Create a MutationObserver instance
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
+            // Check if the class attribute changed
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const hasMenuOpen = htmlElement.classList.contains('menu-open');
-                const hasMobile = htmlElement.classList.contains('mobile');
-
-                if (hasMobile) {
-                    if (hasMenuOpen) {
-                        console.log('HTML element has both .menu-open and .mobile classes');
-                        if (searchPanel) {
-                            console.log('Hiding search panel');
-                            searchPanel.style.cssText = 'display: none !important';
+                const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
+                
+                if (hasMenuOpen) {
+                    customLog('menu-open class added');
+                    if (searchPanel) {
+                        searchPanel.style.display = 'none';
+                    }
+                }
+                
+                if (!hasMenuOpen) {
+                    customLog('menu-open class removed');
+                    searchPanel.style.display = 'block';
+                    const searchInput = document.querySelector('.ccx-mobile-search-input');
+                    if (searchInput && searchInput.value.trim() !== '') {
+                        const appTrayPanels = document.querySelector('.app-tray-panels');
+                        if (appTrayPanels) {
+                            appTrayPanels.classList.add('active');
                         }
-                    } else {
-                        console.log('HTML element has .mobile class but .menu-open class was removed');
                         if (searchPanel) {
-                            console.log('Showing search panel');
-                            searchPanel.style.cssText = '';
-                            if (hadMenuOpen && !hasMenuOpen && searchInput && searchInput.type === 'text' && searchInput.value.trim() !== '') {
-                                console.log('Adding active class to search panel due to non-empty text input on menu-open removal');
-                                searchPanel.classList.add('active');
-                            }
-                        } else {
-                            console.log('Search panel element not found');
+                            searchPanel.classList.add('active');
+                            searchPanel.style.display = 'block';
                         }
                     }
-                    hadMenuOpen = hasMenuOpen;
                 }
             }
         });
     });
 
+    // Configure and start the observer
     observer.observe(htmlElement, {
-        attributes: true,
-        attributeFilter: ['class']
+        attributes: true, // Observe attribute changes
+        attributeFilter: ['class'], // Only monitor class attribute
     });
 }
 
