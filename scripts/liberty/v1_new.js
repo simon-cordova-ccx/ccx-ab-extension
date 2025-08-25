@@ -666,18 +666,23 @@ function setupSearchPanelVisibility() {
             // Check if the class attribute changed
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const hasMenuOpen = htmlElement.classList.contains('menu-open');
+                const hasNoScroll = htmlElement.classList.contains('no-scroll');
                 const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
-                
-                if (hasMenuOpen) {
-                    customLog('menu-open class added');
+
+                // If either menu-open or no-scroll is present, hide the search panel
+                if (hasMenuOpen || hasNoScroll) {
+                    customLog(`${hasMenuOpen ? 'menu-open' : 'no-scroll'} class added`);
                     if (searchPanel) {
                         searchPanel.style.display = 'none';
                     }
                 }
-                
-                if (!hasMenuOpen) {
-                    customLog('menu-open class removed');
-                    searchPanel.style.display = 'block';
+
+                // If neither menu-open nor no-scroll is present, show the search panel
+                if (!hasMenuOpen && !hasNoScroll) {
+                    customLog('menu-open and no-scroll classes removed');
+                    if (searchPanel) {
+                        searchPanel.style.display = 'block';
+                    }
                     const searchInput = document.querySelector('.ccx-mobile-search-input');
                     if (searchInput && searchInput.value.trim() !== '') {
                         const appTrayPanels = document.querySelector('.app-tray-panels');
