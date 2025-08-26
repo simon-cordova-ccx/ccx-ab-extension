@@ -44,7 +44,6 @@ const styles = `
     flex-direction: row;
     align-items: center;
     padding: 10px 15px;
-    gap: 10px;
     height: 40px;
     background: #F9F9F9;
     border: 1px solid #E9E9E9;
@@ -73,7 +72,7 @@ const styles = `
     width: 20px;
     height: 19.97px;
     color: #000000;
-
+    margin-right: 1rem;
     flex: none;
     order: 0;
     flex-grow: 0;
@@ -97,7 +96,7 @@ const styles = `
     line-height: normal;
     min-height: 19px;
     padding: 0;
-    padding-right: 8rem;
+    padding-right: 84px;
     height: auto;
     box-sizing: border-box;
     width: 100%;
