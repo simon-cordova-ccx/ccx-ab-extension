@@ -53,6 +53,7 @@ const styles = `
   flex: none;
   order: 0;
   flex-grow: 1;
+  max-width: 100%;
 }
 
 .ccx-mobile-search-bar-mobile:hover {
@@ -671,7 +672,7 @@ function setupSearchPanelVisibility() {
 
                 // If either menu-open or no-scroll is present, hide the search panel
                 if (hasMenuOpen || hasNoScroll) {
-                    customLog(`${hasMenuOpen ? 'menu-open' : 'no-scroll'} class added`);
+                    customLog((hasMenuOpen ? 'menu-open' : 'no-scroll') + ' class added');
                     if (searchPanel) {
                         searchPanel.style.display = 'none';
                     }
