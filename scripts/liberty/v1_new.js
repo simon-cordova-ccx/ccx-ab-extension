@@ -1,4 +1,4 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -570,9 +570,9 @@ function handleResize() {
     if (window.innerWidth <= 767) {
         if (navContainer.nextElementSibling !== searchContainer) {
             navContainer.insertAdjacentElement('afterend', searchContainer);
-            customLog('[handleResize] Moved search container -> after .nav-container (mobile).');
+            // customLog('[handleResize] Moved search container -> after .nav-container (mobile).');
         } else {
-            customLog('[handleResize] Search container already in correct mobile position.');
+            // customLog('[handleResize] Search container already in correct mobile position.');
         }
     }
 
@@ -589,9 +589,9 @@ function handleResize() {
         if (tabletLogoHome) {
             if (tabletLogoHome.nextElementSibling !== searchContainer) {
                 tabletLogoHome.insertAdjacentElement('afterend', searchContainer);
-                customLog('[handleResize] Moved search container -> after .logo-home (tablet).');
+                // customLog('[handleResize] Moved search container -> after .logo-home (tablet).');
             } else {
-                customLog('[handleResize] Search container already in correct tablet position.');
+                // customLog('[handleResize] Search container already in correct tablet position.');
             }
         } else {
             console.warn('[handleResize] Tablet target element (.logo-home inside nav.js-header-mobile.app-tray-menu) not found.');
@@ -606,18 +606,18 @@ function handleResize() {
     if (window.innerWidth >= 992) {
         if (navContainer.nextElementSibling !== controlDesktopCategoriesList) {
             navContainer.insertAdjacentElement('afterend', controlDesktopCategoriesList);
-            customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');
+            // customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');
         } else {
-            customLog('[handleResize] #sg-navbar-collapse already in correct desktop position.');
+            // customLog('[handleResize] #sg-navbar-collapse already in correct desktop position.');
         }
 
         // get the ccx search container and place it after the element "nav[aria-label="main-menu"] > .brand"
         if (brandElement) {
             if (brandElement.nextElementSibling !== searchContainer) {
                 brandElement.insertAdjacentElement('afterend', searchContainer);
-                customLog('[handleResize] Moved ccx search container -> after .brand (desktop).');
+                // customLog('[handleResize] Moved ccx search container -> after .brand (desktop).');
             } else {
-                customLog('[handleResize] ccx search container already in correct desktop position.');
+                // customLog('[handleResize] ccx search container already in correct desktop position.');
             }
         } else {
             console.warn('[handleResize] .brand element not found for desktop placement.');
@@ -706,41 +706,56 @@ function setupSearchPanelVisibility() {
 }
 
 function observeModalAdjust() {
-    // Select the target element
-    const target = document.querySelector('.mobile .algolia-refinement-bar');
     const desktopHeader = document.querySelector('.desktop-header');
-    const mobileSearchPanel = document.querySelector('.mobile .search-panel.panel.algolia-search-panel.active');
+    const mobileContainer = document.querySelector('.mobile'); // parent that always exists
 
-    if (!target || !desktopHeader) {
-        console.warn('Target or desktop header element not found.');
+    if (!desktopHeader || !mobileContainer) {
+        console.warn('Desktop header or mobile container not found.');
         return;
     }
 
-    // Create observer
-    const observer = new MutationObserver((mutationsList) => {
-        mutationsList.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const classList = mutation.target.classList;
+    let refinementObserver = null;
 
-                if (classList.contains('d-flex')) {
-                    desktopHeader.style.display = 'none';
-                    if (mobileSearchPanel) {
-                        mobileSearchPanel.style.marginTop = '0';
+    const attachRefinementObserver = (target) => {
+        if (!target) return;
+
+        // Disconnect any old one
+        if (refinementObserver) refinementObserver.disconnect();
+
+        refinementObserver = new MutationObserver((mutationsList) => {
+            mutationsList.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const classList = mutation.target.classList;
+                    const mobileSearchPanel = document.querySelector('.mobile .search-panel.panel.algolia-search-panel.active');
+
+                    if (classList.contains('d-flex')) {
+                        desktopHeader.style.display = 'none';
+                        if (mobileSearchPanel) mobileSearchPanel.style.marginTop = '0';
+                        customLog('Desktop header hidden, search panel margin set to 0');
+                    } else if (classList.contains('d-none')) {
+                        desktopHeader.style.display = '';
+                        if (mobileSearchPanel) mobileSearchPanel.style.marginTop = '15rem';
+                        customLog('Desktop header shown, search panel margin reset to 15rem');
                     }
-                    customLog('Desktop header hidden, search panel margin set to 0');
-                } else if (classList.contains('d-none')) {
-                    desktopHeader.style.display = '';
-                    if (mobileSearchPanel) {
-                        mobileSearchPanel.style.marginTop = '15.5rem';
-                    }
-                    customLog('Desktop header shown, search panel margin reset to 15.5rem');
                 }
-            }
+            });
         });
+
+        refinementObserver.observe(target, { attributes: true });
+        customLog('Refinement observer attached');
+    };
+
+    // Watch the mobile container for when the refinement bar is added/removed
+    const containerObserver = new MutationObserver(() => {
+        const target = document.querySelector('.mobile .algolia-refinement-bar');
+        if (target) attachRefinementObserver(target);
     });
 
-    // Observe class attribute changes
-    observer.observe(target, { attributes: true });
+    containerObserver.observe(mobileContainer, { childList: true, subtree: true });
+
+    // If it already exists on load, attach immediately
+    const initialTarget = document.querySelector('.mobile .algolia-refinement-bar');
+    if (initialTarget) attachRefinementObserver(initialTarget);
 }
 
 
