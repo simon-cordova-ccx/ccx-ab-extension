@@ -50,6 +50,8 @@ const styles = `
     border: 1px solid #E9E9E9;
     border-radius: 25px;
     order: 0;
+    width: 100%;
+    max-width: 600px;
 }
 
 .ccx-mobile-search-bar-mobile:hover {
