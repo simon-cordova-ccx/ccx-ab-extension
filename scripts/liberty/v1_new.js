@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -705,6 +705,45 @@ function setupSearchPanelVisibility() {
     });
 }
 
+function observeModalAdjust() {
+    // Select the target element
+    const target = document.querySelector('.mobile .algolia-refinement-bar');
+    const desktopHeader = document.querySelector('.desktop-header');
+    const mobileSearchPanel = document.querySelector('.mobile .search-panel.panel.algolia-search-panel.active');
+
+    if (!target || !desktopHeader) {
+        console.warn('Target or desktop header element not found.');
+        return;
+    }
+
+    // Create observer
+    const observer = new MutationObserver((mutationsList) => {
+        mutationsList.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const classList = mutation.target.classList;
+
+                if (classList.contains('d-flex')) {
+                    desktopHeader.style.display = 'none';
+                    if (mobileSearchPanel) {
+                        mobileSearchPanel.style.marginTop = '0';
+                    }
+                    customLog('Desktop header hidden, search panel margin set to 0');
+                } else if (classList.contains('d-none')) {
+                    desktopHeader.style.display = '';
+                    if (mobileSearchPanel) {
+                        mobileSearchPanel.style.marginTop = '15.5rem';
+                    }
+                    customLog('Desktop header shown, search panel margin reset to 15.5rem');
+                }
+            }
+        });
+    });
+
+    // Observe class attribute changes
+    observer.observe(target, { attributes: true });
+}
+
+
 function init() {
     try {
         customLog(TEST_NAME + ' | ' + VARIATION);
@@ -727,6 +766,9 @@ function init() {
                 // Add responsive behavior
                 setupResizeListener();
                 setupSearchPanelVisibility();
+
+                // This listens to the mobile filter, and adjusts the desktop header visibility
+                observeModalAdjust();
             }
         );
 
