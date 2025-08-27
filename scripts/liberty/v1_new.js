@@ -88,16 +88,16 @@ const styles = `
     border: none;
     background: transparent;
     outline: none;
-    flex: none;
+    flex: 1;
     order: 1;
     line-height: normal;
     min-height: 19px;
     padding: 0;
-    padding-right: 84px;
     height: auto;
     box-sizing: border-box;
     width: 100%;
     display: block;
+    min-width: 0;
 }
 
 .ccx-mobile-clear-btn {
@@ -121,6 +121,7 @@ const styles = `
     /* hidden by default */
     user-select: none;
     background-color: transparent;
+    flex-shrink: 0;
 }
 
 .ccx-mobile-clear-btn:hover {
@@ -138,6 +139,14 @@ const styles = `
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
+.ccx-mobile-search-close-icon:hover rect {
+    stroke: #757575;
+}
+
+.ccx-mobile-search-close-icon:active rect {
+    fill: #757575;
+} 
 
 .menu-open .navbar .search-link {
     width: 0;
@@ -177,6 +186,10 @@ const styles = `
     top: 15.5rem;
 }
 
+.search-results .sorting-actions {
+    top: 15.5rem;
+}
+
 @media screen and (min-width: 768px) {
     .mobile .search-panel.panel.algolia-search-panel.active {
         margin-top: 9.5rem;
@@ -187,6 +200,10 @@ const styles = `
     }
 
     .brand-category-letters {
+        top: 9.5rem;
+    }
+
+    .search-results .sorting-actions {
         top: 9.5rem;
     }
 }
@@ -245,11 +262,15 @@ const styles = `
     .desktop .navbar-nav pinned-categories .next-arrow {
         display: none;
     }
+
+    .search-results .sorting-actions {
+        top: 13.5rem;
+    }
 }
 
 @media screen and (min-width: 1441px) {
     .desktop .search-panel.panel.algolia-search-panel.active {
-        margin-top: 0;
+        margin-top: 0 !important;
     }
 
     .brand-category-letters {
@@ -259,6 +280,10 @@ const styles = `
     .desktop .refinement-bar.active {
         margin-top: 6rem;
         height: calc(100dvh - 15rem);
+    }
+
+    .search-results .sorting-actions {
+        top: 15.5rem;
     }
 }
 `;
@@ -366,7 +391,7 @@ function createSearchComponent() {
     const input = document.createElement('input');
     input.classList.add('ccx-mobile-search-input');
     input.type = 'text';
-    input.placeholder = `Find what you're looking for…`;
+    input.setAttribute('placeholder', "Find out what you're looking for...");
 
     // Clear button inside input field (absolute positioned)
     const clearBtn = document.createElement('button');
@@ -444,6 +469,8 @@ function bindMobileSearchInput() {
         customLog('Focus in');
 
         e.preventDefault();
+        e.stopImmediatePropagation();
+        e.stopPropagation();
 
         controlMagnifyingGlass.click();
         controlSearchInput.focus();
@@ -812,7 +839,7 @@ function observeModalAdjust() {
         });
 
         refinementObserver.observe(target, { attributes: true });
-        customLog('Refinement observer attached');
+        // customLog('Refinement observer attached');
     };
 
     // Watch the mobile container for when the refinement bar is added/removed
