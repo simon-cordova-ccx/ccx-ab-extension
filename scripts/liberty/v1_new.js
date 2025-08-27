@@ -3,9 +3,6 @@ const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
 
-const omaze23Data = {
-}
-
 const variationSearchIconSVG = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.796 13.7249C16.1726 12.0681 16.857 9.94409 16.7064 7.79527C16.5559 5.64646 15.582 3.63859 13.9878 2.18998C12.3935 0.741379 10.3019 -0.0362431 8.14849 0.0191235C5.99512 0.07449 3.9461 0.958582 2.42841 2.4872C0.910708 4.01582 0.0413676 6.07107 0.00143861 8.22478C-0.0384904 10.3785 0.754084 12.4646 2.21408 14.0484C3.67407 15.6322 5.6889 16.5916 7.83874 16.7268C9.98858 16.8619 12.1077 16.1624 13.7545 14.7739L18.9494 19.9837L20 18.9256L14.796 13.7249ZM8.37227 15.2567C7.01074 15.2582 5.67938 14.8558 4.54658 14.1005C3.41379 13.3451 2.5305 12.2708 2.00844 11.0133C1.48638 9.75583 1.34901 8.37177 1.61373 7.03622C1.87844 5.70067 2.5333 4.47365 3.49552 3.51038C4.45775 2.5471 5.68407 1.89087 7.01933 1.6247C8.35459 1.35854 9.73882 1.49439 10.9969 2.01508C12.2549 2.53578 13.3302 3.41791 14.0868 4.54988C14.8434 5.68184 15.2472 7.01278 15.2472 8.37431C15.2478 10.1984 14.5241 11.9481 13.235 13.2387C11.946 14.5293 10.1964 15.2552 8.37227 15.2567Z" fill="black"/>
 </svg>
@@ -24,7 +21,7 @@ const selectors = {
 
 const styles = `
 /* Container: Auto layout */
-  .ccx-mobile-search-container {
+.ccx-mobile-search-container {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -35,9 +32,9 @@ const styles = `
     height: 60px;
     max-width: 600px;
     margin: 0 auto;
-  }
+}
 
-  /* Search bar: Auto layout */
+/* Search bar: Auto layout */
 .ccx-mobile-search-bar-mobile {
     box-sizing: border-box;
     display: flex;
@@ -59,16 +56,16 @@ const styles = `
 }
 
 .ccx-mobile-search-bar-mobile:focus-within {
-  border: 1px solid #757575;
-  color: #000000;
+    border: 1px solid #757575;
+    color: #000000;
 }
 
 .ccx-mobile-search-bar-mobile:focus-within .ccx-mobile-search-input {
-  color: #000000;
+    color: #000000;
 }
 
-  /* Search icon */
-  .ccx-mobile-search-icon {
+/* Search icon */
+.ccx-mobile-search-icon {
     width: 20px;
     height: 19.97px;
     color: #000000;
@@ -76,9 +73,9 @@ const styles = `
     flex: none;
     order: 0;
     flex-grow: 0;
-  }
+}
 
-  /* Placeholder text */
+/* Placeholder text */
 .ccx-mobile-search-input {
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
     font-style: normal;
@@ -104,35 +101,37 @@ const styles = `
 }
 
 .ccx-mobile-clear-btn {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: 'Akzidenz-Grotesk Pro', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 14px;
-  line-height: 130%;
-  letter-spacing: 0;
-  text-align: center;
-  color: #757575;
-  border: none;
-  border-radius: 3px;
-  padding: 2px 8px;
-  cursor: pointer;
-  display: none; /* hidden by default */
-  user-select: none;
-  background-color: transparent;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Akzidenz-Grotesk Pro', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: 0;
+    text-align: center;
+    color: #757575;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 8px;
+    cursor: pointer;
+    display: none;
+    /* hidden by default */
+    user-select: none;
+    background-color: transparent;
 }
 
 .ccx-mobile-clear-btn:hover {
     color: #000;
     text-decoration: underline;
-}   
+}
 
 .ccx-mobile-search-close-icon {
     border-radius: 50%;
     margin-left: 10px;
+    display: none;
 }
 
 .ccx-mobile-search-close-icon:hover {
@@ -147,7 +146,7 @@ const styles = `
     visibility: hidden;
 }
 
-.app-tray-menu .app-tray-buttons > .search {
+.app-tray-menu .app-tray-buttons>.search {
     width: 0;
     height: 0;
     visibility: hidden;
@@ -168,7 +167,7 @@ const styles = `
     padding: 0 !important;
 }
 
-.algolia-search-panel > .panel-title {
+.algolia-search-panel>.panel-title {
     width: 0;
     height: 0;
     visibility: hidden;
@@ -182,51 +181,86 @@ const styles = `
     .mobile .search-panel.panel.algolia-search-panel.active {
         margin-top: 9.5rem;
     }
+
     .nav-container .ccx-mobile-search-container {
         padding-bottom: 10px;
     }
+
     .brand-category-letters {
         top: 9.5rem;
     }
 }
 
 @media screen and (min-width: 992px) {
-    .desktop .app-tray-panels > div.active {
+    .desktop .app-tray-panels>div.active {
         margin-top: 6rem;
     }
+
     .desktop .refinement-bar.active {
         margin-top: 6rem;
         height: calc(100dvh - 13rem);
     }
+
     .desktop .search-panel.panel.algolia-search-panel.active {
         margin-top: 6rem;
     }
+
     .desktop #sg-navbar-collapse .navbar-nav {
         background: #F9F9F9;
     }
-    .desktop #sg-navbar-collapse .navbar-nav .slideout-menu {
+
+    .desktop #sg-navbar-collapse .navbar-nav li.nav-item>.slideout-menu {
         margin-top: 6rem;
     }
+
     .desktop #sg-navbar-collapse .navbar-nav {
         justify-content: center;
     }
-    #sg-navbar-collapse > .navbar > div > span.prev-arrow,
-    #sg-navbar-collapse > .navbar > div > span.next-arrow {
+
+    #sg-navbar-collapse>.navbar>div>span.prev-arrow,
+    #sg-navbar-collapse>.navbar>div>span.next-arrow {
         display: none;
     }
+
     .brand-category-letters {
         top: 13.5rem;
     }
 
-    @media screen and (min-width: 1441px) {    
-        .brand-category-letters {
-            top: 15.5rem;
-        }
-        .desktop .refinement-bar.active {
-            margin-top: 6rem;
-            height: calc(100dvh - 15rem);
-        }
+    .desktop .navbar-nav pinned-categories {
+        padding: 0 6rem 0 2rem;
+        display: flex;
+        justify-content: center;
     }
+
+    .desktop .navbar-nav pinned-categories {
+        padding: 0 6rem 0 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .desktop .navbar-nav pinned-categories .prev-arrow {
+        display: none;
+    }
+
+    .desktop .navbar-nav pinned-categories .next-arrow {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1441px) {
+    .desktop .search-panel.panel.algolia-search-panel.active {
+        margin-top: 0;
+    }
+
+    .brand-category-letters {
+        top: 15.5rem;
+    }
+
+    .desktop .refinement-bar.active {
+        margin-top: 6rem;
+        height: calc(100dvh - 15rem);
+    }
+}
 `;
 
 const customLog = (...messages) => {
@@ -376,10 +410,14 @@ function createSearchComponent() {
 }
 
 function bindMobileSearchInput() {
-    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
     const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
-    const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
+    const controlAppTrayPanel = document.querySelector('.app-tray-panels');
     const controlClearBtn = document.querySelector('.ais-SearchBox-reset.algolia-clear-button');
+    const controlMagnifyingGlass = document.querySelector('.app-tray-buttons .search .app-tray-icon');
+    const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
+
+    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
+    const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
     const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
 
     if (!ccxMobileSearchInput) {
@@ -393,14 +431,84 @@ function bindMobileSearchInput() {
     }
 
     if (!ccxMobileClearButton) {
-        console.warn('Required element not found: ccx-mobile-clear-btn');
-        // Not fatal, continue
+        console.warn('Required element not found: ccxMobileClearButton');
+        return;
     }
 
     if (!ccxMobileCloseIcon) {
-        console.warn('Required element not found: ccx-mobile-search-close-icon');
-        // Not fatal, continue
+        console.warn('Required element not found: ccxMobileCloseIcon');
+        return;
     }
+
+    ccxMobileSearchInput.addEventListener('focusin', (e) => {
+        customLog('Focus in');
+
+        e.preventDefault();
+
+        controlMagnifyingGlass.click();
+        controlSearchInput.focus();
+
+        if (!controlAppTrayPanel.classList.contains('active')) {
+            controlAppTrayPanel.classList.add('active');
+        }
+
+        if (!controlAlgoliaSearchPanel.classList.contains('active')) {
+            controlAlgoliaSearchPanel.classList.add('active');
+        }
+
+        ccxMobileCloseIcon.style.display = 'block';
+        ccxMobileSearchInput.focus();
+    })
+
+    ccxMobileClearButton.addEventListener('click', () => {
+        // Clear our custom input
+        ccxMobileSearchInput.value = '';
+        const inputEvent = new Event('input', { bubbles: true });
+        ccxMobileSearchInput.dispatchEvent(inputEvent);
+
+        ccxMobileCloseIcon.style.display = 'block';
+
+        // Also trigger click on original clear button if found
+        if (controlClearBtn) {
+            controlClearBtn.click();
+        } else {
+            console.warn('Original clear button .ais-SearchBox-reset.algolia-clear-button not found');
+        }
+    });
+
+    // Force remove .active class from selected elements
+    function forceRemoveActive(selectors, attempts = 5, delay = 100) {
+        let count = 0;
+        const interval = setInterval(() => {
+            selectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => {
+                    if (el.classList.contains('active')) {
+                        el.classList.remove('active');
+                        customLog(`[forceRemoveActive] Removed .active from:`, el);
+                    }
+                });
+            });
+            count++;
+            if (count >= attempts) clearInterval(interval);
+        }, delay);
+    }
+
+    ccxMobileCloseIcon.addEventListener('click', () => {
+        customLog('[ccxMobileCloseIcon] Click event triggered.');
+
+        // Run forced cleanup for a short period
+        forceRemoveActive([
+            '.app-tray-panels',
+            '.search-panel.panel.algolia-search-panel',
+            '.ais-InstantSearch'
+        ]);
+
+        // Reset input
+        ccxMobileSearchInput.value = '';
+        const inputEvent = new Event('input', { bubbles: true });
+        ccxMobileSearchInput.dispatchEvent(inputEvent);
+        ccxMobileSearchInput.blur();
+    });
 
     ccxMobileSearchInput.addEventListener('input', () => {
         // Toggle panels
@@ -413,50 +521,11 @@ function bindMobileSearchInput() {
         // Update search input value and dispatch input event for Algolia
         controlSearchInput.value = ccxMobileSearchInput.value;
         controlSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+        if (controlSearchInput.value === '') {
+            ccxMobileClearButton.click();
+        }
     });
-
-    if (ccxMobileClearButton) {
-        ccxMobileClearButton.addEventListener('click', () => {
-            // Clear our custom input
-            ccxMobileSearchInput.value = '';
-            const inputEvent = new Event('input', { bubbles: true });
-            ccxMobileSearchInput.dispatchEvent(inputEvent);
-
-            // Also trigger click on original clear button if found
-            if (controlClearBtn) {
-                controlClearBtn.click();
-            } else {
-                console.warn('Original clear button .ais-SearchBox-reset.algolia-clear-button not found');
-            }
-        });
-    }
-
-    if (ccxMobileCloseIcon) {
-        ccxMobileCloseIcon.addEventListener('click', () => {
-            customLog('[ccxMobileCloseIcon] Click event triggered.');
-
-            const appTrayPanel = document.querySelector('.app-tray-panels.active');
-            if (appTrayPanel) {
-                appTrayPanel.classList.remove('active');
-                customLog('[ccxMobileCloseIcon] Removed .active from app-tray-panels:', appTrayPanel);
-            } else {
-                console.warn('[ccxMobileCloseIcon] No .app-tray-panels.active found.');
-            }
-
-            const activeSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel.active');
-            if (activeSearchPanel) {
-                activeSearchPanel.classList.remove('active');
-                customLog('[ccxMobileCloseIcon] Removed .active from search panel:', activeSearchPanel);
-            } else {
-                console.warn('[ccxMobileCloseIcon] No .search-panel.panel.algolia-search-panel.active found.');
-            }
-        });
-
-        customLog('[ccxMobileCloseIcon] Event listener attached successfully:', ccxMobileCloseIcon);
-    } else {
-        console.warn('[ccxMobileCloseIcon] Element not found — listener not attached.');
-    }
-
 }
 
 function appendSearchComponent() {
@@ -470,7 +539,7 @@ function appendSearchComponent() {
 
     customLog('Element found, creating and appending search component.');
     const searchComponent = createSearchComponent();
-    setupSearchCloseBehavior(searchComponent);
+    // setupSearchCloseBehavior(searchComponent);
 
     if (!searchComponent) {
         console.warn('Search component creation failed. Nothing appended.');
@@ -538,6 +607,7 @@ function applyAlgqParamValue() {
         ccxMobileSearchInput.value = algqValue;
         ccxMobileSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
         customLog('[applyAlgqParamValue] Applied value to ccxMobileSearchInput.');
+        ccxMobileSearchInput.click();
     } else {
         console.warn('[applyAlgqParamValue] ccxMobileSearchInput not found.');
     }
@@ -758,6 +828,38 @@ function observeModalAdjust() {
     if (initialTarget) attachRefinementObserver(initialTarget);
 }
 
+function observeSearchPanelActive() {
+  const target = document.querySelector('.search-panel.panel.algolia-search-panel');
+
+  if (!target) {
+    console.warn('[Observer] Target element not found');
+    return;
+  }
+
+  const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        const hasActive = mutation.target.classList.contains('active');
+        if (hasActive) {
+          customLog('[ACTIVE ADDED]', mutation.target);
+          document.querySelector('.desktop .menu-group').style.display = 'none';
+          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '1rem';
+        } else {
+          customLog('[ACTIVE REMOVED]', mutation.target);
+          document.querySelector('.desktop .menu-group').style.display = 'block';
+          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
+        }
+      }
+    }
+  });
+
+  observer.observe(target, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  customLog('[Observer started] Watching for class "active" on', target);
+}
 
 function init() {
     try {
@@ -784,6 +886,8 @@ function init() {
 
                 // This listens to the mobile filter, and adjusts the desktop header visibility
                 observeModalAdjust();
+
+                observeSearchPanelActive();
             }
         );
 
