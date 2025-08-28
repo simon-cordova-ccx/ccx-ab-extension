@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -164,7 +164,7 @@ const styles = `
 }
 
 .mobile .search-panel.panel.algolia-search-panel.active {
-    margin-top: 15.5rem;
+    margin-top: 15.5rem !important;
 }
 
 #algolia-search-header-wrapper {
@@ -190,7 +190,7 @@ const styles = `
 
 @media screen and (min-width: 768px) {
     .mobile .search-panel.panel.algolia-search-panel.active {
-        margin-top: 9.5rem;
+        margin-top: 9.5rem !important;
     }
 
     .nav-container .ccx-mobile-search-container {
@@ -835,14 +835,25 @@ function observeSearchPanelActive() {
     for (const mutation of mutationsList) {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const hasActive = mutation.target.classList.contains('active');
+
         if (hasActive) {
+          const controlDesktopMenuGroup = document.querySelector('.desktop .menu-group');
+
           customLog('[ACTIVE ADDED]', mutation.target);
-          document.querySelector('.desktop .menu-group').style.display = 'none';
-          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '1rem';
+          if (controlDesktopMenuGroup) {
+            controlDesktopMenuGroup.style.display = 'none';
+          }
+          const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active')
+          if (controlDesktopSearchPanel) {
+            controlDesktopSearchPanel.style.marginTop = '1rem';
+          }
         } else {
-          customLog('[ACTIVE REMOVED]', mutation.target);
-          document.querySelector('.desktop .menu-group').style.display = 'block';
-          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
+            if (controlDesktopMenuGroup) {
+                customLog('[ACTIVE REMOVED]', mutation.target);
+                controlDesktopMenuGroup.style.display = 'block';
+                document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
+
+            }
         }
       }
     }
