@@ -618,7 +618,9 @@ function setupSearchInputSync() {
     const controlSearchInput = document.querySelector('.ais-SearchBox-input');
     const controlAppTrayPanel = document.querySelector('.app-tray-panels');
     const controlSearchContainer = document.querySelector('.app-tray-panels .search-panel');
-    const controlMagnifyingGlass = document.querySelector('body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
+    // const controlMagnifyingGlass = document.querySelector('body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
+    const controlMagnifyingGlass = document.querySelector('.app-tray-buttons > .search');
+    const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const body = document.querySelector('body');
 
     // Validate inputs
@@ -642,9 +644,9 @@ function setupSearchInputSync() {
     if (!body) {
         console.warn('[setupSearchInputSync] body element not found.');
     }
-
-    // Make new input visible immediately
-    ccxInput.style.display = 'block';
+    if (!ccxCloseIcon) {
+        console.warn('[setupSearchInputSync] .ccx-mobile-search-close-icon not found.');
+    }
 
     // Check for algq parameter on page load and populate custom input
     const urlParams = new URLSearchParams(window.location.search);
@@ -654,10 +656,14 @@ function setupSearchInputSync() {
         controlSearchInput.value = algqValue; // Ensure control input is also populated
         const inputEvent = new Event('input', { bubbles: true });
         controlSearchInput.dispatchEvent(inputEvent);
+        if (ccxCloseIcon) {
+            ccxCloseIcon.style.display = 'block';
+            console.log('[setupSearchInputSync] Showed close button due to algq value:', algqValue);
+        }
         console.log('[setupSearchInputSync] Populated custom input with algq value:', algqValue);
     }
 
-    // Add active classes on focusin with safeguard to prevent multiple triggers
+    // Add active classes and show close button on focusin with safeguard to prevent multiple triggers
     let isProcessing = false;
     ccxInput.addEventListener('focusin', (e) => {
         if (isProcessing) return; // Prevent multiple triggers
@@ -670,13 +676,17 @@ function setupSearchInputSync() {
         } else if (controlSearchContainer && controlSearchContainer.classList.contains('active')) {
             console.log('[setupSearchInputSync] Skipped magnifying glass click: .app-tray-panels .search-panel already has active class');
         }
+        if (ccxCloseIcon) {
+            ccxCloseIcon.style.display = 'block';
+            console.log('[setupSearchInputSync] Showed close button on focusin');
+        }
         // Refocus ccxInput after 100ms to allow website UI updates (adjust if delay is noticeable)
         setTimeout(() => { ccxInput.focus(); }, 100);
         // Reset isProcessing after 150ms to allow subsequent focuses (adjust if duplicates occur)
         setTimeout(() => { isProcessing = false; }, 150);
     });
 
-    // Sync new input value to original input on input event
+    // Sync new input value to original input and update URL on input event
     ccxInput.addEventListener('input', () => {
         controlSearchInput.value = ccxInput.value;
         const inputEvent = new Event('input', { bubbles: true });
