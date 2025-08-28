@@ -443,7 +443,7 @@ function bindMobileSearchInput() {
 
     const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
     const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
+    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-container .ccx-mobile-search-close-icon');
 
     if (!ccxMobileSearchInput) {
         console.warn('Required element not found: ccxMobileSearchInput');
@@ -462,6 +462,11 @@ function bindMobileSearchInput() {
 
     if (!ccxMobileCloseIcon) {
         console.warn('Required element not found: ccxMobileCloseIcon');
+        return;
+    }
+
+    if (!controlMagnifyingGlass) {
+        console.warn('Required element not found: controlMagnifyingGlass');
         return;
     }
 
@@ -535,6 +540,7 @@ function bindMobileSearchInput() {
         const inputEvent = new Event('input', { bubbles: true });
         ccxMobileSearchInput.dispatchEvent(inputEvent);
         ccxMobileSearchInput.blur();
+        ccxMobileCloseIcon.style.display = 'none';
     });
 
     ccxMobileSearchInput.addEventListener('input', () => {
@@ -566,7 +572,6 @@ function appendSearchComponent() {
 
     customLog('Element found, creating and appending search component.');
     const searchComponent = createSearchComponent();
-    // setupSearchCloseBehavior(searchComponent);
 
     if (!searchComponent) {
         console.warn('Search component creation failed. Nothing appended.');
@@ -575,45 +580,6 @@ function appendSearchComponent() {
 
     logoHome.insertAdjacentElement('afterend', searchComponent);
     customLog('Search component appended successfully.');
-}
-
-function setupSearchCloseBehavior(searchContainer) {
-    if (!searchContainer) {
-        console.warn('No search container provided.');
-        return;
-    }
-
-    const ccxMobileCloseIcon = searchContainer.querySelector('.ccx-mobile-search-close-icon');
-    const ccxMobileSearchInput = searchContainer.querySelector('.ccx-mobile-search-input');
-
-    if (!ccxMobileCloseIcon || !ccxMobileSearchInput) {
-        console.warn('Required elements not found in search container.');
-        return;
-    }
-
-    // Hide closeIcon initially if input is empty
-    if (ccxMobileSearchInput.value.length === 0) {
-        ccxMobileCloseIcon.style.display = 'none';
-    }
-
-    // Show or hide closeIcon based on input value
-    ccxMobileSearchInput.addEventListener('input', () => {
-        if (ccxMobileSearchInput.value.length > 0) {
-            ccxMobileCloseIcon.style.display = 'block';
-        } else {
-            ccxMobileCloseIcon.style.display = 'none';
-        }
-    });
-
-    // On close icon click: hide icon, clear input, focus input
-    ccxMobileCloseIcon.addEventListener('click', () => {
-        ccxMobileCloseIcon.style.display = 'none';
-        ccxMobileSearchInput.value = '';
-        ccxMobileSearchInput.focus();
-
-        // Trigger input event to update any other listeners/UI
-        ccxMobileSearchInput.dispatchEvent(new Event('input'));
-    });
 }
 
 function applyAlgqParamValue() {
@@ -654,7 +620,7 @@ function handleResize() {
     const brandElement = document.querySelector('header > .nav-container > nav[aria-label="main-menu"] > .brand');
     const controlDesktopCategoriesList = document.querySelector('#sg-navbar-collapse');
 
-    if (!searchContainer || !navContainer || !controlDesktopCategoriesList) {
+    if (!searchContainer || !navContainer || !controlDesktopCategoriesList || !searchContainer) {
         console.warn('[handleResize] Required elements not found.');
         return;
     }
