@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
@@ -101,10 +101,6 @@ const styles = `
 }
 
 .ccx-mobile-clear-btn {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -122,6 +118,8 @@ const styles = `
     user-select: none;
     background-color: transparent;
     flex-shrink: 0;
+    flex: 0 0 auto;
+    order: 2;
 }
 
 .ccx-mobile-clear-btn:hover {
@@ -166,7 +164,7 @@ const styles = `
 }
 
 .mobile .search-panel.panel.algolia-search-panel.active {
-    margin-top: 15.5rem;
+    margin-top: 15.5rem !important;
 }
 
 #algolia-search-header-wrapper {
@@ -192,7 +190,7 @@ const styles = `
 
 @media screen and (min-width: 768px) {
     .mobile .search-panel.panel.algolia-search-panel.active {
-        margin-top: 9.5rem;
+        margin-top: 9.5rem !important;
     }
 
     .nav-container .ccx-mobile-search-container {
@@ -364,76 +362,6 @@ function waitForElements(selectors, callback) {
         });
 }
 
-function createSearchComponent() {
-    customLog('Creating search component...');
-
-    const containerExists = document.querySelector('.ccx-mobile-search-container');
-    if (containerExists) {
-        console.warn('Search component already exists. Aborting creation.');
-        return null;
-    }
-
-    // Container
-    const container = document.createElement('div');
-    container.classList.add('ccx-mobile-search-container');
-
-    // Search bar wrapper
-    const searchBar = document.createElement('div');
-    searchBar.classList.add('ccx-mobile-search-bar-mobile');
-    searchBar.style.position = 'relative';
-
-    // Search icon container and insert SVG
-    const searchIcon = document.createElement('div');
-    searchIcon.classList.add('ccx-mobile-search-icon');
-    searchIcon.innerHTML = variationSearchIconSVG;
-
-    // Input element with placeholder
-    const input = document.createElement('input');
-    input.classList.add('ccx-mobile-search-input');
-    input.type = 'text';
-    input.setAttribute('placeholder', "Find out what you're looking for...");
-
-    // Clear button inside input field (absolute positioned)
-    const clearBtn = document.createElement('button');
-    clearBtn.classList.add('ccx-mobile-clear-btn');
-    clearBtn.textContent = 'Clear';
-
-    // Show or hide clear button based on input content
-    input.addEventListener('input', () => {
-        if (input.value.length > 0) {
-            clearBtn.style.display = 'block';
-        } else {
-            clearBtn.style.display = 'none';
-        }
-    });
-
-    // Clear input & hide button on click
-    clearBtn.addEventListener('click', () => {
-        input.value = '';
-        input.focus();
-        clearBtn.style.display = 'none';
-    });
-
-    const closeIcon = document.createElement('div');
-    closeIcon.classList.add('ccx-mobile-search-close-icon');
-    closeIcon.innerHTML = variationCloseIconSVG;
-
-    if (!container || !searchBar || !searchIcon || !input || !clearBtn || !closeIcon) {
-        console.warn('Failed to create some search component elements.');
-        return null;
-    }
-
-    // Preserve your append order exactly
-    searchBar.appendChild(searchIcon);
-    searchBar.appendChild(input);
-    searchBar.appendChild(clearBtn);
-    container.appendChild(searchBar);
-    container.appendChild(closeIcon);
-
-    customLog('Search component created successfully with clear button.');
-    return container;
-}
-
 function bindMobileSearchInput() {
     const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
     const controlAppTrayPanel = document.querySelector('.app-tray-panels');
@@ -561,27 +489,6 @@ function bindMobileSearchInput() {
     });
 }
 
-function appendSearchComponent() {
-    customLog('Looking for ".nav-container" element...');
-    const logoHome = document.querySelector('.nav-container');
-
-    if (!logoHome) {
-        console.warn('Element ".nav-container" not found. Aborting append.');
-        return;
-    }
-
-    customLog('Element found, creating and appending search component.');
-    const searchComponent = createSearchComponent();
-
-    if (!searchComponent) {
-        console.warn('Search component creation failed. Nothing appended.');
-        return;
-    }
-
-    logoHome.insertAdjacentElement('afterend', searchComponent);
-    customLog('Search component appended successfully.');
-}
-
 function applyAlgqParamValue() {
     const urlParams = new URLSearchParams(window.location.search);
     const algqValue = urlParams.get('algq');
@@ -591,12 +498,13 @@ function applyAlgqParamValue() {
         return;
     }
 
+    customLog('[applyAlgqParamValue] Found algq param:', algqValue);
+
+    // We have an algq param, let's show the close icon
     const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-container .ccx-mobile-search-close-icon');
     if (ccxMobileCloseIcon) {
         ccxMobileCloseIcon.style.display = 'block';
     }
-
-    customLog('[applyAlgqParamValue] Found algq param:', algqValue);
 
     const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
     const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
@@ -827,266 +735,228 @@ function observeModalAdjust() {
 }
 
 function observeSearchPanelActive() {
-  const target = document.querySelector('.search-panel.panel.algolia-search-panel');
+    const target = document.querySelector('.search-panel.panel.algolia-search-panel');
 
-  if (!target) {
-    console.warn('[Observer] Target element not found');
-    return;
-  }
-
-  const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        const hasActive = mutation.target.classList.contains('active');
-        if (hasActive) {
-          customLog('[ACTIVE ADDED]', mutation.target);
-          document.querySelector('.desktop .menu-group').style.display = 'none';
-          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '1rem';
-        } else {
-          customLog('[ACTIVE REMOVED]', mutation.target);
-          document.querySelector('.desktop .menu-group').style.display = 'block';
-          document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
-        }
-      }
-    }
-  });
-
-  observer.observe(target, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
-
-  customLog('[Observer started] Watching for class "active" on', target);
-}
-
-// State tracking object to prevent unnecessary DOM manipulations
-const layoutState = {
-    currentBreakpoint: null,
-    searchContainerParent: null,
-    categoriesListParent: null,
-    isProcessing: false
-};
-
-// Breakpoint constants for consistency
-const BREAKPOINTS = {
-    MOBILE_MAX: 767,
-    TABLET_MIN: 768,
-    TABLET_MAX: 991,
-    DESKTOP_MIN: 992
-};
-
-// Debounce utility function
-function debounce(func, wait, immediate = false) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            timeout = null;
-            if (!immediate) func.apply(this, args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(this, args);
-    };
-}
-
-// Determine current breakpoint based on window width
-function getCurrentBreakpoint() {
-    const width = window.innerWidth;
-    if (width <= BREAKPOINTS.MOBILE_MAX) return 'mobile';
-    if (width >= BREAKPOINTS.TABLET_MIN && width <= BREAKPOINTS.TABLET_MAX) return 'tablet';
-    if (width >= BREAKPOINTS.DESKTOP_MIN) return 'desktop';
-    return 'unknown';
-}
-
-// Safe element moving with error handling
-function safelyMoveElement(element, targetParent, position = 'afterend', description = '') {
-    if (!element || !targetParent) {
-        console.warn(`[safelyMoveElement] Missing elements for ${description}:`, { element, targetParent });
-        return false;
-    }
-
-    try {
-        // Check if element is already in the correct position
-        const isAlreadyCorrect = position === 'afterend' 
-            ? targetParent.nextElementSibling === element
-            : targetParent.appendChild && targetParent.contains(element);
-
-        if (isAlreadyCorrect) {
-            return true; // Already in correct position
-        }
-
-        // Perform the move
-        if (position === 'afterend') {
-            targetParent.insertAdjacentElement('afterend', element);
-        } else if (position === 'append') {
-            targetParent.appendChild(element);
-        }
-
-        customLog(`[safelyMoveElement] Successfully moved ${description}`);
-        return true;
-    } catch (error) {
-        console.error(`[safelyMoveElement] Failed to move ${description}:`, error);
-        return false;
-    }
-}
-
-// Get cached DOM references with validation
-function getCachedElements() {
-    const elements = {
-        searchContainer: document.querySelector('.ccx-mobile-search-container'),
-        navContainer: document.querySelector('.nav-container'),
-        brandElement: document.querySelector('header > .nav-container > nav[aria-label="main-menu"] > .brand'),
-        controlDesktopCategoriesList: document.querySelector('#sg-navbar-collapse'),
-        tabletLogoHome: document.querySelector('.nav-container > nav.js-header-mobile.app-tray-menu .logo-home')
-    };
-
-    // Validate critical elements
-    const missingElements = Object.entries(elements)
-        .filter(([key, element]) => !element && ['searchContainer', 'navContainer'].includes(key))
-        .map(([key]) => key);
-
-    if (missingElements.length > 0) {
-        console.warn('[getCachedElements] Critical elements missing:', missingElements);
-    }
-
-    return elements;
-}
-
-// Handle mobile layout (≤767px)
-function handleMobileLayout(elements) {
-    const { searchContainer, navContainer, brandElement, controlDesktopCategoriesList } = elements;
-
-    // Move search container after nav container
-    if (searchContainer && navContainer) {
-        safelyMoveElement(searchContainer, navContainer, 'afterend', 'search container (mobile)');
-        layoutState.searchContainerParent = navContainer;
-    }
-
-    // Move categories list after brand element (mobile/tablet logic)
-    if (controlDesktopCategoriesList && brandElement) {
-        safelyMoveElement(controlDesktopCategoriesList, brandElement, 'afterend', 'categories list (mobile)');
-        layoutState.categoriesListParent = brandElement;
-    }
-}
-
-// Handle tablet layout (768px-991px)
-function handleTabletLayout(elements) {
-    const { searchContainer, brandElement, controlDesktopCategoriesList } = elements;
-
-    // Move search container after tablet logo home
-    if (searchContainer && elements.tabletLogoHome) {
-        safelyMoveElement(searchContainer, elements.tabletLogoHome, 'afterend', 'search container (tablet)');
-        layoutState.searchContainerParent = elements.tabletLogoHome;
-    }
-
-    // Move categories list after brand element (same as mobile)
-    if (controlDesktopCategoriesList && brandElement) {
-        safelyMoveElement(controlDesktopCategoriesList, brandElement, 'afterend', 'categories list (tablet)');
-        layoutState.categoriesListParent = brandElement;
-    }
-}
-
-// Handle desktop layout (≥992px)
-function handleDesktopLayout(elements) {
-    const { searchContainer, navContainer, brandElement, controlDesktopCategoriesList } = elements;
-
-    // Move categories list after nav container
-    if (controlDesktopCategoriesList && navContainer) {
-        safelyMoveElement(controlDesktopCategoriesList, navContainer, 'afterend', 'categories list (desktop)');
-        layoutState.categoriesListParent = navContainer;
-    }
-
-    // Move search container after brand element
-    if (searchContainer && brandElement) {
-        safelyMoveElement(searchContainer, brandElement, 'afterend', 'search container (desktop)');
-        layoutState.searchContainerParent = brandElement;
-    }
-}
-
-// Improved resize handler with state tracking and error handling
-function handleResizeImproved() {
-    // Prevent overlapping executions
-    if (layoutState.isProcessing) {
-        console.warn('[handleResizeImproved] Already processing, skipping...');
+    if (!target) {
+        console.warn('[Observer] Target element not found');
         return;
     }
 
-    layoutState.isProcessing = true;
-    const currentBreakpoint = getCurrentBreakpoint();
+    const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const hasActive = mutation.target.classList.contains('active');
 
-    try {
-        // Skip if breakpoint hasn't changed
-        if (layoutState.currentBreakpoint === currentBreakpoint) {
-            customLog(`[handleResizeImproved] Breakpoint unchanged (${currentBreakpoint}), skipping layout changes.`);
-            return;
+                if (hasActive) {
+                    const controlDesktopMenuGroup = document.querySelector('.desktop .menu-group');
+
+                    customLog('[ACTIVE ADDED]', mutation.target);
+                    if (controlDesktopMenuGroup) {
+                        controlDesktopMenuGroup.style.display = 'none';
+                    }
+                    const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active')
+                    if (controlDesktopSearchPanel) {
+                        controlDesktopSearchPanel.style.marginTop = '1rem';
+                    }
+                } else {
+                    if (controlDesktopMenuGroup) {
+                        customLog('[ACTIVE REMOVED]', mutation.target);
+                        controlDesktopMenuGroup.style.display = 'block';
+                        document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
+
+                    }
+                }
+            }
         }
+    });
 
-        customLog(`[handleResizeImproved] Breakpoint changed: ${layoutState.currentBreakpoint} -> ${currentBreakpoint}`);
+    observer.observe(target, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 
-        // Get fresh DOM references
-        const elements = getCachedElements();
-
-        // Apply layout based on breakpoint
-        switch (currentBreakpoint) {
-            case 'mobile':
-                handleMobileLayout(elements);
-                break;
-            case 'tablet':
-                handleTabletLayout(elements);
-                break;
-            case 'desktop':
-                handleDesktopLayout(elements);
-                break;
-            default:
-                console.warn(`[handleResizeImproved] Unknown breakpoint: ${currentBreakpoint}`);
-        }
-
-        // Update state
-        layoutState.currentBreakpoint = currentBreakpoint;
-        
-    } catch (error) {
-        console.error('[handleResizeImproved] Error during resize handling:', error);
-    } finally {
-        layoutState.isProcessing = false;
-    }
+    customLog('[Observer started] Watching for class "active" on', target);
 }
 
-// Create debounced version of the resize handler
-const debouncedResizeHandler = debounce(handleResizeImproved, 150);
+function setupSearchInputSync() {
+    const ccxInput = document.querySelector('.ccx-mobile-search-input');
+    const controlSearchInput = document.querySelector('.ais-SearchBox-input');
+    const controlAppTrayPanel = document.querySelector('.app-tray-panels');
+    const controlSearchContainer = document.querySelector('.app-tray-panels .search-panel');
+    const controlMagnifyingGlass = document.querySelector('.app-tray-buttons > .search');
+    const body = document.querySelector('body');
 
-// Improved setup function with better error handling
-function setupResizeListenerImproved() {
-    try {
-        // Run once immediately to set initial layout
-        handleResizeImproved();
-
-        // Remove any existing listeners to prevent duplicates
-        window.removeEventListener('resize', debouncedResizeHandler);
-        
-        // Attach new debounced listener
-        window.addEventListener('resize', debouncedResizeHandler);
-        
-        // Also listen to orientation change for mobile devices
-        window.addEventListener('orientationchange', () => {
-            // Small delay to allow for orientation change to complete
-            setTimeout(debouncedResizeHandler, 100);
-        });
-
-        customLog('[setupResizeListenerImproved] Resize listeners attached successfully.');
-        
-    } catch (error) {
-        console.error('[setupResizeListenerImproved] Failed to setup resize listeners:', error);
+    // Validate inputs
+    if (!ccxInput) {
+        console.warn('[setupSearchInputSync] .ccx-mobile-search-input not found.');
+        return;
     }
+    if (!controlSearchInput) {
+        console.warn('[setupSearchInputSync] .ais-SearchBox-input not found.');
+        return;
+    }
+    if (!controlAppTrayPanel) {
+        console.warn('[setupSearchInputSync] .app-tray-panels not found.');
+    }
+    if (!controlSearchContainer) {
+        console.warn('[setupSearchInputSync] .app-tray-panels .search-panel not found. Check if .app-tray-panels exists:', !!document.querySelector('.app-tray-panels'));
+    }
+    if (!controlMagnifyingGlass) {
+        console.warn('[setupSearchInputSync] Magnifying glass not found at selector: body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
+    }
+    if (!body) {
+        console.warn('[setupSearchInputSync] body element not found.');
+    }
+
+    // Make new input visible immediately
+    ccxInput.style.display = 'block';
+
+    // Add active classes on focusin with safeguard to prevent multiple triggers
+    let isProcessing = false;
+    ccxInput.addEventListener('focusin', (e) => {
+        if (isProcessing) return; // Prevent multiple triggers
+        isProcessing = true;
+        e.stopPropagation(); // Prevent bubbling to parent elements
+        console.log('[setupSearchInputSync] focusin event triggered on .ccx-mobile-search-input');
+        if (controlMagnifyingGlass && controlSearchContainer && !controlSearchContainer.classList.contains('active')) {
+            controlMagnifyingGlass.click();
+            console.log('[setupSearchInputSync] Programmatically clicked magnifying glass');
+        } else if (controlSearchContainer && controlSearchContainer.classList.contains('active')) {
+            console.log('[setupSearchInputSync] Skipped magnifying glass click: .app-tray-panels .search-panel already has active class');
+        }
+        // Refocus ccxInput after 100ms to allow website UI updates (adjust if delay is noticeable)
+        setTimeout(() => { ccxInput.focus(); }, 100);
+        // Reset isProcessing after 150ms to allow subsequent focuses (adjust if duplicates occur)
+        setTimeout(() => { isProcessing = false; }, 150);
+    });
+
+    // Sync new input value to original input on input event
+    ccxInput.addEventListener('input', () => {
+        controlSearchInput.value = ccxInput.value;
+        const inputEvent = new Event('input', { bubbles: true });
+        controlSearchInput.dispatchEvent(inputEvent);
+        console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
+    });
 }
 
-// Utility function to reset layout state (useful for testing or cleanup)
-function resetLayoutState() {
-    layoutState.currentBreakpoint = null;
-    layoutState.searchContainerParent = null;
-    layoutState.categoriesListParent = null;
-    layoutState.isProcessing = false;
-    customLog('[resetLayoutState] Layout state reset.');
+function bindSearchComponentEvents(input, clearBtn) {
+    // Validate inputs
+    if (!input || !clearBtn) {
+        console.warn('[bindSearchComponentEvents] Input or clear button not provided.');
+        return;
+    }
+
+    // Show or hide clear button based on input content
+    input.addEventListener('input', () => {
+        if (input.value.length > 0) {
+            clearBtn.style.display = 'block';
+        } else {
+            clearBtn.style.display = 'none';
+        }
+    });
+
+    // Clear input, hide button, refocus, and trigger control clear button
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        clearBtn.style.display = 'none';
+        // Sync cleared value to original input
+        const controlSearchInput = document.querySelector('.ais-SearchBox-input');
+        if (controlSearchInput) {
+            controlSearchInput.value = '';
+            const inputEvent = new Event('input', { bubbles: true });
+            controlSearchInput.dispatchEvent(inputEvent);
+            customLog('[bindSearchComponentEvents] Cleared original input .ais-SearchBox-input');
+        } else {
+            console.warn('[bindSearchComponentEvents] .ais-SearchBox-input not found for syncing cleared value');
+        }
+        // Click the control clear button
+        const controlClearBtn = document.querySelector('.ais-SearchBox-reset');
+        if (controlClearBtn) {
+            controlClearBtn.click();
+            customLog('[bindSearchComponentEvents] Clicked control clear button .ais-SearchBox-reset');
+        } else {
+            console.warn('[bindSearchComponentEvents] .ais-SearchBox-reset not found');
+        }
+        input.focus();
+    });
+}
+
+function createSearchComponent() {
+    customLog('Creating search component...');
+
+    const containerExists = document.querySelector('.ccx-mobile-search-container');
+    if (containerExists) {
+        console.warn('Search component already exists. Aborting creation.');
+        return null;
+    }
+
+    // Container
+    const container = document.createElement('div');
+    container.classList.add('ccx-mobile-search-container');
+
+    // Search bar wrapper
+    const searchBar = document.createElement('div');
+    searchBar.classList.add('ccx-mobile-search-bar-mobile');
+
+    // Search icon container and insert SVG
+    const searchIcon = document.createElement('div');
+    searchIcon.classList.add('ccx-mobile-search-icon');
+    searchIcon.innerHTML = variationSearchIconSVG;
+
+    // Input element with placeholder
+    const input = document.createElement('input');
+    input.classList.add('ccx-mobile-search-input');
+    input.id = 'ccx-mobile-search-input';
+    input.type = 'text';
+    input.setAttribute('placeholder', "Find out what you're looking for...");
+
+    // Clear button inside input field
+    const clearBtn = document.createElement('button');
+    clearBtn.classList.add('ccx-mobile-clear-btn');
+    clearBtn.textContent = 'Clear';
+
+    const closeIcon = document.createElement('div');
+    closeIcon.classList.add('ccx-mobile-search-close-icon');
+    closeIcon.innerHTML = variationCloseIconSVG;
+
+    if (!container || !searchBar || !searchIcon || !input || !clearBtn || !closeIcon) {
+        console.warn('Failed to create some search component elements.');
+        return null;
+    }
+
+    // Preserve append order
+    searchBar.appendChild(searchIcon);
+    searchBar.appendChild(input);
+    searchBar.appendChild(clearBtn);
+    container.appendChild(searchBar);
+    container.appendChild(closeIcon);
+
+    // Bind event listeners
+    bindSearchComponentEvents(input, clearBtn);
+
+    customLog('Search component created successfully with clear button.');
+    return container;
+}
+
+function appendSearchComponent() {
+    customLog('Looking for ".nav-container" element...');
+    const logoHome = document.querySelector('.nav-container');
+
+    if (!logoHome) {
+        console.warn('Element ".nav-container" not found. Aborting append.');
+        return;
+    }
+
+    customLog('Element found, creating and appending search component.');
+    const searchComponent = createSearchComponent();
+
+    if (!searchComponent) {
+        console.warn('Search component creation failed. Nothing appended.');
+        return;
+    }
+
+    logoHome.insertAdjacentElement('afterend', searchComponent);
+    customLog('Search component appended successfully.');
 }
 
 function init() {
@@ -1102,22 +972,20 @@ function init() {
             function () {
                 addStyles(styles);
                 appendSearchComponent();
-                bindMobileSearchInput();
-                customLog('Search component initialized and bound to input events.');
+                setupResizeListener();
+
+                setupSearchInputSync();
 
                 // Apply "algq" parameter if exists
                 applyAlgqParamValue();
 
                 // Add responsive behavior
-                // setupResizeListener();
-                setupResizeListenerImproved();
-
-                setupSearchPanelVisibility();
+                // setupSearchPanelVisibility();
 
                 // This listens to the mobile filter, and adjusts the desktop header visibility
-                observeModalAdjust();
+                // observeModalAdjust();
 
-                observeSearchPanelActive();
+                // observeSearchPanelActive();
             }
         );
 
