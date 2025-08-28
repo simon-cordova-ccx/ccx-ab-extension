@@ -1,6 +1,6 @@
 const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
-const VARIATION = "VARIATION 2";
+const VARIATION = "VARIATION 1";
 const CURRENT_URL = window.location.href;
 
 const variationSearchIconSVG = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -618,7 +618,6 @@ function setupSearchInputSync() {
     const controlSearchInput = document.querySelector('.ais-SearchBox-input');
     const controlAppTrayPanel = document.querySelector('.app-tray-panels');
     const controlSearchContainer = document.querySelector('.app-tray-panels .search-panel');
-    // const controlMagnifyingGlass = document.querySelector('body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
     const controlMagnifyingGlass = document.querySelector('.app-tray-buttons > .search');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const body = document.querySelector('body');
@@ -639,7 +638,7 @@ function setupSearchInputSync() {
         console.warn('[setupSearchInputSync] .app-tray-panels .search-panel not found. Check if .app-tray-panels exists:', !!document.querySelector('.app-tray-panels'));
     }
     if (!controlMagnifyingGlass) {
-        console.warn('[setupSearchInputSync] Magnifying glass not found at selector: body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
+        console.warn('[setupSearchInputSync] Magnifying glass not found at selector: .app-tray-buttons > .search');
     }
     if (!body) {
         console.warn('[setupSearchInputSync] body element not found.');
@@ -686,13 +685,27 @@ function setupSearchInputSync() {
         setTimeout(() => { isProcessing = false; }, 150);
     });
 
-    // Sync new input value to original input and update URL on input event
+    // Sync new input value to original input on input event
     ccxInput.addEventListener('input', () => {
         controlSearchInput.value = ccxInput.value;
         const inputEvent = new Event('input', { bubbles: true });
         controlSearchInput.dispatchEvent(inputEvent);
         console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
     });
+
+    // Handle close icon click to toggle magnifying glass and hide itself
+    if (ccxCloseIcon) {
+        ccxCloseIcon.addEventListener('click', () => {
+            if (controlMagnifyingGlass) {
+                controlMagnifyingGlass.click();
+                console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
+            } else {
+                console.warn('[setupSearchInputSync] Magnifying glass not found for close action');
+            }
+            ccxCloseIcon.style.display = 'none';
+            console.log('[setupSearchInputSync] Hid ccx close button');
+        });
+    }
 }
 
 function bindSearchComponentEvents(input, clearBtn) {
