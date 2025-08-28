@@ -362,171 +362,6 @@ function waitForElements(selectors, callback) {
         });
 }
 
-function bindMobileSearchInput() {
-    const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
-    const controlAppTrayPanel = document.querySelector('.app-tray-panels');
-    const controlClearBtn = document.querySelector('.ais-SearchBox-reset.algolia-clear-button');
-    const controlMagnifyingGlass = document.querySelector('.app-tray-buttons .search .app-tray-icon');
-    const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
-
-    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
-    const ccxMobileClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-container .ccx-mobile-search-close-icon');
-
-    if (!ccxMobileSearchInput) {
-        console.warn('Required element not found: ccxMobileSearchInput');
-        return;
-    }
-
-    if (!controlSearchInput) {
-        console.warn('Required element not found: controlSearchInput');
-        return;
-    }
-
-    if (!ccxMobileClearButton) {
-        console.warn('Required element not found: ccxMobileClearButton');
-        return;
-    }
-
-    if (!ccxMobileCloseIcon) {
-        console.warn('Required element not found: ccxMobileCloseIcon');
-        return;
-    }
-
-    if (!controlMagnifyingGlass) {
-        console.warn('Required element not found: controlMagnifyingGlass');
-        return;
-    }
-
-    ccxMobileSearchInput.addEventListener('focusin', (e) => {
-        customLog('Focus in');
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-
-        controlMagnifyingGlass.click();
-        controlSearchInput.focus();
-
-        if (!controlAppTrayPanel.classList.contains('active')) {
-            controlAppTrayPanel.classList.add('active');
-        }
-
-        if (!controlAlgoliaSearchPanel.classList.contains('active')) {
-            controlAlgoliaSearchPanel.classList.add('active');
-        }
-
-        ccxMobileCloseIcon.style.display = 'block';
-        ccxMobileSearchInput.focus();
-    })
-
-    ccxMobileClearButton.addEventListener('click', () => {
-        // Clear our custom input
-        ccxMobileSearchInput.value = '';
-        const inputEvent = new Event('input', { bubbles: true });
-        ccxMobileSearchInput.dispatchEvent(inputEvent);
-
-        ccxMobileCloseIcon.style.display = 'block';
-
-        // Also trigger click on original clear button if found
-        if (controlClearBtn) {
-            controlClearBtn.click();
-        } else {
-            console.warn('Original clear button .ais-SearchBox-reset.algolia-clear-button not found');
-        }
-    });
-
-    // Force remove .active class from selected elements
-    function forceRemoveActive(selectors, attempts = 5, delay = 100) {
-        let count = 0;
-        const interval = setInterval(() => {
-            selectors.forEach(sel => {
-                document.querySelectorAll(sel).forEach(el => {
-                    if (el.classList.contains('active')) {
-                        el.classList.remove('active');
-                        customLog(`[forceRemoveActive] Removed .active from:`, el);
-                    }
-                });
-            });
-            count++;
-            if (count >= attempts) clearInterval(interval);
-        }, delay);
-    }
-
-    ccxMobileCloseIcon.addEventListener('click', () => {
-        customLog('[ccxMobileCloseIcon] Click event triggered.');
-
-        // Run forced cleanup for a short period
-        forceRemoveActive([
-            '.app-tray-panels',
-            '.search-panel.panel.algolia-search-panel',
-            '.ais-InstantSearch'
-        ]);
-
-        // Reset input
-        ccxMobileSearchInput.value = '';
-        const inputEvent = new Event('input', { bubbles: true });
-        ccxMobileSearchInput.dispatchEvent(inputEvent);
-        ccxMobileSearchInput.blur();
-        ccxMobileCloseIcon.style.display = 'none';
-    });
-
-    ccxMobileSearchInput.addEventListener('input', () => {
-        // Toggle panels
-        const controlAppTrayPanel = document.querySelector('.app-tray-panels');
-        if (controlAppTrayPanel) controlAppTrayPanel.classList.add('active');
-
-        const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
-        if (controlAlgoliaSearchPanel) controlAlgoliaSearchPanel.classList.add('active');
-
-        // Update search input value and dispatch input event for Algolia
-        controlSearchInput.value = ccxMobileSearchInput.value;
-        controlSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
-
-        if (controlSearchInput.value === '') {
-            ccxMobileClearButton.click();
-        }
-    });
-}
-
-function applyAlgqParamValue() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const algqValue = urlParams.get('algq');
-
-    if (!algqValue) {
-        customLog('[applyAlgqParamValue] No "algq" param found in URL.');
-        return;
-    }
-
-    customLog('[applyAlgqParamValue] Found algq param:', algqValue);
-
-    // We have an algq param, let's show the close icon
-    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-container .ccx-mobile-search-close-icon');
-    if (ccxMobileCloseIcon) {
-        ccxMobileCloseIcon.style.display = 'block';
-    }
-
-    const ccxMobileSearchInput = document.querySelector('.ccx-mobile-search-input');
-    const controlSearchInput = document.querySelector('#algolia-searchbox-placeholder input');
-
-    if (ccxMobileSearchInput) {
-        ccxMobileSearchInput.value = algqValue;
-        ccxMobileSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
-        customLog('[applyAlgqParamValue] Applied value to ccxMobileSearchInput.');
-        ccxMobileSearchInput.click();
-    } else {
-        console.warn('[applyAlgqParamValue] ccxMobileSearchInput not found.');
-    }
-
-    if (controlSearchInput) {
-        controlSearchInput.value = algqValue;
-        controlSearchInput.dispatchEvent(new Event('input', { bubbles: true }));
-        customLog('[applyAlgqParamValue] Applied value to controlSearchInput.');
-    } else {
-        console.warn('[applyAlgqParamValue] controlSearchInput not found.');
-    }
-}
-
 function handleResize() {
     const searchContainer = document.querySelector('.ccx-mobile-search-container');
     const navContainer = document.querySelector('.nav-container');
@@ -783,7 +618,7 @@ function setupSearchInputSync() {
     const controlSearchInput = document.querySelector('.ais-SearchBox-input');
     const controlAppTrayPanel = document.querySelector('.app-tray-panels');
     const controlSearchContainer = document.querySelector('.app-tray-panels .search-panel');
-    const controlMagnifyingGlass = document.querySelector('.app-tray-buttons > .search');
+    const controlMagnifyingGlass = document.querySelector('body > div.page.d-flex.flex-column > header > div.nav-container > nav.js-header-mobile.app-tray-menu.d-flex.flex-row.flex-lg-column.justify-content-between.justify-content-lg-center.align-items-center > div > ul > li.search.d-flex.justify-content-center.align-items-center');
     const body = document.querySelector('body');
 
     // Validate inputs
@@ -810,6 +645,17 @@ function setupSearchInputSync() {
 
     // Make new input visible immediately
     ccxInput.style.display = 'block';
+
+    // Check for algq parameter on page load and populate custom input
+    const urlParams = new URLSearchParams(window.location.search);
+    const algqValue = urlParams.get('algq');
+    if (algqValue) {
+        ccxInput.value = algqValue;
+        controlSearchInput.value = algqValue; // Ensure control input is also populated
+        const inputEvent = new Event('input', { bubbles: true });
+        controlSearchInput.dispatchEvent(inputEvent);
+        console.log('[setupSearchInputSync] Populated custom input with algq value:', algqValue);
+    }
 
     // Add active classes on focusin with safeguard to prevent multiple triggers
     let isProcessing = false;
@@ -970,14 +816,15 @@ function init() {
         waitForElements(
             ['#algolia-searchbox-placeholder input'],
             function () {
+                const ccxInputContainer = document.querySelector('.ccx-mobile-search-container');
+
+                if (ccxInputContainer) return;
+
                 addStyles(styles);
                 appendSearchComponent();
                 setupResizeListener();
 
                 setupSearchInputSync();
-
-                // Apply "algq" parameter if exists
-                applyAlgqParamValue();
 
                 // Add responsive behavior
                 // setupSearchPanelVisibility();
