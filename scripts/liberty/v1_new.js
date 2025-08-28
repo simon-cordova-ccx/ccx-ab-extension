@@ -101,10 +101,6 @@ const styles = `
 }
 
 .ccx-mobile-clear-btn {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
     font-family: 'Akzidenz-Grotesk Pro', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -122,6 +118,8 @@ const styles = `
     user-select: none;
     background-color: transparent;
     flex-shrink: 0;
+    flex: 0 0 auto;
+    order: 2;
 }
 
 .ccx-mobile-clear-btn:hover {
@@ -380,7 +378,6 @@ function createSearchComponent() {
     // Search bar wrapper
     const searchBar = document.createElement('div');
     searchBar.classList.add('ccx-mobile-search-bar-mobile');
-    searchBar.style.position = 'relative';
 
     // Search icon container and insert SVG
     const searchIcon = document.createElement('div');
@@ -589,6 +586,11 @@ function applyAlgqParamValue() {
     if (!algqValue) {
         customLog('[applyAlgqParamValue] No "algq" param found in URL.');
         return;
+    }
+
+    const ccxMobileCloseIcon = document.querySelector('.ccx-mobile-search-container .ccx-mobile-search-close-icon');
+    if (ccxMobileCloseIcon) {
+        ccxMobileCloseIcon.style.display = 'block';
     }
 
     customLog('[applyAlgqParamValue] Found algq param:', algqValue);
