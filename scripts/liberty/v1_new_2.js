@@ -188,7 +188,7 @@ const styles = `
     top: 15.5rem;
 }
 
-.menu-open .search-panel.active {
+.mobile .menu-open .search-panel.active {
     display: none;
 }
 
@@ -211,7 +211,7 @@ const styles = `
 }
 
 @media screen and (min-width: 992px) {
-    .desktop .app-tray-panels>div.active {
+    .desktop.menu-open .app-tray-panels>div.active {
         margin-top: 6rem;
     }
 
@@ -567,10 +567,13 @@ function observeSearchPanelActive() {
 
 function setupSearchInputSync() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
+    const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
+
     const controlSearchInput = document.querySelector('.ais-SearchBox-input');
     const controlAppTrayPanel = document.querySelector('.app-tray-panels');
     const controlSearchContainer = document.querySelector('.app-tray-panels .search-panel');
     const controlMagnifyingGlass = document.querySelector('.app-tray-buttons > .search');
+    const controlClearButton = document.querySelector('.ais-SearchBox-reset');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const body = document.querySelector('body');
 
@@ -598,6 +601,9 @@ function setupSearchInputSync() {
     if (!ccxCloseIcon) {
         console.warn('[setupSearchInputSync] .ccx-mobile-search-close-icon not found.');
     }
+    if (!controlClearButton) {
+        console.warn('[setupSearchInputSync] .controlClearBtn not found.');
+    }
 
     // Check for algq parameter on page load and populate custom input
     const urlParams = new URLSearchParams(window.location.search);
@@ -610,6 +616,10 @@ function setupSearchInputSync() {
         if (ccxCloseIcon) {
             ccxCloseIcon.style.display = 'block';
             console.log('[setupSearchInputSync] Showed close button due to algq value:', algqValue);
+        }
+        if (ccxClearButton) {
+            ccxClearButton.style.display = 'block';
+            console.log('[setupSearchInputSync] Showed clear button due to algq value:', algqValue);
         }
         console.log('[setupSearchInputSync] Populated custom input with algq value:', algqValue);
     }
@@ -643,50 +653,20 @@ function setupSearchInputSync() {
         const inputEvent = new Event('input', { bubbles: true });
         controlSearchInput.dispatchEvent(inputEvent);
         console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
-    });
 
-    // Handle close icon click to toggle magnifying glass and hide itself
-    if (ccxCloseIcon) {
-
-        ccxCloseIcon.addEventListener('click', () => {
-            const modalBackground = document.querySelector('.modal-background.active');
-            if (modalBackground) {
-                modalBackground.classList.remove('active');
-                console.log('[setupSearchInputSync] Clicked modal background to close search panel');
-            }
-
-            if (controlMagnifyingGlass) {
-                controlMagnifyingGlass.click();
-                console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
-            } else {
-                console.warn('[setupSearchInputSync] Magnifying glass not found for close action');
-            }
-            ccxCloseIcon.style.display = 'none';
-            console.log('[setupSearchInputSync] Hid ccx close button');
-        });
-    }
-}
-
-function bindSearchComponentEvents(input, clearBtn) {
-    // Validate inputs
-    if (!input || !clearBtn) {
-        console.warn('[bindSearchComponentEvents] Input or clear button not provided.');
-        return;
-    }
-
-    // Show or hide clear button based on input content
-    input.addEventListener('input', () => {
-        if (input.value.length > 0) {
-            clearBtn.style.display = 'block';
-        } else {
-            clearBtn.style.display = 'none';
+        if (ccxInput.value.length > 0) {
+            ccxClearButton.style.display = 'block';
+        }
+        if (ccxInput.value.length === 0) {
+            ccxClearButton.style.display = 'none';
+            controlClearButton.click();
         }
     });
 
     // Clear input, hide button, refocus, and trigger control clear button
-    clearBtn.addEventListener('click', () => {
-        input.value = '';
-        clearBtn.style.display = 'none';
+    ccxClearButton.addEventListener('click', () => {
+        ccxInput.value = '';
+        ccxClearButton.style.display = 'none';
         // Sync cleared value to original input
         const controlSearchInput = document.querySelector('.ais-SearchBox-input');
         if (controlSearchInput) {
@@ -705,8 +685,40 @@ function bindSearchComponentEvents(input, clearBtn) {
         } else {
             console.warn('[bindSearchComponentEvents] .ais-SearchBox-reset not found');
         }
-        input.focus();
+        ccxInput.focus();
     });
+
+    // Handle close icon click to toggle magnifying glass and hide itself
+    if (ccxCloseIcon) {
+        ccxCloseIcon.addEventListener('click', () => {
+            const modalBackground = document.querySelector('.modal-background.active');
+            if (modalBackground) {
+                modalBackground.classList.remove('active');
+                console.log('[setupSearchInputSync] Clicked modal background to close search panel');
+            }
+
+            if (controlMagnifyingGlass) {
+                setTimeout(() => {
+                    controlMagnifyingGlass.click();
+                    console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
+                }, 250)
+            } else {
+                console.warn('[setupSearchInputSync] Magnifying glass not found for close action');
+            }
+            ccxCloseIcon.style.display = 'none';
+            console.log('[setupSearchInputSync] Hid ccx close button');
+
+            ccxClearButton.style.display = 'none';
+            console.log('[setupSearchInputSync] Hid ccx clear button');
+
+            ccxInput.value = '';
+
+            controlSearchInput.value = ccxInput.value;
+            const inputEvent = new Event('input', { bubbles: true });
+            controlSearchInput.dispatchEvent(inputEvent);
+            console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
+        });
+    }
 }
 
 function createSearchComponent() {
@@ -758,9 +770,6 @@ function createSearchComponent() {
     searchBar.appendChild(clearBtn);
     container.appendChild(searchBar);
     container.appendChild(closeIcon);
-
-    // Bind event listeners
-    bindSearchComponentEvents(input, clearBtn);
 
     customLog('Search component created successfully with clear button.');
     return container;
