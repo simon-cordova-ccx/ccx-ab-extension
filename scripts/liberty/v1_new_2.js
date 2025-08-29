@@ -188,7 +188,7 @@ const styles = `
     top: 15.5rem;
 }
 
-.mobile .menu-open .search-panel.active {
+.mobile.menu-open .search-panel.active {
     display: none;
 }
 
@@ -267,6 +267,10 @@ const styles = `
 
     .search-results .sorting-actions {
         top: 13.5rem;
+    }
+
+    .desktop .search-panel.panel.algolia-search-panel.active {
+        margin-top: 1rem;
     }
 }
 
@@ -533,24 +537,30 @@ function observeSearchPanelActive() {
         for (const mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const hasActive = mutation.target.classList.contains('active');
+                
+                // Declare these variables in the correct scope
+                const controlDesktopMenuGroup = document.querySelector('.desktop .menu-group');
+                const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active');
 
                 if (hasActive) {
-                    const controlDesktopMenuGroup = document.querySelector('.desktop .menu-group');
+                    customLog('Active class added to ', mutation.target);
 
-                    customLog('[ACTIVE ADDED]', mutation.target);
                     if (controlDesktopMenuGroup) {
                         controlDesktopMenuGroup.style.display = 'none';
                     }
-                    const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active')
+                    
                     if (controlDesktopSearchPanel) {
                         controlDesktopSearchPanel.style.marginTop = '1rem';
                     }
                 } else {
+                    customLog('[ACTIVE REMOVED]', mutation.target);
+                    
                     if (controlDesktopMenuGroup) {
-                        customLog('[ACTIVE REMOVED]', mutation.target);
                         controlDesktopMenuGroup.style.display = 'block';
-                        document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active').style.marginTop = '6rem';
-
+                    }
+                    
+                    if (controlDesktopSearchPanel) {
+                        controlDesktopSearchPanel.style.marginTop = '6rem';
                     }
                 }
             }
@@ -632,7 +642,7 @@ function setupSearchInputSync() {
         e.stopPropagation(); // Prevent bubbling to parent elements
         console.log('[setupSearchInputSync] focusin event triggered on .ccx-mobile-search-input');
         if (controlMagnifyingGlass && controlSearchContainer && !controlSearchContainer.classList.contains('active')) {
-            controlMagnifyingGlass.click();
+            setTimeout(() => { controlMagnifyingGlass.click(); }, 0);
             console.log('[setupSearchInputSync] Programmatically clicked magnifying glass');
         } else if (controlSearchContainer && controlSearchContainer.classList.contains('active')) {
             console.log('[setupSearchInputSync] Skipped magnifying glass click: .app-tray-panels .search-panel already has active class');
@@ -690,8 +700,9 @@ function setupSearchInputSync() {
 
     // Handle close icon click to toggle magnifying glass and hide itself
     if (ccxCloseIcon) {
-        ccxCloseIcon.addEventListener('click', () => {
-            const modalBackground = document.querySelector('.modal-background.active');
+        ccxCloseIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const modalBackground = document.querySelector('.modal-background');
             if (modalBackground) {
                 modalBackground.classList.remove('active');
                 console.log('[setupSearchInputSync] Clicked modal background to close search panel');
@@ -717,6 +728,30 @@ function setupSearchInputSync() {
             const inputEvent = new Event('input', { bubbles: true });
             controlSearchInput.dispatchEvent(inputEvent);
             console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
+
+            setTimeout(() => {
+                const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel');
+                if (controlDesktopSearchPanel) {
+                    controlDesktopSearchPanel.classList.remove('active');
+                    console.log('[setupSearchInputSync] Removed active class from desktop search panel');
+                }
+                const controlActiveDesktopSearchPanel = document.querySelector('.desktop app-tray-panels.active');
+                if (controlActiveDesktopSearchPanel) {
+                    controlActiveDesktopSearchPanel.classList.remove('active');
+                    console.log('[setupSearchInputSync] Removed active class from desktop tray panel container');
+                }
+                const controlActiveModalBackground = document.querySelector('.modal-background.active');
+                if (controlActiveModalBackground) {
+                    controlActiveModalBackground.classList.remove('active');
+                    console.log('[setupSearchInputSync] Removed active class from modal background');
+                }
+                const controlActiveDesktopMenuOpen = document.querySelector('.desktop.menu-open');
+                if (controlActiveDesktopMenuOpen) {
+                    controlActiveDesktopMenuOpen.classList.remove('menu-open');
+                    console.log('[setupSearchInputSync] Removed menu-open class from html element .menu-open');
+                }
+            }, 750);
+
         });
     }
 }
@@ -813,6 +848,7 @@ function init() {
 
                 addStyles(styles);
                 appendSearchComponent();
+
                 setupResizeListener();
 
                 setupSearchInputSync();
@@ -820,7 +856,7 @@ function init() {
                 // This listens to the mobile filter, and adjusts the desktop header visibility
                 // observeModalAdjust();
 
-                // observeSearchPanelActive();
+                observeSearchPanelActive();
             }
         );
 
