@@ -188,6 +188,10 @@ const styles = `
     top: 15.5rem;
 }
 
+.menu-open .search-panel.active {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {
     .mobile .search-panel.panel.algolia-search-panel.active {
         margin-top: 9.5rem !important;
@@ -464,58 +468,6 @@ function setupResizeListener() {
     customLog('[setupResizeListener] Resize listener attached.');
 }
 
-function setupSearchPanelVisibility() {
-    customLog('[setupSearchPanelVisibility] Setting up search panel visibility...');
-
-    // Select the HTML element
-    const htmlElement = document.documentElement;
-
-    // Create a MutationObserver instance
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            // Check if the class attribute changed
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const hasMenuOpen = htmlElement.classList.contains('menu-open');
-                const hasNoScroll = htmlElement.classList.contains('no-scroll');
-                const searchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
-
-                // If either menu-open or no-scroll is present, hide the search panel
-                if (hasMenuOpen || hasNoScroll) {
-                    customLog((hasMenuOpen ? 'menu-open' : 'no-scroll') + ' class added');
-                    if (searchPanel) {
-                        searchPanel.style.display = 'none';
-                    }
-                }
-
-                // If neither menu-open nor no-scroll is present, show the search panel
-                if (!hasMenuOpen && !hasNoScroll) {
-                    customLog('menu-open and no-scroll classes removed');
-                    if (searchPanel) {
-                        searchPanel.style.display = 'block';
-                    }
-                    const searchInput = document.querySelector('.ccx-mobile-search-input');
-                    if (searchInput && searchInput.value.trim() !== '') {
-                        const appTrayPanels = document.querySelector('.app-tray-panels');
-                        if (appTrayPanels) {
-                            appTrayPanels.classList.add('active');
-                        }
-                        if (searchPanel) {
-                            searchPanel.classList.add('active');
-                            searchPanel.style.display = 'block';
-                        }
-                    }
-                }
-            }
-        });
-    });
-
-    // Configure and start the observer
-    observer.observe(htmlElement, {
-        attributes: true, // Observe attribute changes
-        attributeFilter: ['class'], // Only monitor class attribute
-    });
-}
-
 function observeModalAdjust() {
     const desktopHeader = document.querySelector('.desktop-header');
     const mobileContainer = document.querySelector('.mobile'); // parent that always exists
@@ -695,7 +647,14 @@ function setupSearchInputSync() {
 
     // Handle close icon click to toggle magnifying glass and hide itself
     if (ccxCloseIcon) {
+
         ccxCloseIcon.addEventListener('click', () => {
+            const modalBackground = document.querySelector('.modal-background.active');
+            if (modalBackground) {
+                modalBackground.classList.remove('active');
+                console.log('[setupSearchInputSync] Clicked modal background to close search panel');
+            }
+
             if (controlMagnifyingGlass) {
                 controlMagnifyingGlass.click();
                 console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
@@ -848,9 +807,6 @@ function init() {
                 setupResizeListener();
 
                 setupSearchInputSync();
-
-                // Add responsive behavior
-                // setupSearchPanelVisibility();
 
                 // This listens to the mobile filter, and adjusts the desktop header visibility
                 // observeModalAdjust();
