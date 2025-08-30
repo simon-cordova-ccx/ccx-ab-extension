@@ -15,10 +15,6 @@ const variationCloseIconSVG = `<svg width="40" height="40" viewBox="0 0 40 40" f
 </svg>
 `;
 
-const selectors = {
-
-}
-
 const styles = `
 /* Container: Auto layout */
 .ccx-mobile-search-container {
@@ -188,7 +184,7 @@ const styles = `
     top: 15.5rem;
 }
 
-.mobile.menu-open .search-panel.active {
+.ccx-mobile-menu-open .search-panel.active {
     display: none;
 }
 
@@ -525,56 +521,6 @@ function observeModalAdjust() {
     if (initialTarget) attachRefinementObserver(initialTarget);
 }
 
-function observeSearchPanelActive() {
-    const target = document.querySelector('.search-panel.panel.algolia-search-panel');
-
-    if (!target) {
-        console.warn('[Observer] Target element not found');
-        return;
-    }
-
-    const observer = new MutationObserver((mutationsList) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const hasActive = mutation.target.classList.contains('active');
-                
-                // Declare these variables in the correct scope
-                const controlDesktopMenuGroup = document.querySelector('.desktop .menu-group');
-                const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel.active');
-
-                if (hasActive) {
-                    customLog('Active class added to ', mutation.target);
-
-                    if (controlDesktopMenuGroup) {
-                        controlDesktopMenuGroup.style.display = 'none';
-                    }
-                    
-                    if (controlDesktopSearchPanel) {
-                        controlDesktopSearchPanel.style.marginTop = '1rem';
-                    }
-                } else {
-                    customLog('[ACTIVE REMOVED]', mutation.target);
-                    
-                    if (controlDesktopMenuGroup) {
-                        controlDesktopMenuGroup.style.display = 'block';
-                    }
-                    
-                    if (controlDesktopSearchPanel) {
-                        controlDesktopSearchPanel.style.marginTop = '6rem';
-                    }
-                }
-            }
-        }
-    });
-
-    observer.observe(target, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-
-    customLog('[Observer started] Watching for class "active" on', target);
-}
-
 function setupSearchInputSync() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
     const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
@@ -735,7 +681,7 @@ function setupSearchInputSync() {
                     controlDesktopSearchPanel.classList.remove('active');
                     console.log('[setupSearchInputSync] Removed active class from desktop search panel');
                 }
-                const controlActiveDesktopSearchPanel = document.querySelector('.desktop app-tray-panels.active');
+                const controlActiveDesktopSearchPanel = document.querySelector('.desktop .app-tray-panels.active');
                 if (controlActiveDesktopSearchPanel) {
                     controlActiveDesktopSearchPanel.classList.remove('active');
                     console.log('[setupSearchInputSync] Removed active class from desktop tray panel container');
@@ -831,6 +777,95 @@ function appendSearchComponent() {
     customLog('Search component appended successfully.');
 }
 
+function initPanelObserver() {
+  const panel = document.querySelector('.app-tray-panels');
+  if (!panel) return;
+
+  const body = document.body;
+
+  const updateBodyClass = () => {
+    if (panel.classList.contains('active')) {
+      body.classList.add('ccx-panel-open');
+      console.log('ccx-panel-open added');
+    } else {
+      body.classList.remove('ccx-panel-open');
+      console.log('ccx-panel-open removed');
+    }
+  };
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        updateBodyClass();
+      }
+    });
+  });
+
+  observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+
+  // Initial check
+  updateBodyClass();
+}
+
+function addClassDependingOnScreenSize() {
+    const width = window.innerWidth;
+    let newMode;
+
+    if (width <= 767) {
+        newMode = 'ccx-is-mobile';
+    } else if (width >= 768 && width <= 991) {
+        newMode = 'ccx-is-tablet';
+    } else if (width >= 992 && width <= 1440) {
+        newMode = 'ccx-is-desktop';
+    } else if (width >= 1441) {
+        newMode = 'ccx-is-large-desktop';
+    }
+
+    const body = document.body;
+
+    // If body already has the correct class, do nothing
+    if (body.classList.contains(newMode)) {
+        return;
+    }
+
+    // Otherwise, clear and apply the correct one
+    body.classList.remove(
+        'ccx-is-mobile',
+        'ccx-is-tablet',
+        'ccx-is-desktop',
+        'ccx-is-large-desktop'
+    );
+    body.classList.add(newMode);
+
+    // Listen for window resizes
+    window.addEventListener('resize', addClassDependingOnScreenSize);
+
+    console.log(newMode.replace('ccx-is-', ''));
+}
+
+function initNavObserver() {
+  const target = document.querySelector('.nav-container nav[aria-label="main-menu"]');
+  if (!target) return; // bail if element not found
+
+  const body = document.body;
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (target.classList.contains('active')) {
+          body.classList.add('ccx-mobile-menu-open');
+          console.log('mobile menu opened');
+        } else {
+          body.classList.remove('ccx-mobile-menu-open');
+          console.log('mobile menu closed');
+        }
+      }
+    });
+  });
+
+  observer.observe(target, { attributes: true, attributeFilter: ['class'] });
+}
+
 function init() {
     try {
         customLog(TEST_NAME + ' | ' + VARIATION);
@@ -854,9 +889,13 @@ function init() {
                 setupSearchInputSync();
 
                 // This listens to the mobile filter, and adjusts the desktop header visibility
-                observeModalAdjust();
+                // observeModalAdjust();
 
-                observeSearchPanelActive();
+                initPanelObserver();
+
+                initNavObserver();
+
+                addClassDependingOnScreenSize();
             }
         );
 
