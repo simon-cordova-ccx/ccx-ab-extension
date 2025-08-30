@@ -712,7 +712,7 @@ function setupSearchInputSync() {
                 setTimeout(() => {
                     controlMagnifyingGlass.click();
                     console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
-                }, 250)
+                }, 100)
             } else {
                 console.warn('[setupSearchInputSync] Magnifying glass not found for close action');
             }
@@ -750,7 +750,7 @@ function setupSearchInputSync() {
                     controlActiveDesktopMenuOpen.classList.remove('menu-open');
                     console.log('[setupSearchInputSync] Removed menu-open class from html element .menu-open');
                 }
-            }, 750);
+            }, 250);
 
         });
     }
@@ -854,7 +854,7 @@ function init() {
                 setupSearchInputSync();
 
                 // This listens to the mobile filter, and adjusts the desktop header visibility
-                // observeModalAdjust();
+                observeModalAdjust();
 
                 observeSearchPanelActive();
             }
