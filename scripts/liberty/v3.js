@@ -549,6 +549,7 @@ function bindEvents() {
     const searchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
+    const clearButton = document.querySelector('.ccx-mobile-clear-btn');
 
     if (input && closeIcon) {
         input.addEventListener('focus', () => {
@@ -583,6 +584,13 @@ function bindEvents() {
                 customLog('[bindEvents] Programmatically clicked .ais-SearchBox-reset as input is empty.');
             } else if (input.value === '' && !controlResetButton) {
                 console.warn('[bindEvents] .ais-SearchBox-reset not found.');
+            }
+
+            if (clearButton) {
+                clearButton.style.display = input.value !== '' ? 'block' : 'none';
+                customLog(`[bindEvents] Clear button display set to ${clearButton.style.display}.`);
+            } else {
+                console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
             }
         });
 

@@ -648,6 +648,7 @@ function setupSearchInputSync() {
     if (ccxCloseIcon) {
         ccxCloseIcon.addEventListener('click', (e) => {
             e.stopPropagation();
+            e.stopImmediatePropagation();
             const modalBackground = document.querySelector('.modal-background');
             if (modalBackground) {
                 modalBackground.classList.remove('active');
@@ -658,7 +659,7 @@ function setupSearchInputSync() {
                 setTimeout(() => {
                     controlMagnifyingGlass.click();
                     console.log('[setupSearchInputSync] Clicked magnifying glass to close search panel');
-                }, 100)
+                }, 0)
             } else {
                 console.warn('[setupSearchInputSync] Magnifying glass not found for close action');
             }
@@ -676,27 +677,29 @@ function setupSearchInputSync() {
             console.log('[setupSearchInputSync] Synced value to original input:', ccxInput.value);
 
             setTimeout(() => {
-                const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel');
-                if (controlDesktopSearchPanel) {
-                    controlDesktopSearchPanel.classList.remove('active');
-                    console.log('[setupSearchInputSync] Removed active class from desktop search panel');
-                }
-                const controlActiveDesktopSearchPanel = document.querySelector('.desktop .app-tray-panels.active');
-                if (controlActiveDesktopSearchPanel) {
-                    controlActiveDesktopSearchPanel.classList.remove('active');
-                    console.log('[setupSearchInputSync] Removed active class from desktop tray panel container');
-                }
-                const controlActiveModalBackground = document.querySelector('.modal-background.active');
-                if (controlActiveModalBackground) {
-                    controlActiveModalBackground.classList.remove('active');
-                    console.log('[setupSearchInputSync] Removed active class from modal background');
-                }
-                const controlActiveDesktopMenuOpen = document.querySelector('.desktop.menu-open');
-                if (controlActiveDesktopMenuOpen) {
-                    controlActiveDesktopMenuOpen.classList.remove('menu-open');
-                    console.log('[setupSearchInputSync] Removed menu-open class from html element .menu-open');
-                }
-            }, 250);
+                // const controlActiveDesktopTrayPanel = document.querySelector('.desktop .app-tray-panels.active');
+                // if (controlActiveDesktopTrayPanel) {
+                //     controlActiveDesktopSearchPanel.classList.remove('active');
+                //     console.log('[setupSearchInputSync] Removed active class from desktop tray panel container');
+                // }
+                // const controlDesktopSearchPanel = document.querySelector('.desktop .search-panel.panel.algolia-search-panel');
+                // if (controlDesktopSearchPanel) {
+                //     controlDesktopSearchPanel.classList.remove('active');
+                //     console.log('[setupSearchInputSync] Removed active class from desktop search panel');
+                // }
+                // const controlActiveModalBackground = document.querySelector('.modal-background.active');
+                // if (controlActiveModalBackground) {
+                //     controlActiveModalBackground.classList.remove('active');
+                //     console.log('[setupSearchInputSync] Removed active class from modal background');
+                // }
+                // const controlActiveDesktopMenuOpen = document.querySelector('.desktop.menu-open');
+                // if (controlActiveDesktopMenuOpen) {
+                //     controlActiveDesktopMenuOpen.classList.remove('menu-open');
+                //     console.log('[setupSearchInputSync] Removed menu-open class from html element .menu-open');
+                // }
+
+                document.querySelector('.app-tray-buttons > .search').click();
+            }, 500);
 
         });
     }
@@ -891,7 +894,7 @@ function init() {
                 // This listens to the mobile filter, and adjusts the desktop header visibility
                 // observeModalAdjust();
 
-                initPanelObserver();
+                // initPanelObserver();
 
                 initNavObserver();
 
