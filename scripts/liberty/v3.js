@@ -552,6 +552,19 @@ function bindEvents() {
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
 
     if (ccxInput && ccxCloseIcon) {
+        // Set initial ccxInput value from algq URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const algqValue = urlParams.get('algq');
+        if (algqValue && ccxInput.value === '') {
+            ccxInput.value = algqValue;
+            if (controlInput) {
+                controlInput.value = algqValue;
+                const inputEvent = new Event('input', { bubbles: true });
+                controlInput.dispatchEvent(inputEvent);
+                customLog('[bindEvents] Set ccxInput and controlInput to algq URL parameter value and dispatched input event on initialization.');
+            }
+        }
+
         ccxInput.addEventListener('focus', () => {
             ccxCloseIcon.style.display = 'block';
             customLog('[bindEvents] Close button displayed on input focus.');
@@ -560,14 +573,6 @@ function bindEvents() {
                 ccxClearButton.style.display = ccxInput.value !== '' ? 'block' : 'none';
                 customLog(`[bindEvents] Clear button display set to ${ccxClearButton.style.display} on focus.`);
             }
-
-
-            // *** This may not be needed
-             if (controlSearchButton && !controlSearchButton.classList.contains('active')) {
-                controlSearchButton.click();
-                customLog('[bindEvents] Programmatically clicked .search button on focus.');
-            }
-            customLog('[bindEvents] Close button displayed on input focus.');
         });
 
         ccxInput.addEventListener('click', () => {
