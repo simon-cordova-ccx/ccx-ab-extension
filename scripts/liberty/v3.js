@@ -544,34 +544,35 @@ function appendSearchComponent() {
 }
 
 function bindEvents() {
-    const input = document.querySelector('.ccx-mobile-search-input');
-    const closeIcon = document.querySelector('.ccx-mobile-search-close-icon');
-    const searchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
+    const ccxInput = document.querySelector('.ccx-mobile-search-input');
+    const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
+    const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
+
+    const controlSearchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
-    const clearButton = document.querySelector('.ccx-mobile-clear-btn');
 
-    if (input && closeIcon) {
-        input.addEventListener('focus', () => {
-            closeIcon.style.display = 'block';
+    if (ccxInput && ccxCloseIcon) {
+        ccxInput.addEventListener('focus', () => {
+            ccxCloseIcon.style.display = 'block';
             customLog('[bindEvents] Close button displayed on input focus.');
         });
 
-        input.addEventListener('click', () => {
-            if (searchButton && !searchButton.classList.contains('active')) {
-                searchButton.click();
-                input.focus(); // Ensure input retains focus after searchButton click
+        ccxInput.addEventListener('click', () => {
+            if (controlSearchButton && !controlSearchButton.classList.contains('active')) {
+                controlSearchButton.click();
+                ccxInput.focus(); // Ensure input retains focus after searchButton click
                 customLog('[bindEvents] Programmatically clicked .search button and restored input focus.');
-            } else if (!searchButton) {
+            } else if (!controlSearchButton) {
                 console.warn('[bindEvents] .search button not found.');
             } else {
                 customLog('[bindEvents] .search button already active, skipping click.');
             }
         });
 
-        input.addEventListener('input', () => {
+        ccxInput.addEventListener('input', () => {
             if (controlInput) {
-                controlInput.value = input.value;
+                controlInput.value = ccxInput.value;
                 const inputEvent = new Event('input', { bubbles: true });
                 controlInput.dispatchEvent(inputEvent);
                 customLog('[bindEvents] Synced input value to .ais-SearchBox-input and dispatched input event.');
@@ -579,26 +580,26 @@ function bindEvents() {
                 console.warn('[bindEvents] .ais-SearchBox-input not found.');
             }
 
-            if (input.value === '' && controlResetButton) {
+            if (ccxInput.value === '' && controlResetButton) {
                 controlResetButton.click();
                 customLog('[bindEvents] Programmatically clicked .ais-SearchBox-reset as input is empty.');
-            } else if (input.value === '' && !controlResetButton) {
+            } else if (ccxInput.value === '' && !controlResetButton) {
                 console.warn('[bindEvents] .ais-SearchBox-reset not found.');
             }
 
-            if (clearButton) {
-                clearButton.style.display = input.value !== '' ? 'block' : 'none';
-                customLog(`[bindEvents] Clear button display set to ${clearButton.style.display}.`);
+            if (ccxClearButton) {
+                ccxClearButton.style.display = ccxInput.value !== '' ? 'block' : 'none';
+                customLog(`[bindEvents] Clear button display set to ${ccxClearButton.style.display}.`);
             } else {
                 console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
             }
         });
 
-        closeIcon.addEventListener('click', () => {
-            closeIcon.style.display = 'none';
+        ccxCloseIcon.addEventListener('click', () => {
+            ccxCloseIcon.style.display = 'none';
 
-            if (searchButton.classList.contains('active')) {
-                searchButton.click();
+            if (controlSearchButton.classList.contains('active')) {
+                controlSearchButton.click();
                 customLog('[bindEvents] Clicked .search button.');
             }
         });
