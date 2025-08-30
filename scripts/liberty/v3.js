@@ -188,6 +188,10 @@ const styles = `
     display: none;
 }
 
+.ccx-mobile-menu-open .algolia-search-panel.active {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {
     .mobile .search-panel.panel.algolia-search-panel.active {
         margin-top: 9.5rem !important;
@@ -550,6 +554,8 @@ function bindEvents() {
     const controlSearchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
+    const controlMenuButton = document.querySelector('.app-tray-buttons-container');
+    const controlMenuCloseButton = document.querySelector('#sg-navbar-collapse header li.navicon');
 
     if (ccxInput && ccxCloseIcon) {
         // Set initial ccxInput value from algq URL parameter
@@ -654,6 +660,24 @@ function bindEvents() {
             });
         } else {
             console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
+        }
+
+        if (controlMenuButton) {
+            controlMenuButton.addEventListener('click', () => {
+                document.body.classList.add('ccx-mobile-menu-open');
+                customLog('[bindEvents] Added ccx-mobile-menu-open class to body.');
+            });
+        } else {
+            console.warn('[bindEvents] .app-tray-buttons-container not found.');
+        }
+
+        if (controlMenuCloseButton) {
+            controlMenuCloseButton.addEventListener('click', () => {
+                document.body.classList.remove('ccx-mobile-menu-open');
+                customLog('[bindEvents] Removed ccx-mobile-menu-open class from body.');
+            });
+        } else {
+            console.warn('[bindEvents] #sg-navbar-collapse header li.navicon not found.');
         }
     } else {
         console.warn('[bindEvents] Input or close icon not found.');
