@@ -546,9 +546,9 @@ function appendSearchComponent() {
 function bindEvents() {
     const input = document.querySelector('.ccx-mobile-search-input');
     const closeIcon = document.querySelector('.ccx-mobile-search-close-icon');
-    const appTrayButtons = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons');
     const searchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
+    const controlResetButton = document.querySelector('.ais-SearchBox-reset');
 
     if (input && closeIcon) {
         input.addEventListener('focus', () => {
@@ -576,6 +576,13 @@ function bindEvents() {
                 customLog('[bindEvents] Synced input value to .ais-SearchBox-input and dispatched input event.');
             } else {
                 console.warn('[bindEvents] .ais-SearchBox-input not found.');
+            }
+
+            if (input.value === '' && controlResetButton) {
+                controlResetButton.click();
+                customLog('[bindEvents] Programmatically clicked .ais-SearchBox-reset as input is empty.');
+            } else if (input.value === '' && !controlResetButton) {
+                console.warn('[bindEvents] .ais-SearchBox-reset not found.');
             }
         });
 
