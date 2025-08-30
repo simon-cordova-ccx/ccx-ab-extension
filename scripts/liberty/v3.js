@@ -551,11 +551,11 @@ function bindEvents() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    const controlSearchButton = document.querySelector('.nav-container .app-tray-buttons-container .app-tray-buttons > .search');
+    const controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
-    const controlMenuButton = document.querySelector('.app-tray-buttons-container');
-    const controlMenuCloseButton = document.querySelector('#sg-navbar-collapse header li.navicon');
+    const controlMobileMenuButton = document.querySelector('.mobile .page header .nav-container > nav.js-header-mobile.app-tray-menu ul > li.navicon');
+    const controlMobileMenuCloseButton = document.querySelector('.mobile #sg-navbar-collapse > div > header > ul > li.navicon');
 
     if (ccxInput && ccxCloseIcon) {
         // Set initial ccxInput value from algq URL parameter
@@ -662,8 +662,8 @@ function bindEvents() {
             console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
         }
 
-        if (controlMenuButton) {
-            controlMenuButton.addEventListener('click', () => {
+        if (controlMobileMenuButton) {
+            controlMobileMenuButton.addEventListener('click', () => {
                 document.body.classList.add('ccx-mobile-menu-open');
                 customLog('[bindEvents] Added ccx-mobile-menu-open class to body.');
             });
@@ -671,14 +671,15 @@ function bindEvents() {
             console.warn('[bindEvents] .app-tray-buttons-container not found.');
         }
 
-        if (controlMenuCloseButton) {
-            controlMenuCloseButton.addEventListener('click', () => {
+        if (controlMobileMenuCloseButton) {
+            controlMobileMenuCloseButton.addEventListener('click', () => {
                 document.body.classList.remove('ccx-mobile-menu-open');
                 customLog('[bindEvents] Removed ccx-mobile-menu-open class from body.');
             });
         } else {
             console.warn('[bindEvents] #sg-navbar-collapse header li.navicon not found.');
         }
+        
     } else {
         console.warn('[bindEvents] Input or close icon not found.');
     }
