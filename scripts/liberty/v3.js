@@ -551,7 +551,7 @@ function bindEvents() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    const controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search');
+    let controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
     const controlMobileMenuButton = document.querySelector('.mobile .page header .nav-container > nav.js-header-mobile.app-tray-menu ul > li.navicon');
@@ -582,6 +582,12 @@ function bindEvents() {
         });
 
         ccxInput.addEventListener('click', () => {
+            // If controlSearchButton is not found or no longer valid, re-query it
+            if (!controlSearchButton || !document.contains(controlSearchButton)) {
+                controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search');
+                customLog('[bindEvents] Re-queried for .search button.');
+            }
+
             if (controlSearchButton && !controlSearchButton.classList.contains('active')) {
                 controlSearchButton.click();
                 ccxInput.focus(); // Ensure input retains focus after searchButton click
@@ -626,7 +632,7 @@ function bindEvents() {
                 customLog('[bindEvents] Clear button hidden on close icon click.');
             }
 
-            if (controlSearchButton.classList.contains('active')) {
+            if (controlSearchButton && controlSearchButton.classList.contains('active')) {
                 controlSearchButton.click();
                 customLog('[bindEvents] Clicked .search button.');
             }
@@ -634,8 +640,8 @@ function bindEvents() {
 
         if (ccxClearButton) {
             ccxClearButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                e.stopImmediatePropagation();
+                // e.stopPropagation();
+                // e.stopImmediatePropagation();
 
                 if (controlResetButton && ccxInput && controlInput) {
                     controlResetButton.click();
@@ -706,17 +712,6 @@ function init() {
                 setupResizeListener();
 
                 bindEvents();
-
-                // setupSearchInputSync();
-
-                // This listens to the mobile filter, and adjusts the desktop header visibility
-                // observeModalAdjust();
-
-                // initPanelObserver();
-
-                // initNavObserver();
-
-                // addClassDependingOnScreenSize();
             }
         );
 
