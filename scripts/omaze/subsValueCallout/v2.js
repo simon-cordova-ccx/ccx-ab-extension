@@ -1,34 +1,35 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 1";
+const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const customLog = (...messages) => {
-    if (!LOG_ENABLED) return;
+  if (!LOG_ENABLED) return;
 
-    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
-    const parts = [];
-    const values = [];
+  const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
+  const parts = [];
+  const values = [];
 
-    messages.forEach(msg => {
-        if (msg instanceof Element) {
-            parts.push("%o");
-            values.push(msg);
-        } else {
-            parts.push("%c" + String(msg).toUpperCase());
-            values.push(style);
-        }
-    });
+  messages.forEach(msg => {
+    if (msg instanceof Element) {
+      parts.push("%o");
+      values.push(msg);
+    } else {
+      parts.push("%c" + String(msg).toUpperCase());
+      values.push(style);
+    }
+  });
 
-    console.log(parts.join(" "), ...values);
+  console.log(parts.join(" "), ...values);
 };
 
 const styles = `
   .subs-container {
-    padding: 24px;
+    padding: 14.5px;
+    padding-bottom: 16px;
     max-width: 420px;
     font-family: Arial, sans-serif;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -36,7 +37,6 @@ const styles = `
     width: 297px;
     opacity: 1;
     border-radius: 10px;
-    padding-bottom: 16px;
     gap: 10px;
     display: flex;
     flex-flow: column;
@@ -52,30 +52,19 @@ const styles = `
     color: #081F28;
   }
 
-  .subs-item {
+ .subs-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    padding: 16px;
     background: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     width: 268px;
     opacity: 1;
     border-radius: 8px;
-    padding-top: 5px;
-    padding-bottom: 4px;
+    padding: 1rem;
   }
 
   .subs-icon {
-    background: #ffe600;
-    border-radius: 50%;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    font-size: 18px;
     margin-top: 0.5rem;
   }
 
@@ -147,41 +136,41 @@ const addStyles = (css) => {
 // --- Data object ---
 const subscriptionItems = [
   {
-    icon: "🏠",
+    icon: `https://cdn-eu.dynamicyield.com/api/9880449/images/1ba78e76c656.png`,
     title: "Grand Prize House Draw",
     highlight: "100 Entries", // Changed from 200 to 100
-    description: "Your chance to win a multi-million house",
+    description: "Your chance to win a multi-million house.",
     button: {
       text: "See this month’s house",
       url: "#"
     }
   },
   {
-    icon: "💷",
+    icon: `https://cdn-eu.dynamicyield.com/api/9880449/images/aee613cb897a.png`,
     title: "Monthly Millionaire",
     highlight: "200 Entries",
-    description: "Your chance to win £1,000,000 a month",
+    description: "Your chance to win £1,000,000 a month.",
     button: {
       text: "Find out more",
       url: "#"
     }
   },
   {
-    icon: "📅",
+    icon: `https://cdn-eu.dynamicyield.com/api/9880449/images/368fcb130af4.png`,
     title: "Monthly Subscriber Cash Draw",
     highlight: "200 Entries",
-    description: "Your chance to win £100,000 in cash a month"
+    description: "Your chance to win £100,000 in cash a month."
     // no button
   },
   {
-    icon: "⏰",
+    icon: `https://cdn-eu.dynamicyield.com/api/9880449/images/015443682e58.png`,
     title: "Early Bird Prize Draw",
     highlight: "200 Entries",
-    description: "Your chance to win cars and cash"
+    description: "Your chance to win cars and cash."
     // no button
   },
   {
-    icon: "💛",
+    icon: `https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png`,
     title: "Supporting a UK Charity",
     description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
     button: {
@@ -192,11 +181,10 @@ const subscriptionItems = [
 ];
 
 const selectors = {
-    // SELECTOR_SUBS_FEATURES: 'subscription-features'
-    SELECTOR_SUBS_FEATURES: '#subscription-management__cards .mx-auto'
+  // SELECTOR_SUBS_FEATURES: 'subscription-features'
+  SELECTOR_SUBS_FEATURES: '#subscription-management__cards .mx-auto > subscription-features'
 }
 
-// --- Extend DOM builder to support optional buttons ---
 const applyVariationChanges = (element) => {
   const container = document.createElement('div');
   container.className = 'subs-container';
@@ -205,28 +193,55 @@ const applyVariationChanges = (element) => {
   heading.textContent = "Your subscription includes:";
   container.appendChild(heading);
 
+  // Check if subscriptionItems exists and is an array
+  if (!Array.isArray(subscriptionItems)) {
+    console.warn('subscriptionItems is not an array or is undefined');
+    return;
+  }
+
   subscriptionItems.forEach(item => {
+    // Ensure item exists
+    if (!item) {
+      console.warn('Invalid item in subscriptionItems');
+      return;
+    }
+
     const itemDiv = document.createElement('div');
     itemDiv.className = 'subs-item';
 
+    // Create icon container with image
     const iconDiv = document.createElement('div');
     iconDiv.className = 'subs-icon';
-    iconDiv.textContent = item.icon;
+    
+    // Check if icon property exists
+    if (item.icon) {
+      const imgElement = document.createElement('img');
+      imgElement.src = item.icon;
+      imgElement.alt = item.title ? `${item.title} icon` : 'Subscription item icon';
+      imgElement.style.width = '34px';
+      imgElement.style.height = '34px';
+      iconDiv.appendChild(imgElement);
+    } else {
+      console.warn('Missing icon for item:', item.title || 'unknown item');
+    }
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'subs-content';
 
+    // Check if title exists
     const titleEl = document.createElement('h3');
-    titleEl.innerHTML = item.title + (item.highlight ? ` <span class="subs-highlight">${item.highlight}</span>` : "");
+    titleEl.innerHTML = (item.title ? item.title : 'Untitled') + 
+      (item.highlight ? ` <span class="subs-highlight">${item.highlight}</span>` : "");
 
+    // Check if description exists
     const descEl = document.createElement('p');
-    descEl.innerHTML = item.description;
+    descEl.innerHTML = item.description ? item.description : '';
 
     contentDiv.appendChild(titleEl);
     contentDiv.appendChild(descEl);
 
-    // Add button if present
-    if (item.button) {
+    // Add button if present and valid
+    if (item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
       const btn = document.createElement('a');
       btn.href = item.button.url;
       btn.className = 'subs-btn';
@@ -240,51 +255,54 @@ const applyVariationChanges = (element) => {
     container.appendChild(itemDiv);
   });
 
-  const ELEMENT_SUBSCRIPTION_FEATURES = document.querySelector(selectors.SELECTOR_SUBS_FEATURES);
+  // Check if selector exists
+  const ELEMENT_SUBSCRIPTION_FEATURES = document.querySelector(selectors?.SELECTOR_SUBS_FEATURES);
   if (ELEMENT_SUBSCRIPTION_FEATURES) {
     ELEMENT_SUBSCRIPTION_FEATURES.replaceWith(container);
+  } else {
+    console.warn('Subscription features selector not found');
   }
 
   customLog('Subscription container built from data object (VARIATION 2).');
 };
 
 function waitForElements(elementSelector) {
-    customLog('[waitForElements] Starting to wait for elements...');
+  customLog('[waitForElements] Starting to wait for elements...');
 
-    Promise.all([
-        DYO.waitForElementAsync(elementSelector, 1, 100, 150)
-    ])
-        .then(function (results) {
-            const subscriptionFeatures = results[0];
+  Promise.all([
+    DYO.waitForElementAsync(elementSelector, 1, 100, 150)
+  ])
+    .then(function (results) {
+      const subscriptionFeatures = results[0];
 
-            console.log(subscriptionFeatures);
+      console.log(subscriptionFeatures);
 
-            customLog('subscriptionFeatures found:', subscriptionFeatures[0]);
+      customLog('subscriptionFeatures found:', subscriptionFeatures[0]);
 
-            // --- Add CSS ---
-            addStyles(styles);
+      // --- Add CSS ---
+      addStyles(styles);
 
-            // --- Apply changes ---
-            applyVariationChanges(subscriptionFeatures);
-        })
-        .catch(function (error) {
-            console.warn('[waitForElements] SubscriptionFeatures element not found within timeout.');
-        });
+      // --- Apply changes ---
+      applyVariationChanges(subscriptionFeatures);
+    })
+    .catch(function (error) {
+      console.warn('[waitForElements] SubscriptionFeatures element not found within timeout.');
+    });
 }
 
 function init() {
-    try {
-        customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
-        customLog('[init] Current URL: ' + CURRENT_URL);
-        customLog('[init] Environment: ' + ENVIRONMENT);
+  try {
+    customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
+    customLog('[init] Current URL: ' + CURRENT_URL);
+    customLog('[init] Environment: ' + ENVIRONMENT);
 
-        document.body.classList.add('omaze-subs-25-callout-25-v1');
-        customLog('[init] Added class omaze-subs-25-callout-25-v1 to body');
+    document.body.classList.add('omaze-subs-25-callout-25-v1');
+    customLog('[init] Added class omaze-subs-25-callout-25-v1 to body');
 
-        waitForElements(selectors.SELECTOR_SUBS_FEATURES);
-    } catch (error) {
-        console.error(error.message);
-    }
+    waitForElements(selectors.SELECTOR_SUBS_FEATURES);
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
 init();
