@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "1";
+const VARIATION = "2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -25,6 +25,11 @@ const customLog = (...messages) => {
 
   console.log(parts.join(" "), ...values);
 };
+
+const selectors = {
+  ACTIVE_TIER_CARD: 'tier-card[active]',
+  SELECTOR_SUBS_FEATURES: '#subscription-management__cards .mx-auto > subscription-features'
+}
 
 const styles = `
   .subs-container {
@@ -113,7 +118,7 @@ const styles = `
     text-decoration: none;
     font-family: Gellix, Arial, sans-serif;
   }
-`
+`;
 
 const addStyles = (css) => {
   customLog('[addStyles] Starting the addStyles function...');
@@ -138,82 +143,78 @@ const subscriptionItems = [
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/1ba78e76c656.png",
     title: "Grand Prize House Draw",
-    variations: {
-      25: {
-        highlight: "100 Entries",
-        description: "Your chance to win a multi-million house."
-      },
-      50: {
-        highlight: "200 Entries",
-        description: "Enter to win a luxury dream home."
-      }
+    highlight: {
+      25: "100 Entries",
+      50: "200 Entries"
+    },
+    description: {
+      25: "Your chance to win a multi-million house.",
+      50: "Enter to win a luxury dream home."
+    },
+    button: {
+      text: "See this month’s house",
+      url: "#"
     }
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/aee613cb897a.png",
     title: "Monthly Millionaire",
-    variations: {
-      25: {
-        highlight: "200 Entries",
-        description: "Your chance to win £1,000,000 a month."
-      },
-      50: {
-        highlight: "300 Entries",
-        description: "Compete for a £1,000,000 monthly prize."
-      }
+    highlight: {
+      25: "200 Entries",
+      50: "300 Entries"
+    },
+    description: {
+      25: "Your chance to win £1,000,000 a month.",
+      50: "Compete for a £1,000,000 monthly prize."
+    },
+    button: {
+      text: "Find out more",
+      url: "#"
     }
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/368fcb130af4.png",
     title: "Monthly Subscriber Cash Draw",
-    variations: {
-      25: {
-        highlight: "200 Entries",
-        description: "Your chance to win £100,000 in cash a month."
-      },
-      50: {
-        highlight: "400 Entries",
-        description: "Win up to £100,000 in our monthly cash draw."
-      }
+    highlight: {
+      25: "200 Entries",
+      50: "400 Entries"
+    },
+    description: {
+      25: "Your chance to win £100,000 in cash a month.",
+      50: "Win up to £100,000 in our monthly cash draw."
     }
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/015443682e58.png",
     title: "Early Bird Prize Draw",
-    variations: {
-      25: {
-        highlight: "200 Entries",
-        description: "Your chance to win cars and cash."
-      },
-      50: {
-        highlight: "300 Entries",
-        description: "Early entry for exclusive cars and cash prizes."
-      }
+    highlight: {
+      25: "200 Entries",
+      50: "300 Entries"
+    },
+    description: {
+      25: "Your chance to win cars and cash.",
+      50: "Early entry for exclusive cars and cash prizes."
     }
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png",
     title: "Supporting a UK Charity",
-    variations: {
-      25: {
-        description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year."
-      },
-      50: {
-        description: "Your support funds <strong>Teenage Cancer Trust</strong>, aiding over 7,000 young cancer patients annually."
-      }
+    highlight: {}, // No highlight for this item
+    description: {
+      25: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
+      50: "Your support funds <strong>Teenage Cancer Trust</strong>, aiding over 7,000 young cancer patients annually."
+    },
+    button: {
+      text: "Find out more",
+      url: "#"
     }
   }
 ];
 
-const selectors = {
-  ACTIVE_TIER_CARD: 'tier-card[active]',
-  SELECTOR_SUBS_FEATURES: '#subscription-management__cards .mx-auto > subscription-features'
-}
-
-const applyVariationChanges = (price, VARIATION, subscriptionFeatures) => {
+const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     // Validate variation
-    if (VARIATION !== "1" && VARIATION !== "2") {
-        console.warn('Invalid variation, must be 1 or 2:', VARIATION);
+    if (variation !== "1" && variation !== "2") {
+        console.warn('Invalid variation, must be 1 or 2:', variation);
         return;
     }
 
@@ -269,23 +270,26 @@ const applyVariationChanges = (price, VARIATION, subscriptionFeatures) => {
         const contentDiv = document.createElement('div');
         contentDiv.className = 'subs-content';
 
-        // Get price-specific variation data
-        const variationData = item.variations?.[price] || item.variations?.['25']; // Fallback to £25
-
         // Title and highlight
         const titleEl = document.createElement('h3');
         titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-            (variationData?.highlight ? ` <span class="subs-highlight">${variationData.highlight}</span>` : "");
+            (item.highlight?.[price] ? ` <span class="subs-highlight">${item.highlight[price]}</span>` : "");
 
         // Description
         const descEl = document.createElement('p');
-        descEl.innerHTML = variationData?.description || '';
+        descEl.innerHTML = item.description?.[price] || item.description?.['25'] || '';
 
         contentDiv.appendChild(titleEl);
         contentDiv.appendChild(descEl);
 
-        // No buttons for Variation 1 or 2
-        // (Button logic omitted)
+        // Add button if present and valid
+        if (variation === '2' && item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
+          const btn = document.createElement('a');
+          btn.href = item.button.url;
+          btn.className = 'subs-btn';
+          btn.textContent = item.button.text;
+          contentDiv.appendChild(btn);
+        }
 
         itemDiv.appendChild(iconDiv);
         itemDiv.appendChild(contentDiv);
@@ -294,7 +298,7 @@ const applyVariationChanges = (price, VARIATION, subscriptionFeatures) => {
 
     // Replace subscription-features element
     subscriptionFeatures.replaceWith(container);
-    customLog(`Subscription container built for Variation ${VARIATION} and Price £${price}.`);
+    customLog(`Subscription container built for Variation ${variation} and Price £${price}.`);
 };
 
 function waitForElements(selectors, callback) {
