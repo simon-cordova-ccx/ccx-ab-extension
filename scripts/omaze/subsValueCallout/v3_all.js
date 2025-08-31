@@ -145,7 +145,7 @@ const subscriptionItems = [
     title: "Grand Prize House Draw",
     highlight: {
       25: "100 Entries",
-      50: "200 Entries"
+      50: "640 Entries"
     },
     description: "Your chance to win a multi-million house.",
     button: {
@@ -158,7 +158,7 @@ const subscriptionItems = [
     title: "Monthly Millionaire",
     highlight: {
       25: "200 Entries",
-      50: "300 Entries"
+      50: "640 Entries"
     },
     description: "Your chance to win £1,000,000 a month.",
     button: {
@@ -171,7 +171,7 @@ const subscriptionItems = [
     title: "Monthly Subscriber Cash Draw",
     highlight: {
       25: "200 Entries",
-      50: "400 Entries"
+      50: "640 Entries"
     },
     description: "Your chance to win £100,000 in cash a month.",
   },
@@ -180,7 +180,7 @@ const subscriptionItems = [
     title: "Early Bird Prize Draw",
     highlight: {
       25: "200 Entries",
-      50: "300 Entries"
+      50: "640 Entries"
     },
     description: "Your chance to win cars and cash.",
   },
