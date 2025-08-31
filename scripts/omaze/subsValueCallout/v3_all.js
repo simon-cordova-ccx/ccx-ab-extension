@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "2";
+const VARIATION = "1";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -147,10 +147,7 @@ const subscriptionItems = [
       25: "100 Entries",
       50: "200 Entries"
     },
-    description: {
-      25: "Your chance to win a multi-million house.",
-      50: "Enter to win a luxury dream home."
-    },
+    description: "Your chance to win a multi-million house.",
     button: {
       text: "See this month’s house",
       url: "#"
@@ -163,10 +160,7 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "300 Entries"
     },
-    description: {
-      25: "Your chance to win £1,000,000 a month.",
-      50: "Compete for a £1,000,000 monthly prize."
-    },
+    description: "Your chance to win £1,000,000 a month.",
     button: {
       text: "Find out more",
       url: "#"
@@ -179,10 +173,7 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "400 Entries"
     },
-    description: {
-      25: "Your chance to win £100,000 in cash a month.",
-      50: "Win up to £100,000 in our monthly cash draw."
-    }
+    description: "Your chance to win £100,000 in cash a month.",
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/015443682e58.png",
@@ -191,19 +182,13 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "300 Entries"
     },
-    description: {
-      25: "Your chance to win cars and cash.",
-      50: "Early entry for exclusive cars and cash prizes."
-    }
+    description: "Your chance to win cars and cash.",
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png",
     title: "Supporting a UK Charity",
     highlight: {}, // No highlight for this item
-    description: {
-      25: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
-      50: "Your support funds <strong>Teenage Cancer Trust</strong>, aiding over 7,000 young cancer patients annually."
-    },
+    description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
     button: {
       text: "Find out more",
       url: "#"
@@ -212,93 +197,93 @@ const subscriptionItems = [
 ];
 
 const applyVariationChanges = (price, variation, subscriptionFeatures) => {
-    // Validate variation
-    if (variation !== "1" && variation !== "2") {
-        console.warn('Invalid variation, must be 1 or 2:', variation);
-        return;
+  // Validate variation
+  if (variation !== "1" && variation !== "2") {
+    console.warn('Invalid variation, must be 1 or 2:', variation);
+    return;
+  }
+
+  // Validate price
+  if (price !== '25' && price !== '50') {
+    console.warn(`Price ${price} is not 25 or 50, defaulting to 25`);
+    price = '25';
+  }
+
+  // Check if subscriptionFeatures exists
+  if (!subscriptionFeatures) {
+    console.warn('subscription-features element not provided');
+    return;
+  }
+
+  // Create container
+  const container = document.createElement('div');
+  container.className = 'subs-container';
+
+  const heading = document.createElement('h2');
+  heading.textContent = "Your subscription includes:";
+  container.appendChild(heading);
+
+  // Check if subscriptionItems exists and is an array
+  if (!Array.isArray(subscriptionItems)) {
+    console.warn('subscriptionItems is not an array or is undefined');
+    return;
+  }
+
+  subscriptionItems.forEach(item => {
+    if (!item) {
+      console.warn('Invalid item in subscriptionItems');
+      return;
     }
 
-    // Validate price
-    if (price !== '25' && price !== '50') {
-        console.warn(`Price ${price} is not 25 or 50, defaulting to 25`);
-        price = '25';
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'subs-item';
+
+    // Create icon container with image
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'subs-icon';
+    if (item.icon) {
+      const imgElement = document.createElement('img');
+      imgElement.src = item.icon;
+      imgElement.alt = item.title ? `${item.title} icon` : 'Subscription item icon';
+      imgElement.style.width = '34px';
+      imgElement.style.height = '34px';
+      iconDiv.appendChild(imgElement);
+    } else {
+      console.warn('Missing icon for item:', item.title || 'unknown item');
     }
 
-    // Check if subscriptionFeatures exists
-    if (!subscriptionFeatures) {
-        console.warn('subscription-features element not provided');
-        return;
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'subs-content';
+
+    // Title and highlight
+    const titleEl = document.createElement('h3');
+    titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
+      (item.highlight?.[price] ? ` <span class="subs-highlight">${item.highlight[price]}</span>` : "");
+
+    // Description
+    const descEl = document.createElement('p');
+    descEl.innerHTML = item.description || '';
+
+    contentDiv.appendChild(titleEl);
+    contentDiv.appendChild(descEl);
+
+    // Add button if present and valid for Variation 2
+    if (variation === '2' && item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
+      const btn = document.createElement('a');
+      btn.href = item.button.url;
+      btn.className = 'subs-btn';
+      btn.textContent = item.button.text;
+      contentDiv.appendChild(btn);
     }
 
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'subs-container';
+    itemDiv.appendChild(iconDiv);
+    itemDiv.appendChild(contentDiv);
+    container.appendChild(itemDiv);
+  });
 
-    const heading = document.createElement('h2');
-    heading.textContent = "Your subscription includes:";
-    container.appendChild(heading);
-
-    // Check if subscriptionItems exists and is an array
-    if (!Array.isArray(subscriptionItems)) {
-        console.warn('subscriptionItems is not an array or is undefined');
-        return;
-    }
-
-    subscriptionItems.forEach(item => {
-        if (!item) {
-            console.warn('Invalid item in subscriptionItems');
-            return;
-        }
-
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'subs-item';
-
-        // Create icon container with image
-        const iconDiv = document.createElement('div');
-        iconDiv.className = 'subs-icon';
-        if (item.icon) {
-            const imgElement = document.createElement('img');
-            imgElement.src = item.icon;
-            imgElement.alt = item.title ? `${item.title} icon` : 'Subscription item icon';
-            imgElement.style.width = '34px';
-            imgElement.style.height = '34px';
-            iconDiv.appendChild(imgElement);
-        } else {
-            console.warn('Missing icon for item:', item.title || 'unknown item');
-        }
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'subs-content';
-
-        // Title and highlight
-        const titleEl = document.createElement('h3');
-        titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-            (item.highlight?.[price] ? ` <span class="subs-highlight">${item.highlight[price]}</span>` : "");
-
-        // Description
-        const descEl = document.createElement('p');
-        descEl.innerHTML = item.description?.[price] || item.description?.['25'] || '';
-
-        contentDiv.appendChild(titleEl);
-        contentDiv.appendChild(descEl);
-
-        // Add button if present and valid
-        if (variation === '2' && item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
-          const btn = document.createElement('a');
-          btn.href = item.button.url;
-          btn.className = 'subs-btn';
-          btn.textContent = item.button.text;
-          contentDiv.appendChild(btn);
-        }
-
-        itemDiv.appendChild(iconDiv);
-        itemDiv.appendChild(contentDiv);
-        container.appendChild(itemDiv);
-    });
-
-    // Replace subscription-features element
-    subscriptionFeatures.replaceWith(container);
-    customLog(`Subscription container built for Variation ${variation} and Price £${price}.`);
+  // Replace subscription-features element
+  subscriptionFeatures.replaceWith(container);
+  customLog(`Subscription container built for Variation ${variation} and Price £${price}.`);
 };
 
 function waitForElements(selectors, callback) {
