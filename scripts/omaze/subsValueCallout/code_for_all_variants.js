@@ -197,6 +197,12 @@ const subscriptionItems = [
 ];
 
 const applyVariationChanges = (price, variation, subscriptionFeatures) => {
+  const ccxContainer = document.querySelector('.subs-container');
+
+  if (ccxContainer) {
+    return;
+  }
+
   // Validate variation
   if (variation !== "1" && variation !== "2") {
     console.warn('Invalid variation, must be 1 or 2:', variation);
@@ -205,7 +211,7 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
 
   // Validate price
   if (price !== '25' && price !== '50') {
-    console.warn(`Price ${price} is not 25 or 50, defaulting to 25`);
+    console.warn('Price ' + price + ' is not 25 or 50, defaulting to 25');
     price = '25';
   }
 
@@ -244,7 +250,7 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     if (item.icon) {
       const imgElement = document.createElement('img');
       imgElement.src = item.icon;
-      imgElement.alt = item.title ? `${item.title} icon` : 'Subscription item icon';
+      imgElement.alt = item.title ? item.title + ' icon' : 'Subscription item icon';
       imgElement.style.width = '34px';
       imgElement.style.height = '34px';
       iconDiv.appendChild(imgElement);
@@ -258,7 +264,7 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     // Title and highlight
     const titleEl = document.createElement('h3');
     titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-      (item.highlight?.[price] ? ` <span class="subs-highlight">${item.highlight[price]}</span>` : "");
+      (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "")
 
     // Description
     const descEl = document.createElement('p');
@@ -283,7 +289,7 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
 
   // Replace subscription-features element
   subscriptionFeatures.replaceWith(container);
-  customLog(`Subscription container built for Variation ${variation} and Price £${price}.`);
+  customLog('Subscription container built for Variation ' + variation + ' and Price £' + price + '.');
 };
 
 function waitForElements(selectors, callback) {
@@ -306,10 +312,10 @@ function waitForElements(selectors, callback) {
     const results = selectors.map(selector => {
       try {
         const element = document.querySelector(selector);
-        customLog(`[waitForElements] Fallback query for ${selector}:`, element);
+        customLog('[waitForElements] Fallback query for ' + selector + ':', element);
         return element ? [element] : [];
       } catch (error) {
-        console.warn(`[waitForElements] Error querying ${selector}:`, error);
+        console.warn('[waitForElements] Error querying ' + selector + ':', error);
         return [];
       }
     });
@@ -327,11 +333,11 @@ function waitForElements(selectors, callback) {
   const promises = selectors.map(selector =>
     DYO.waitForElementAsync(selector, 1, 200, 100) // 200ms interval, 100 retries = 20s
       .then(result => {
-        customLog(`[waitForElements] Found elements for ${selector}:`, result);
+        customLog('[waitForElements] Found elements for ' + selector + ':', result);
         return result;
       })
       .catch(error => {
-        console.warn(`[waitForElements] Failed to find elements for ${selector}:`, error);
+        console.warn('[waitForElements] Failed to find elements for ' + selector + ':', error);
         return []; // Return empty array to allow Promise.all to resolve
       })
   );
@@ -350,10 +356,10 @@ function waitForElements(selectors, callback) {
         const fallbackResults = selectors.map(selector => {
           try {
             const element = document.querySelector(selector);
-            customLog(`[waitForElements] Fallback query for ${selector}:`, element);
+            customLog('[waitForElements] Fallback query for ' + selector + ':', element);
             return element ? [element] : [];
           } catch (error) {
-            console.warn(`[waitForElements] Fallback error for ${selector}:`, error);
+            console.warn('[waitForElements] Fallback error for ' + selector + ':', error);
             return [];
           }
         });
@@ -369,6 +375,49 @@ function waitForElements(selectors, callback) {
     .catch(error => {
       console.warn('[waitForElements] Promise.all failed:', error);
     });
+}
+
+function observeSubscriptionManagementCards() {
+  customLog('[observeSubscriptionManagementCards] Starting to observe changes...');
+
+  // Check if target element exists
+  const targetElement = document.querySelector('#subscription-management__cards');
+  if (!targetElement) {
+    console.warn('[observeSubscriptionManagementCards] Target element #subscription-management__cards not found');
+    return;
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      // Check only mutations with added nodes
+      if (mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach((node) => {
+          // Ensure node is an element (not a text node or comment)
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            // Check if the parent element is a tier-card with active attribute
+            const parent = node.parentElement;
+            if (parent && parent.tagName.toLowerCase() === 'tier-card' && parent.hasAttribute('active')) {
+              customLog('[observeSubscriptionManagementCards] Detected added node with parent tier-card[active]:', node);
+              try {
+                init();
+                customLog('[observeSubscriptionManagementCards] init function called');
+              } catch (error) {
+                console.error('[observeSubscriptionManagementCards] Error calling init:', error.message);
+              }
+            }
+          }
+        });
+      }
+    });
+  });
+
+  // Observe changes to childList and subtree
+  observer.observe(targetElement, {
+    childList: true,
+    subtree: true,
+  });
+
+  customLog('[observeSubscriptionManagementCards] Observer set up for #subscription-management__cards');
 }
 
 function init() {
@@ -392,17 +441,27 @@ function init() {
       customLog('subscriptionFeatures:', subscriptionFeatures);
       customLog('tierCard:', tierCard);
 
-      // --- Add CSS ---
-      addStyles(styles);
-
       // Extract and filter price from tier-card
       let price = null;
       if (tierCard && subscriptionFeatures) {
         price = tierCard.getAttribute('price');
         customLog('Extracted price from tier-card:', price);
 
+        if (price === '15') {
+          customLog('[init] Price is 15, skipping callout');
+          return;
+        }
+
+        customLog('[init] Price is not 15, proceeding with callout');
+
+        // --- Add CSS ---
+        addStyles(styles);
+
         // --- Apply changes ---
         applyVariationChanges(price, VARIATION, subscriptionFeatures);
+
+        // --- Observe changes ---
+        observeSubscriptionManagementCards();
       } else {
         console.warn('tier-card or subscription-features element not found');
       }
