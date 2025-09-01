@@ -1,4 +1,4 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 1";
 const CURRENT_URL = window.location.href;
@@ -17,7 +17,7 @@ const variationCloseIconSVG = `<svg width="40" height="40" viewBox="0 0 40 40" f
 
 const styles = `
 /* Disable scrolling when menu is open */
-html.menu-open.no-scroll {
+html.no-scroll {
     overflow: hidden;
 }
 
@@ -568,21 +568,20 @@ function bindEvents() {
         const urlParams = new URLSearchParams(window.location.search);
         const algqValue = urlParams.get('algq');
 
-
-        if (algqValue) {
-            if (ccxInput.value === '') {
-                if (controlInput) {
-                    controlInput.value = algqValue;
-                    const inputEvent = new Event('input', { bubbles: true });
-                    controlInput.dispatchEvent(inputEvent);
-                    customLog('[bindEvents] Set ccxInput and controlInput to algq URL parameter value and dispatched input event on initialization.');
-                }
-            } else {
-                setTimeout(() => {
-                    customLog('[bindEvents] Focused ccxInput after 500ms.');
-                    ccxInput.focus();
-                }, 500);
+        if (algqValue && ccxInput) {
+            const trimmedAlgqValue = algqValue.trim(); // Trim whitespace from algq value
+            ccxInput.value = trimmedAlgqValue; // Set ccxInput to trimmed algq value
+            if (controlInput) {
+                controlInput.value = trimmedAlgqValue; // Ensure controlInput is also set
             }
+            // Dispatch input event on ccxInput to trigger any listeners
+            const inputEvent = new Event('input', { bubbles: true });
+            ccxInput.dispatchEvent(inputEvent);
+            customLog('[bindEvents] Initialized ccxInput and controlInput with algq URL parameter value and dispatched input event.');
+
+            // Focus ccxInput
+            ccxInput.focus();
+            customLog('[bindEvents] Focused ccxInput.');
         }
 
         ccxInput.addEventListener('focus', () => {
@@ -713,25 +712,30 @@ const listenToEmptyResultsContainer = () => {
                 // Check added nodes
                 mutation.addedNodes.forEach(node => {
                     if (node.nodeType === 1 && node.id === 'algolia-noresult-recommendations') {
-                        console.log('🚀 Element added:', node);
+                        customLog('🚀 Element added:', node);
                     }
                 });
 
-                // Optionally, log removed nodes
                 mutation.removedNodes.forEach(node => {
                     if (node.nodeType === 1 && node.id === 'algolia-noresult-recommendations') {
-                        console.log('❌ Element removed:', node);
+                        customLog('❌ Element removed:', node);
 
                         const controlNoHitsPlaceHolder = document.querySelector('.algolia-noresult-wrapper .algolia-hits-placeholder');
-                        console.log('[listenToEmptyResultsContainer] controlNoHitsPlaceHolder:', controlNoHitsPlaceHolder);
+                        customLog('[listenToEmptyResultsContainer] controlNoHitsPlaceHolder:', controlNoHitsPlaceHolder);
                         if (controlNoHitsPlaceHolder && controlNoHitsPlaceHolder.hasChildNodes()) {
-                            console.log('Has children');
+                            customLog('Has children');
                         } else {
-                            console.log('No children');
+                            customLog('No children');
+
+                            const ccxInput = document.querySelector('.ccx-mobile-search-input');
+                            
                             const controlClearButton = document.querySelector('.ais-SearchBox-reset');
-                            if (controlClearButton) {
-                                controlClearButton.click();
-                                console.log('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
+                            if (ccxInput && controlClearButton) {
+                                if (ccxInput.value === '') {
+                                    controlClearButton.click();
+                                    customLog('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
+
+                                }
                             }
                         }
                     }
