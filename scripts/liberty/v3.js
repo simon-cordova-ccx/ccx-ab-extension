@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 1";
 const CURRENT_URL = window.location.href;
@@ -571,21 +571,11 @@ function bindEvents() {
                     const inputEvent = new Event('input', { bubbles: true });
                     controlInput.dispatchEvent(inputEvent);
                     customLog('[bindEvents] Set ccxInput and controlInput to algq URL parameter value and dispatched input event on initialization.');
-                    setTimeout(() => {
-                        customLog('[bindEvents] Focused ccxInput after 1 second.');
-                        console.log(ccxInput.value);
-                        console.log(ccxInput);
-                        // ccxInput.focus();
-                        document.querySelector('#ccx-mobile-search-input').focus();
-                    }, 1000);
                 }
             } else {
                 setTimeout(() => {
-                    customLog('[bindEvents] Focused ccxInput after 1 second.');
-                    console.log(ccxInput.value);
-                    console.log(ccxInput);
-                    // ccxInput.focus();
-                    document.querySelector('#ccx-mobile-search-input').focus();
+                    customLog('[bindEvents] Focused ccxInput after 500ms.');
+                    ccxInput.focus();
                 }, 500);
             }
         }
