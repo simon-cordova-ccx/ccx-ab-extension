@@ -1,4 +1,4 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "Liberty L01 - Persistent search";
 const VARIATION = "VARIATION 1";
 const CURRENT_URL = window.location.href;
@@ -558,16 +558,35 @@ function bindEvents() {
     const controlMobileMenuCloseButton = document.querySelector('.mobile #sg-navbar-collapse > div > header > ul > li.navicon');
 
     if (ccxInput && ccxCloseIcon) {
+        customLog('[bindEvents] Binding events to ccxInput and ccxCloseIcon...');
         // Set initial ccxInput value from algq URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const algqValue = urlParams.get('algq');
-        if (algqValue && ccxInput.value === '') {
-            ccxInput.value = algqValue;
-            if (controlInput) {
-                controlInput.value = algqValue;
-                const inputEvent = new Event('input', { bubbles: true });
-                controlInput.dispatchEvent(inputEvent);
-                customLog('[bindEvents] Set ccxInput and controlInput to algq URL parameter value and dispatched input event on initialization.');
+
+
+        if (algqValue) {
+            if (ccxInput.value === '') {
+                if (controlInput) {
+                    controlInput.value = algqValue;
+                    const inputEvent = new Event('input', { bubbles: true });
+                    controlInput.dispatchEvent(inputEvent);
+                    customLog('[bindEvents] Set ccxInput and controlInput to algq URL parameter value and dispatched input event on initialization.');
+                    setTimeout(() => {
+                        customLog('[bindEvents] Focused ccxInput after 1 second.');
+                        console.log(ccxInput.value);
+                        console.log(ccxInput);
+                        // ccxInput.focus();
+                        document.querySelector('#ccx-mobile-search-input').focus();
+                    }, 1000);
+                }
+            } else {
+                setTimeout(() => {
+                    customLog('[bindEvents] Focused ccxInput after 1 second.');
+                    console.log(ccxInput.value);
+                    console.log(ccxInput);
+                    // ccxInput.focus();
+                    document.querySelector('#ccx-mobile-search-input').focus();
+                }, 500);
             }
         }
 
@@ -716,22 +735,11 @@ const listenToEmptyResultsContainer = () => {
                             console.log('Has children');
                         } else {
                             console.log('No children');
-                              const controlClearButton = document.querySelector('.ais-SearchBox-reset');
-                              if (controlClearButton) {
+                            const controlClearButton = document.querySelector('.ais-SearchBox-reset');
+                            if (controlClearButton) {
                                 controlClearButton.click();
                                 console.log('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
-                              }
-                        }
-
-
-                        // Only click if container is empty
-                        if (controlNoHitsPlaceHolder && controlNoHitsPlaceHolder.innerHTML.trim() === '') {
-                            customLog('[listenToEmptyResultsContainer] .algolia-hits-placeholder container is empty.');
-                            //   const controlClearButton = document.querySelector('.ais-SearchBox-reset');
-                            //   if (controlClearButton) {
-                            //     controlClearButton.click();
-                            //     console.log('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
-                            //   }
+                            }
                         }
                     }
                 });
@@ -744,7 +752,6 @@ const listenToEmptyResultsContainer = () => {
 
     // If needed: observer.disconnect();
 };
-
 
 function init() {
     try {
