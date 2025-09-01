@@ -551,7 +551,7 @@ function bindEvents() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    let controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search') || document.querySelector('.desktop .app-tray-buttons > .search') ;
+    let controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search') || document.querySelector('.desktop .app-tray-buttons > .search');
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
     const controlMobileMenuButton = document.querySelector('.mobile .page header .nav-container > nav.js-header-mobile.app-tray-menu ul > li.navicon');
@@ -646,10 +646,10 @@ function bindEvents() {
                 if (controlResetButton && ccxInput && controlInput) {
                     controlResetButton.click();
                     customLog('[bindEvents] Programmatically clicked .ais-SearchBox-reset via clear button.');
-                    
+
                     ccxInput.value = '';
                     customLog('[bindEvents] Cleared ccxInput value.');
-                    
+
                     controlInput.value = '';
                     const inputEvent = new Event('input', { bubbles: true });
                     controlInput.dispatchEvent(inputEvent);
@@ -685,11 +685,66 @@ function bindEvents() {
         } else {
             console.warn('[bindEvents] #sg-navbar-collapse header li.navicon not found.');
         }
-        
+
     } else {
         console.warn('[bindEvents] Input or close icon not found.');
     }
 }
+
+const listenToEmptyResultsContainer = () => {
+    const targetNode = document.body;
+    const config = { childList: true, subtree: true };
+
+    const callback = (mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                // Check added nodes
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.id === 'algolia-noresult-recommendations') {
+                        console.log('🚀 Element added:', node);
+                    }
+                });
+
+                // Optionally, log removed nodes
+                mutation.removedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.id === 'algolia-noresult-recommendations') {
+                        console.log('❌ Element removed:', node);
+
+                        const controlNoHitsPlaceHolder = document.querySelector('.algolia-noresult-wrapper .algolia-hits-placeholder');
+                        console.log('[listenToEmptyResultsContainer] controlNoHitsPlaceHolder:', controlNoHitsPlaceHolder);
+                        if (controlNoHitsPlaceHolder && controlNoHitsPlaceHolder.hasChildNodes()) {
+                            console.log('Has children');
+                        } else {
+                            console.log('No children');
+                              const controlClearButton = document.querySelector('.ais-SearchBox-reset');
+                              if (controlClearButton) {
+                                controlClearButton.click();
+                                console.log('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
+                              }
+                        }
+
+
+                        // Only click if container is empty
+                        if (controlNoHitsPlaceHolder && controlNoHitsPlaceHolder.innerHTML.trim() === '') {
+                            customLog('[listenToEmptyResultsContainer] .algolia-hits-placeholder container is empty.');
+                            //   const controlClearButton = document.querySelector('.ais-SearchBox-reset');
+                            //   if (controlClearButton) {
+                            //     controlClearButton.click();
+                            //     console.log('[listenToEmptyResultsContainer] Clicked .ais-SearchBox-reset because container was empty.');
+                            //   }
+                        }
+                    }
+                });
+            }
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    // If needed: observer.disconnect();
+};
+
 
 function init() {
     try {
@@ -712,6 +767,8 @@ function init() {
                 setupResizeListener();
 
                 bindEvents();
+
+                listenToEmptyResultsContainer();
             }
         );
 
