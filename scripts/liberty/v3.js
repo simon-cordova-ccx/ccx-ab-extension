@@ -351,7 +351,7 @@ function waitForElements(selectors, callback) {
     }
 
     if (!window.DYO || !DYO.waitForElementAsync) {
-        console.warn('[waitForElements] DYO.waitForElementAsync is not available.');
+        customLog('[waitForElements] DYO.waitForElementAsync is not available.');
         return;
     }
 
@@ -366,7 +366,7 @@ function waitForElements(selectors, callback) {
             if (typeof callback === 'function') callback(results);
         })
         .catch(error => {
-            console.warn('[waitForElements] Some selectors not found within timeout.', error);
+            customLog('[waitForElements] Some selectors not found within timeout.', error);
         });
 }
 
@@ -377,7 +377,7 @@ function handleResize() {
     const controlDesktopCategoriesList = document.querySelector('#sg-navbar-collapse');
 
     if (!searchContainer || !navContainer || !controlDesktopCategoriesList || !searchContainer) {
-        console.warn('[handleResize] Required elements not found.');
+        customLog('[handleResize] Required elements not found.');
         return;
     }
 
@@ -413,7 +413,7 @@ function handleResize() {
                 // customLog('[handleResize] Search container already in correct tablet position.');
             }
         } else {
-            console.warn('[handleResize] Tablet target element (.logo-home inside nav.js-header-mobile.app-tray-menu) not found.');
+            customLog('[handleResize] Tablet target element (.logo-home inside nav.js-header-mobile.app-tray-menu) not found.');
         }
     }
 
@@ -439,7 +439,7 @@ function handleResize() {
                 // customLog('[handleResize] ccx search container already in correct desktop position.');
             }
         } else {
-            console.warn('[handleResize] .brand element not found for desktop placement.');
+            customLog('[handleResize] .brand element not found for desktop placement.');
         }
     }
 
@@ -457,7 +457,7 @@ function handleResize() {
                 customLog('[handleResize] #sg-navbar-collapse already in correct mobile/tablet position.');
             }
         } else {
-            console.warn('[handleResize] .brand element not found for mobile/tablet placement.');
+            customLog('[handleResize] .brand element not found for mobile/tablet placement.');
         }
 
     }
@@ -477,7 +477,7 @@ function createSearchComponent() {
 
     const containerExists = document.querySelector('.ccx-mobile-search-container');
     if (containerExists) {
-        console.warn('Search component already exists. Aborting creation.');
+        customLog('Search component already exists. Aborting creation.');
         return null;
     }
 
@@ -511,7 +511,7 @@ function createSearchComponent() {
     closeIcon.innerHTML = variationCloseIconSVG;
 
     if (!container || !searchBar || !searchIcon || !input || !clearBtn || !closeIcon) {
-        console.warn('Failed to create some search component elements.');
+        customLog('Failed to create some search component elements.');
         return null;
     }
 
@@ -531,7 +531,7 @@ function appendSearchComponent() {
     const logoHome = document.querySelector('.nav-container');
 
     if (!logoHome) {
-        console.warn('Element ".nav-container" not found. Aborting append.');
+        customLog('Element ".nav-container" not found. Aborting append.');
         return;
     }
 
@@ -539,7 +539,7 @@ function appendSearchComponent() {
     const searchComponent = createSearchComponent();
 
     if (!searchComponent) {
-        console.warn('Search component creation failed. Nothing appended.');
+        customLog('Search component creation failed. Nothing appended.');
         return;
     }
 
@@ -602,7 +602,7 @@ function bindEvents() {
                 ccxInput.focus(); // Ensure input retains focus after searchButton click
                 customLog('[bindEvents] Programmatically clicked .search button and restored input focus.');
             } else if (!controlSearchButton) {
-                console.warn('[bindEvents] .search button not found.');
+                customLog('[bindEvents] .search button not found.');
             } else {
                 customLog('[bindEvents] .search button already active, skipping click.');
             }
@@ -615,21 +615,21 @@ function bindEvents() {
                 controlInput.dispatchEvent(inputEvent);
                 customLog('[bindEvents] Synced input value to .ais-SearchBox-input and dispatched input event.');
             } else {
-                console.warn('[bindEvents] .ais-SearchBox-input not found.');
+                customLog('[bindEvents] .ais-SearchBox-input not found.');
             }
 
             if (ccxInput.value === '' && controlResetButton) {
                 controlResetButton.click();
                 customLog('[bindEvents] Programmatically clicked .ais-SearchBox-reset as input is empty.');
             } else if (ccxInput.value === '' && !controlResetButton) {
-                console.warn('[bindEvents] .ais-SearchBox-reset not found.');
+                customLog('[bindEvents] .ais-SearchBox-reset not found.');
             }
 
             if (ccxClearButton) {
                 ccxClearButton.style.display = ccxInput.value !== '' ? 'block' : 'none';
                 customLog('[bindEvents] Clear button display set to ' + ccxClearButton.style.display + '.');
             } else {
-                console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
+                customLog('[bindEvents] .ccx-mobile-clear-btn not found.');
             }
         });
 
@@ -648,9 +648,7 @@ function bindEvents() {
         });
 
         if (ccxClearButton) {
-            ccxClearButton.addEventListener('click', (e) => {
-                // e.stopPropagation();
-                // e.stopImmediatePropagation();
+            ccxClearButton.addEventListener('click', () => {
 
                 if (controlResetButton && ccxInput && controlInput) {
                     controlResetButton.click();
@@ -670,11 +668,11 @@ function bindEvents() {
                     ccxInput.focus();
                     customLog('[bindEvents] Restored input focus.');
                 } else {
-                    console.warn('[bindEvents] .ais-SearchBox-reset not found.');
+                    customLog('[bindEvents] .ais-SearchBox-reset not found.');
                 }
             });
         } else {
-            console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
+            customLog('[bindEvents] .ccx-mobile-clear-btn not found.');
         }
 
         if (controlMobileMenuButton) {
@@ -683,7 +681,7 @@ function bindEvents() {
                 customLog('[bindEvents] Added ccx-mobile-menu-open class to body.');
             });
         } else {
-            console.warn('[bindEvents] .app-tray-buttons-container not found.');
+            customLog('[bindEvents] .app-tray-buttons-container not found.');
         }
 
         if (controlMobileMenuCloseButton) {
@@ -692,11 +690,11 @@ function bindEvents() {
                 customLog('[bindEvents] Removed ccx-mobile-menu-open class from body.');
             });
         } else {
-            console.warn('[bindEvents] #sg-navbar-collapse header li.navicon not found.');
+            customLog('[bindEvents] #sg-navbar-collapse header li.navicon not found.');
         }
 
     } else {
-        console.warn('[bindEvents] Input or close icon not found.');
+        customLog('[bindEvents] Input or close icon not found.');
     }
 }
 
@@ -770,7 +768,7 @@ function init() {
         );
 
     } catch (error) {
-        console.warn(error.message);
+        customLog(error.message);
     }
 }
 
