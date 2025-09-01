@@ -551,7 +551,7 @@ function bindEvents() {
     const ccxInput = document.querySelector('.ccx-mobile-search-input');
     const ccxCloseIcon = document.querySelector('.ccx-mobile-search-close-icon');
     const ccxClearButton = document.querySelector('.ccx-mobile-clear-btn');
-    let controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search');
+    let controlSearchButton = document.querySelector('.mobile .app-tray-buttons-container .app-tray-buttons > .search') || document.querySelector('.desktop .app-tray-buttons > .search') ;
     const controlInput = document.querySelector('.ais-SearchBox-input');
     const controlResetButton = document.querySelector('.ais-SearchBox-reset');
     const controlMobileMenuButton = document.querySelector('.mobile .page header .nav-container > nav.js-header-mobile.app-tray-menu ul > li.navicon');
@@ -577,7 +577,7 @@ function bindEvents() {
 
             if (ccxClearButton) {
                 ccxClearButton.style.display = ccxInput.value !== '' ? 'block' : 'none';
-                customLog(`[bindEvents] Clear button display set to ${ccxClearButton.style.display} on focus.`);
+                customLog('[bindEvents] Clear button display set to ' + ccxClearButton.style.display + ' on focus.');
             }
         });
 
