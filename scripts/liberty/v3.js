@@ -16,6 +16,11 @@ const variationCloseIconSVG = `<svg width="40" height="40" viewBox="0 0 40 40" f
 `;
 
 const styles = `
+/* Disable scrolling when menu is open */
+html.menu-open.no-scroll {
+    overflow: hidden;
+}
+
 /* Container: Auto layout */
 .ccx-mobile-search-container {
     display: flex;
@@ -737,8 +742,6 @@ const listenToEmptyResultsContainer = () => {
 
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, config);
-
-    // If needed: observer.disconnect();
 };
 
 function init() {
