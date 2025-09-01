@@ -618,7 +618,7 @@ function bindEvents() {
 
             if (ccxClearButton) {
                 ccxClearButton.style.display = ccxInput.value !== '' ? 'block' : 'none';
-                customLog(`[bindEvents] Clear button display set to ${ccxClearButton.style.display}.`);
+                customLog('[bindEvents] Clear button display set to ' + ccxClearButton.style.display + '.');
             } else {
                 console.warn('[bindEvents] .ccx-mobile-clear-btn not found.');
             }
