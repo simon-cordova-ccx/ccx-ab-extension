@@ -579,9 +579,15 @@ function bindEvents() {
             ccxInput.dispatchEvent(inputEvent);
             customLog('[bindEvents] Initialized ccxInput and controlInput with algq URL parameter value and dispatched input event.');
 
-            // Focus ccxInput
-            ccxInput.focus();
+            ccxClearButton.style.display = 'block';
+            ccxCloseIcon.style.display = 'block';
             customLog('[bindEvents] Focused ccxInput.');
+
+            setTimeout(() => {
+                // Focus ccxInput
+                customLog('[bindEvents] Focused ccxInput.');
+                ccxInput.focus();
+            }, 1000);
         }
 
         ccxInput.addEventListener('focus', () => {
