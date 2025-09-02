@@ -652,8 +652,10 @@ function bindEvents() {
             }
 
             if (controlSearchButton && controlSearchButton.classList.contains('active')) {
-                controlSearchButton.click();
-                customLog('[bindEvents] Clicked .search button.');
+                setTimeout(() => {
+                    controlSearchButton.click();
+                    customLog('[bindEvents] Clicked .search button.');
+                }, 0);
             }
         });
 
@@ -734,7 +736,7 @@ const listenToEmptyResultsContainer = () => {
                             customLog('No children');
 
                             const ccxInput = document.querySelector('.ccx-mobile-search-input');
-                            
+
                             const controlClearButton = document.querySelector('.ais-SearchBox-reset');
                             if (ccxInput && controlClearButton) {
                                 if (ccxInput.value === '') {
@@ -753,6 +755,32 @@ const listenToEmptyResultsContainer = () => {
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, config);
 };
+
+function toggleHeaderOnRefinementBarChange() {
+  const bar = document.querySelector('.algolia-refinement-bar');
+  const target = document.querySelector('.search-sticky-header-wrapper + div');
+
+  if (!bar || !target) {
+    customLog('Required elements not found: .algolia-refinement-bar or .search-sticky-header-wrapper + div');
+    return;
+  }
+
+  const updateHeaderState = () => {
+    if (bar.classList.contains('d-flex')) {
+      target.style.display = 'none';
+      customLog('Refinement bar has d-flex → hiding sibling header');
+    } else {
+      target.style.display = 'flex';
+      customLog('Refinement bar lost d-flex → showing sibling header');
+    }
+  };
+
+  const observer = new MutationObserver(updateHeaderState);
+
+  observer.observe(bar, { attributes: true, attributeFilter: ['class'] });
+
+  customLog('MutationObserver set up on .algolia-refinement-bar');
+}
 
 function init() {
     try {
@@ -777,6 +805,8 @@ function init() {
                 bindEvents();
 
                 listenToEmptyResultsContainer();
+
+                toggleHeaderOnRefinementBarChange();
             }
         );
 
