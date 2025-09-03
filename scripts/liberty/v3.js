@@ -428,9 +428,14 @@ function handleResize() {
      * Place it AFTER navContainer
      --------------------------------*/
     if (window.innerWidth >= 992) {
+        customLog('window.innerWidth >= 992');
+
         if (navContainer.nextElementSibling !== controlDesktopCategoriesList) {
-            navContainer.insertAdjacentElement('afterend', controlDesktopCategoriesList);
-            // customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');
+
+            setTimeout(() => {
+                navContainer.insertAdjacentElement('afterend', controlDesktopCategoriesList);
+                customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');                
+            }, 100);
         } else {
             // customLog('[handleResize] #sg-navbar-collapse already in correct desktop position.');
         }
@@ -454,10 +459,13 @@ function handleResize() {
      * Place it AFTER brandElement
      --------------------------------*/
     if (window.innerWidth <= 991) {
+        customLog('window.innerWidth <= 991');
         if (brandElement) {
             if (brandElement.nextElementSibling !== controlDesktopCategoriesList) {
-                brandElement.insertAdjacentElement('afterend', controlDesktopCategoriesList);
-                customLog('[handleResize] Moved #sg-navbar-collapse -> after .brand (mobile/tablet).');
+                setTimeout(() => {
+                    brandElement.insertAdjacentElement('afterend', controlDesktopCategoriesList);
+                    customLog('[handleResize] Moved #sg-navbar-collapse -> after .brand (mobile/tablet).');                    
+                }, 100);
             } else {
                 customLog('[handleResize] #sg-navbar-collapse already in correct mobile/tablet position.');
             }
@@ -468,13 +476,26 @@ function handleResize() {
     }
 }
 
-function setupResizeListener() {
-    // Run once immediately
+function initResponsiveHandlers() {
+  const runResize = () => {
+    customLog('[initResponsiveHandlers] Running handleResize...');
     handleResize();
+  };
 
-    // Attach listener
-    window.addEventListener('resize', handleResize);
-    customLog('[setupResizeListener] Resize listener attached.');
+  // Handle resize with debounce
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(runResize, 100);
+  });
+
+  // Handle orientation change (extra defensive on tablets)
+  window.addEventListener('orientationchange', () => {
+    setTimeout(runResize, 100);
+  });
+
+  // Run once at init
+  runResize();
 }
 
 function createSearchComponent() {
@@ -587,7 +608,7 @@ function bindEvents() {
                 // Focus ccxInput
                 customLog('[bindEvents] Focused ccxInput.');
                 ccxInput.focus();
-            }, 1000);
+            }, 500);
         }
 
         ccxInput.addEventListener('focus', () => {
@@ -800,7 +821,7 @@ function init() {
                 addStyles(styles);
                 appendSearchComponent();
 
-                setupResizeListener();
+                initResponsiveHandlers();
 
                 bindEvents();
 
