@@ -8,9 +8,9 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const omaze23Data = {
   headingSpan: 'NEW!',
-  headingText: 'MONTHLY MILLIONAIRE DRAW',
-  subHeading: 'Enter now for a chance to win £1,000,000 a month! Starting at only £8!',
-  paragraphText: 'Free with an Omaze subscription.',
+  headingText: 'OMAZE MONTHLY MILLIONAIRE DRAW',
+  subHeading: 'Enter for your chance to win £1,000,000.',
+  paragraphText: "Get entries into this month's draw or become a subscriber and receive free entries every month.",
   imageURL: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9c509cd86023.jpg',
   backgroundImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/dbacba4af7fd.jpg',
   foregroundImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/4f77fee87606.png',

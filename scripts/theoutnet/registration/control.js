@@ -7,7 +7,7 @@
 
 // /shop and /shop/mens
 
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 
 const TEST_META = {
   NUMBER: "web00716",

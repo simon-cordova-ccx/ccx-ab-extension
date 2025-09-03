@@ -8,9 +8,11 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const omaze23Data = {
   heading: 'Introducing the Omaze Monthly Millionaire ',
-  subHeading: '1 Winner. £1 Million. Guaranteed.',
-  paragraphText: 'Every month, someone will win a life-changing £1,000,000. And that someone could be you. Enjoy 100 monthly entries, automatically included with your subscription from 1st August.',
-  imageURL: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9c509cd86023.jpg',
+  subHeading: '1 Winner. £1 Million. Guaranteed.',
+  paragraphText: 'Every month, someone will win a life-changing £1,000,000 in the Omaze Monthly Millionaire Draw. And that someone could be you. Enter now for your chance to win big this summer, or become a subscriber and receive free entries every month.',
+  //imageURL: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9c509cd86023.jpg',
+  imageURL: 'https://cdn.optimizely.com/img/8395960748/5fc2c84b0d854044a32c2d585df41f0f.png',
+  //imageURL_two: 'https://cdn.optimizely.com/img/8395960748/953d9f33b4cb4b20a1491ee173bf5710.png',
 }
 
 const selectors = {
@@ -19,6 +21,18 @@ const selectors = {
 }
 
 const styles = `
+.ccx-desktop-only{
+max-width: 200px;
+}
+.ccx-mobile-only{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+.ccx-mobile-only.ccx-cta:hover{
+text-decoration: none;
+}
+
 .ccx-subheading {
     font-family: Gellix;
     font-weight: 700;
@@ -63,7 +77,8 @@ const styles = `
     line-height: 48px;
     border-radius: 76px;
     border-width: 2px;
-    border: 2px solid #3B5C6B;
+    // border: 2px solid #3B5C6B;
+    background-color: #FFDD00;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,7 +88,23 @@ const styles = `
     text-align: center;
     color: #090F15;
 }
+
+
 `;
+
+/*
+   .ccx-new-img{
+   dsiplay: none;
+   }
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+   .ccx-main-img{
+   display: none;
+   }
+   .ccx-new-img{
+   dsiplay: block;
+   }
+}
+*/
 
 const customLog = (...messages) => {
   if (!LOG_ENABLED) return;
@@ -134,7 +165,8 @@ function createMobileContainer(element) {
     '<div class="sm:px-12 px-6 py-6 ccx-container-mobile-content">' +
     '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
     '<p class="ccx-paragraph">' + omaze23Data.paragraphText + '</p>' +
-    '<button class="ccx-cta">Enter Monthly Millionaire Now</button>' +
+    //'<button class="ccx-cta">Enter Monthly Millionaire Now</button>' +
+    '<a href="https://omaze.co.uk/pages/enter-cornwall-v" class="ccx-mobile-only ccx-cta">Enter Monthly Millionaire Now</a>' +
     '</div>';
   element.insertAdjacentElement('afterend', mobileContainer);
 }
@@ -145,13 +177,14 @@ function createDesktopContainer(element) {
   desktopContainer.innerHTML =
     '<div class="flex w-full mx-auto ccx-container-desktop-inner">' +
     '<div class="w-1/2 ccx-container-desktop-image">' +
-    '<img src="' + omaze23Data.imageURL + '" alt="Desktop Image" class="w-full h-full object-cover ccx-image">' +
+    '<img src="' + omaze23Data.imageURL + '" alt="Desktop Image" class="w-full h-full object-cover ccx-image ccx-main-img">' +
+  //  '<img src="' + omaze23Data.imageURL_two + '" alt="Mobile Image" class="w-full h-48 object-cover ccx-image ccx-new-img">' +
     '</div>' +
     '<div class="px-12 py-12 w-1/2 flex flex-col justify-center ccx-container-desktop-content">' +
     '<h1 class="ccx-heading">' + omaze23Data.heading + '</h1>' +
     '<h2 class="ccx-subheading">' + omaze23Data.subHeading + '</h2>' +
     '<p class="ccx-paragraph">' + omaze23Data.paragraphText + '</p>' +
-    '<button class="ccx-cta">Enter Now</button>' +
+    '<a href="https://omaze.co.uk/pages/enter-cornwall-v" class="ccx-desktop-only yellow-btn hide-on-mobile">Enter Now</a>' +
     '</div>' +
     '</div>';
   element.insertAdjacentElement('afterend', desktopContainer);

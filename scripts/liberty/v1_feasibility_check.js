@@ -40,8 +40,8 @@ if (controlNavMainMenu) {
     const controlTextInput = document.querySelector('#algolia-searchbox-placeholder > div > form > input');
 
     // Toggle panels
-    const controlAppTreyPanel = document.querySelector('.app-tray-panels');
-    if (controlAppTreyPanel) controlAppTreyPanel.classList.add('active');
+    const controlAppTrayPanel = document.querySelector('.app-tray-panels');
+    if (controlAppTrayPanel) controlAppTrayPanel.classList.add('active');
 
     const controlAlgoliaSearchPanel = document.querySelector('.search-panel.panel.algolia-search-panel');
     if (controlAlgoliaSearchPanel) controlAlgoliaSearchPanel.classList.add('active');
