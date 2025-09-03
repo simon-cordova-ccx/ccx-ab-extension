@@ -6,11 +6,18 @@ const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
-const plansData = [
-  { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€' },
-  { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€' },
-  { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€' }
-];
+const plansData = {
+  subscriptions: [
+    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€' },
+    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€' },
+    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€' }
+  ],
+  payAsYouGo: [
+    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€' },
+    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€' },
+    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€' }
+  ]
+}
 
 const styles = `
 entries-tab-nav[data-tab-container] {
@@ -319,10 +326,10 @@ function init() {
         // Add custom styles
         addStyles(styles);
 
-        const targetElement = document.querySelector('[id*=single-purchase-tab-pane] > div.mx-auto > div')
+        const targetElement = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
 
         if (targetElement) {
-          plansData.forEach(planData => {
+          plansData.subscriptions.forEach(planData => {
             const card = createMobileSubscriptionCard(planData);
             targetElement.appendChild(card);
           });
