@@ -144,26 +144,28 @@ const subscriptionItems = [
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/1ba78e76c656.png",
     title: "Grand Prize House Draw",
     highlight: {
-      25: "100 Entries",
+      15: "100 Entries",
+      25: "200 Entries",
       50: "640 Entries"
     },
     description: "Your chance to win a multi-million house.",
     button: {
       text: "See this month’s house",
-      url: "#"
+      url: "https://omaze.co.uk/pages/new-forest"
     }
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/aee613cb897a.png",
     title: "Monthly Millionaire",
     highlight: {
+      15: "100 Entries",
       25: "200 Entries",
       50: "640 Entries"
     },
     description: "Your chance to win £1,000,000 a month.",
     button: {
       text: "Find out more",
-      url: "#"
+      url: "https://omaze.co.uk/pages/monthly-millionaire"
     }
   },
   {
@@ -179,6 +181,7 @@ const subscriptionItems = [
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/015443682e58.png",
     title: "Early Bird Prize Draw",
     highlight: {
+      15: "100 Entries",
       25: "200 Entries",
       50: "640 Entries"
     },
@@ -191,13 +194,20 @@ const subscriptionItems = [
     description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
     button: {
       text: "Find out more",
-      url: "#"
+      url: "https://omaze.co.uk/pages/our-charity-partners"
     }
   }
 ];
 
 const fireEvents = (price) => {
-  console.log('Firing events for price ' + price);
+  customLog('Firing events for price ' + price);
+
+  if (price === '15') {
+    customLog('[init] ----- Price is 15, firing event');
+    DY.API('event', {
+      name: 'oz26_price_15'
+    });
+  }
 
   if (price === '25') {
     customLog('[init] ----- Price is 25, firing event');
@@ -227,10 +237,13 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     return;
   }
 
+  customLog(typeof price);
+
   // Validate price
-  if (price !== '25' && price !== '50') {
-    console.warn('Price ' + price + ' is not 25 or 50, defaulting to 25');
-    price = '25';
+  if (price !== '15' && price !== '25' && price !== '50') {
+    console.warn('Price ' + price + ' is not 15, 25 or 50.');
+    // price = '25';
+    return;
   }
 
   // Check if subscriptionFeatures exists
@@ -468,12 +481,12 @@ function init() {
         price = tierCard.getAttribute('price');
         customLog('Extracted price from tier-card:', price);
 
-        if (price === '15') {
-          customLog('[init] Price is 15, skipping callout');
-          return;
-        }
+        // if (price === '15') {
+        //   customLog('[init] Price is 15, skipping callout');
+        //   return;
+        // }
 
-        customLog('[init] Price is not 15, proceeding with callout');
+        // customLog('[init] Price is not 15, proceeding with callout');
 
         // --- Add CSS ---
         addStyles(styles);
