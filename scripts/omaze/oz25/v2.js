@@ -41,17 +41,17 @@ const STYLES = `
         display: none !important;
     }
 
-    /* First <ol> */
     #payg-multi-step-container > payg-cart-container > div > nav > ol:first-child {
-        margin: 0px calc(33% - 1rem) !important;
+        margin: 0px calc(33% - 16px) !important;
     }
 
-    /* Second <ol> */
     #payg-multi-step-container > payg-cart-container > div > nav > ol:nth-child(2) {
-        background: lightblue;
-        display: flex !important;
-        justify-content: space-between !important;
-        margin: 0px calc(33% - 45px) !important;
+        grid-template-columns: repeat(2, minmax(0px, 1fr)) !important;
+        margin: 0px calc(33% - 72px) !important;
+    }
+
+    #payg-multi-step-container > payg-cart-container > div > nav > ol:nth-child(2) > li:nth-child(2) {
+        display: none !important;
     }
 `;
 
@@ -158,6 +158,52 @@ function waitForElements(selectors, callback) {
         });
 }
 
+function updatePaygMultiStepGridTemplateColumns() {
+  const element = document.querySelector('#payg-multi-step-container > payg-cart-container > div > nav > ol:nth-child(2)');
+  if (element) {
+    element.removeAttribute('style');
+    element.style.gridTemplateColumns = 'repeat(2, minmax(0px, 1fr))';
+  }
+}
+
+function autoClickNextOnThirdLiActive() {
+    console.log('[Debug] Starting observer on document.body');
+
+    const observer = new MutationObserver(() => {
+        const targetLi = document.querySelector(
+            'nav[aria-label="Progress"] > ol:first-child li:nth-child(3)'
+        );
+
+        if (!targetLi) {
+            console.log('[Debug] Target third <li> not found yet.');
+            return;
+        }
+
+        if (targetLi.classList.contains('active')) {
+            console.log('[Debug] Third <li> is active! Clicking .next-button...');
+
+            const nextButton = document.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.click();
+                console.log('[Debug] .next-button clicked.');
+
+                const contentContainer = document.querySelector('nav[aria-label="Progress"] + div')
+                if (contentContainer) {
+                    contentContainer.style.display = 'flex';
+                    console.log('[Debug] Content container shown.');
+                }
+            } else {
+                console.log('[Debug] .next-button not found.');
+            }
+
+            observer.disconnect();
+            console.log('[Debug] Observer disconnected.');
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
 function init() {
     try {
         customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
@@ -178,7 +224,13 @@ function init() {
             customLog('controlPAYGMultiStepContainer:', controlPAYGMultiStepContainer);
 
             // --- Add CSS ---
-            // addStyles(STYLES);
+            addStyles(STYLES);
+
+            // Update Grid Multi Step Template Columns
+            updatePaygMultiStepGridTemplateColumns();
+
+            // Start the observer
+            autoClickNextOnThirdLiActive();
         });
     } catch (error) {
         console.error(error.message);
