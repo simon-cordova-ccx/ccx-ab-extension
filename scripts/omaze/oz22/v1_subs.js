@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const LOG_ENABLED = true;
+=======
+const LOG_ENABLED = false;
+>>>>>>> feat/omaze-22
 const TEST_NAME = "OZ22 | Sticky button on cart page";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 1 - SUBS";
@@ -93,14 +97,14 @@ const addStyles = (css) => {
     }
 
     // Check if the style tag already exists
-    if (document.querySelector('.ccx-styles-de1-v1')) {
+    if (document.querySelector('.ccx-styles-oz22-v1-subs')) {
         customLog('[addStyles] Custom styles already exist.');
         return;
     }
 
     // Create a new <style> element
     const style = document.createElement('style');
-    style.classList.add('ccx-styles-de1-v1');
+    style.classList.add('ccx-styles-oz22-v1-subs');
     style.appendChild(document.createTextNode(css));
 
     // Append the style tag to the document head
@@ -117,7 +121,7 @@ function replaceClass(element, oldClass, newClass) {
 }
 
 function handleHouseDraw() {
-    console.log('[handleHouseDraw] Running House Draw specific logic');
+    customLog('[handleHouseDraw] Running House Draw specific logic');
 
     const container = document.querySelector('nav[aria-label="Progress"] + div');
 
@@ -130,19 +134,19 @@ function handleHouseDraw() {
 }
 
 function handlePrizeBooster() {
-    console.log('[handlePrizeBooster] Running Prize Booster specific logic');
+    customLog('[handlePrizeBooster] Running Prize Booster specific logic');
 
     const container = document.querySelector('nav[aria-label="Progress"] + div + div');
-    console.log('[handlePrizeBooster] Container query result:', container);
+    customLog('[handlePrizeBooster] Container query result:', container);
 
     if (!container) {
         console.warn('[handlePrizeBooster] Container not found');
         return;
     }
 
-    console.log('[handlePrizeBooster] Replacing class on container...');
+    customLog('[handlePrizeBooster] Replacing class on container...');
     replaceClass(container, 'ccx-step-1', 'ccx-step-2');
-    console.log('[handlePrizeBooster] Class replaced on container');
+    customLog('[handlePrizeBooster] Class replaced on container');
 
     const ccxStepTwoContainer = document.querySelector('.ccx-step-2-container');
 
@@ -150,39 +154,39 @@ function handlePrizeBooster() {
 
     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
     const bottomContainer = document.createElement('div');
-    console.log('[handlePrizeBooster] Creating bottom container...');
+    customLog('[handlePrizeBooster] Creating bottom container...');
     bottomContainer.classList.add('ccx-step-2-container');
-    console.log('[handlePrizeBooster] Adding bottom container to DOM...');
+    customLog('[handlePrizeBooster] Adding bottom container to DOM...');
     container.appendChild(bottomContainer);
-    console.log('[handlePrizeBooster] Bottom container added to DOM');
+    customLog('[handlePrizeBooster] Bottom container added to DOM');
 
     const buttonPrizeBooster = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button:first-of-type');
-    console.log('[handlePrizeBooster] Button Prize Booster query result:', buttonPrizeBooster);
+    customLog('[handlePrizeBooster] Button Prize Booster query result:', buttonPrizeBooster);
 
     const buttonNoThanks = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button[type="submit"]');
-    console.log('[handlePrizeBooster] Button No Thanks query result:', buttonNoThanks);
+    customLog('[handlePrizeBooster] Button No Thanks query result:', buttonNoThanks);
 
     // add the button to the bottom container
-    console.log('[handlePrizeBooster] Adding buttons to bottom container...');
+    customLog('[handlePrizeBooster] Adding buttons to bottom container...');
     bottomContainer.appendChild(buttonPrizeBooster);
     bottomContainer.appendChild(buttonNoThanks);
-    console.log('[handlePrizeBooster] Buttons added to bottom container');
+    customLog('[handlePrizeBooster] Buttons added to bottom container');
 }
 
 function handleWeeklyDraw() {
-    console.log('[handleWeeklyDraw] Running Weekly Draw specific logic');
+    customLog('[handleWeeklyDraw] Running Weekly Draw specific logic');
 
     const container = document.querySelector('nav[aria-label="Progress"] + div + div');
-    console.log('[handlePrizeBooster] Container query result:', container);
+    customLog('[handlePrizeBooster] Container query result:', container);
 
     if (!container) {
         console.warn('[handlePrizeBooster] Container not found');
         return;
     }
 
-    console.log('[handleWeeklyDraw] Replacing class on container...');
+    customLog('[handleWeeklyDraw] Replacing class on container...');
     replaceClass(container, 'ccx-step-2', 'ccx-step-3');
-    console.log('[handleWeeklyDraw] Class replaced on container');
+    customLog('[handleWeeklyDraw] Class replaced on container');
 
     const ccxStepThreeContainer = document.querySelector('.ccx-step-3-container');
 
@@ -191,39 +195,39 @@ function handleWeeklyDraw() {
     /////
     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
     const bottomContainer = document.createElement('div');
-    console.log('[handleWeeklyDraw] Creating bottom container...');
+    customLog('[handleWeeklyDraw] Creating bottom container...');
     bottomContainer.classList.add('ccx-step-2-container');
-    console.log('[handleWeeklyDraw] Adding bottom container to DOM...');
+    customLog('[handleWeeklyDraw] Adding bottom container to DOM...');
     container.appendChild(bottomContainer);
-    console.log('[handleWeeklyDraw] Bottom container added to DOM');
+    customLog('[handleWeeklyDraw] Bottom container added to DOM');
 
     const buttonPrizeBooster = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button:first-of-type');
-    console.log('[handleWeeklyDraw] Button Prize Booster query result:', buttonPrizeBooster);
+    customLog('[handleWeeklyDraw] Button Prize Booster query result:', buttonPrizeBooster);
 
     const buttonNoThanks = document.querySelector('#begin-checkout > div.block-table > subscription-cart-container > div > div:nth-child(3) button[type="submit"]');
-    console.log('[handleWeeklyDraw] Button No Thanks query result:', buttonNoThanks);
+    customLog('[handleWeeklyDraw] Button No Thanks query result:', buttonNoThanks);
 
     // add the button to the bottom container
-    console.log('[handleWeeklyDraw] Adding buttons to bottom container...');
+    customLog('[handleWeeklyDraw] Adding buttons to bottom container...');
     bottomContainer.appendChild(buttonPrizeBooster);
     bottomContainer.appendChild(buttonNoThanks);
-    console.log('[handleWeeklyDraw] Buttons added to bottom container');
+    customLog('[handleWeeklyDraw] Buttons added to bottom container');
 }
 
 function handleSummary() {
-    console.log('[handleSummary] Running Summary specific logic');
+    customLog('[handleSummary] Running Summary specific logic');
 
     const container = document.querySelector('nav[aria-label="Progress"] + div + div');
-    console.log('[handleSummary] Container query result:', container);
+    customLog('[handleSummary] Container query result:', container);
 
     if (!container) {
         console.warn('[handleSummary] Container not found');
         return;
     }
 
-    console.log('[handleSummary] Replacing class on container...');
+    customLog('[handleSummary] Replacing class on container...');
     replaceClass(container, 'ccx-step-3', 'ccx-step-4');
-    console.log('[handleSummary] Class replaced on container');
+    customLog('[handleSummary] Class replaced on container');
 
     const ccxStepFourContainer = document.querySelector('.ccx-step-4-container');
 
@@ -231,19 +235,19 @@ function handleSummary() {
 
     // create a container with position fixed, bottom 0, left 0, and add it to the DOM
     const bottomContainer = document.createElement('div');
-    console.log('[handleSummary] Creating bottom container...');
+    customLog('[handleSummary] Creating bottom container...');
     bottomContainer.classList.add('ccx-step-4-container');
-    console.log('[handleSummary] Adding bottom container to DOM...');
+    customLog('[handleSummary] Adding bottom container to DOM...');
     container.appendChild(bottomContainer);
-    console.log('[handleSummary] Bottom container added to DOM');
+    customLog('[handleSummary] Bottom container added to DOM');
 
     const buttonCheckout = document.querySelector('.ccx-step-4 button[type="submit"]');
-    console.log('[handleSummary] Checkout button query result:', buttonCheckout);
+    customLog('[handleSummary] Checkout button query result:', buttonCheckout);
 
     // add the button to the bottom container
-    console.log('[handleSummary] Adding buttons to bottom container...');
+    customLog('[handleSummary] Adding buttons to bottom container...');
     bottomContainer.appendChild(buttonCheckout);
-    console.log('[handleSummary] Buttons added to bottom container');
+    customLog('[handleSummary] Buttons added to bottom container');
 }
 
 function observeActiveListItems(containerSelector) {
@@ -278,7 +282,11 @@ function observeActiveListItems(containerSelector) {
         const lastActive = activeItems.sort((a, b) => itemOrder.indexOf(b) - itemOrder.indexOf(a))[0];
 
         if (lastActive && itemHandlers[lastActive]) {
+<<<<<<< HEAD
             console.log('[observeActiveListItems] Last active list item: "' + lastActive + '"');
+=======
+            customLog('[observeActiveListItems] Last active list item: "' + lastActive + '"');
+>>>>>>> feat/omaze-22
             itemHandlers[lastActive]();
         }
     }
