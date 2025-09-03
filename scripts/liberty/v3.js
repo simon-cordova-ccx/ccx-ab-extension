@@ -434,7 +434,7 @@ function handleResize() {
 
             setTimeout(() => {
                 navContainer.insertAdjacentElement('afterend', controlDesktopCategoriesList);
-                customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');                
+                customLog('[handleResize] Moved #sg-navbar-collapse -> after .nav-container (desktop).');
             }, 100);
         } else {
             // customLog('[handleResize] #sg-navbar-collapse already in correct desktop position.');
@@ -464,7 +464,7 @@ function handleResize() {
             if (brandElement.nextElementSibling !== controlDesktopCategoriesList) {
                 setTimeout(() => {
                     brandElement.insertAdjacentElement('afterend', controlDesktopCategoriesList);
-                    customLog('[handleResize] Moved #sg-navbar-collapse -> after .brand (mobile/tablet).');                    
+                    customLog('[handleResize] Moved #sg-navbar-collapse -> after .brand (mobile/tablet).');
                 }, 100);
             } else {
                 customLog('[handleResize] #sg-navbar-collapse already in correct mobile/tablet position.');
@@ -477,25 +477,25 @@ function handleResize() {
 }
 
 function initResponsiveHandlers() {
-  const runResize = () => {
-    customLog('[initResponsiveHandlers] Running handleResize...');
-    handleResize();
-  };
+    const runResize = () => {
+        customLog('[initResponsiveHandlers] Running handleResize...');
+        handleResize();
+    };
 
-  // Handle resize with debounce
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(runResize, 100);
-  });
+    // Handle resize with debounce
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(runResize, 100);
+    });
 
-  // Handle orientation change (extra defensive on tablets)
-  window.addEventListener('orientationchange', () => {
-    setTimeout(runResize, 100);
-  });
+    // Handle orientation change (extra defensive on tablets)
+    window.addEventListener('orientationchange', () => {
+        setTimeout(runResize, 100);
+    });
 
-  // Run once at init
-  runResize();
+    // Run once at init
+    runResize();
 }
 
 function createSearchComponent() {
@@ -703,6 +703,17 @@ function bindEvents() {
                 } else {
                     customLog('[bindEvents] .ais-SearchBox-reset not found.');
                 }
+
+                if (document.querySelector('.desktop.menu-open')) {
+                    const magnifyingGlass = document.querySelector('.app-tray-buttons > li:first-child')
+                    if (magnifyingGlass) {
+                        magnifyingGlass.click();
+                    }
+                }
+
+                setTimeout(() => {
+                    ccxInput.focus();
+                }, 500);
             });
         } else {
             customLog('[bindEvents] .ccx-mobile-clear-btn not found.');
@@ -778,29 +789,29 @@ const listenToEmptyResultsContainer = () => {
 };
 
 function toggleHeaderOnRefinementBarChange() {
-  const bar = document.querySelector('.algolia-refinement-bar');
-  const target = document.querySelector('.search-sticky-header-wrapper + div');
+    const bar = document.querySelector('.algolia-refinement-bar');
+    const target = document.querySelector('.search-sticky-header-wrapper + div');
 
-  if (!bar || !target) {
-    customLog('Required elements not found: .algolia-refinement-bar or .search-sticky-header-wrapper + div');
-    return;
-  }
-
-  const updateHeaderState = () => {
-    if (bar.classList.contains('d-flex')) {
-      target.style.display = 'none';
-      customLog('Refinement bar has d-flex → hiding sibling header');
-    } else {
-      target.style.display = 'flex';
-      customLog('Refinement bar lost d-flex → showing sibling header');
+    if (!bar || !target) {
+        customLog('Required elements not found: .algolia-refinement-bar or .search-sticky-header-wrapper + div');
+        return;
     }
-  };
 
-  const observer = new MutationObserver(updateHeaderState);
+    const updateHeaderState = () => {
+        if (bar.classList.contains('d-flex')) {
+            target.style.display = 'none';
+            customLog('Refinement bar has d-flex → hiding sibling header');
+        } else {
+            target.style.display = 'flex';
+            customLog('Refinement bar lost d-flex → showing sibling header');
+        }
+    };
 
-  observer.observe(bar, { attributes: true, attributeFilter: ['class'] });
+    const observer = new MutationObserver(updateHeaderState);
 
-  customLog('MutationObserver set up on .algolia-refinement-bar');
+    observer.observe(bar, { attributes: true, attributeFilter: ['class'] });
+
+    customLog('MutationObserver set up on .algolia-refinement-bar');
 }
 
 function init() {
