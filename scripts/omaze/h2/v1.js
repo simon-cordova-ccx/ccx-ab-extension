@@ -7,16 +7,16 @@ const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const plansData = {
-  subscriptions: [
-    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€' },
-    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€' },
-    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€' }
-  ],
   payAsYouGo: [
-    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€' },
-    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€' },
-    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€' }
-  ]
+    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 Lose', name: 'Subscription 10€', order: 1, },
+    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 Lose', name: 'Subscription 25€', order: 3, },
+    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 Lose', name: 'Subscription 35€', order: 5, },
+  ],
+  subscriptions: [
+    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, },
+    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, },
+    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, },
+  ],
 }
 
 const styles = `
@@ -30,9 +30,16 @@ entries-tab-nav[data-tab-container] {
 
 [id*=single-purchase-tab-pane]>div.mx-auto>div .card-ticket-icon {
   display: none !important;
+  }
+[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="mobile-card-variant-payg"]:not([class*=ccx]) {
+  display: none !important;
 }
 
-.ccx-subscription-mobile-card {
+[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="desktop-card-variant-payg"]:not([class*=ccx]) {
+  display: none !important;
+}
+
+.ccx-mobile-card {
   width: 100%;
   border-radius: 10px;
   border-width: 1px;
@@ -45,11 +52,11 @@ entries-tab-nav[data-tab-container] {
   height: 151px;
 }
 
-.ccx-subscription-mobile-top {
+.ccx-mobile-top {
   margin-bottom: 0.75rem;
 }
 
-.ccx-subscription-mobile-bonus {
+.ccx-mobile-bonus {
   width: 260px;
   height: 30px;
   border-radius: 99px;
@@ -64,11 +71,11 @@ entries-tab-nav[data-tab-container] {
   box-sizing: content-box;
 }
 
-.ccx-subscription-mobile-icon {
+.ccx-mobile-icon {
   display: none;
 }
 
-strong.ccx-subscription-mobile-bold {
+strong.ccx-mobile-bold {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
@@ -79,7 +86,7 @@ strong.ccx-subscription-mobile-bold {
   margin-right: 0.25rem;
 }
 
-span.ccx-subscription-mobile-span {
+span.ccx-mobile-span {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
@@ -89,32 +96,34 @@ span.ccx-subscription-mobile-span {
   color: #000000;
 }
 
-.ccx-subscription-mobile-bottom {
-  padding-right: 16px;
-  padding-left: 16px;
-  opacity: 1;
-  display: flex;
-  justify-content: space-between;
-  height: 82px;
-  align-items: center;
+.ccx-mobile-bottom {
+    opacity: 1;
+    display: flex;
+    justify-content: space-around;
+    height: 82px;
+    align-items: center;
 }
 
-.ccx-subscription-mobile-left {
-  width: 175px;
+.ccx-mobile-left {
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  flex: 1;
 }
 
-.ccx-subscription-mobile-price-container {
+.ccx-mobile-right {
+  flex: 1;
+}
+
+.ccx-mobile-price-container {
   width: 114px;
   height: 38px;
 }
 
 
 
-span.ccx-subscription-mobile-price {
+span.ccx-mobile-price {
   font-family: Gellix;
   font-weight: 700;
   font-size: 32px;
@@ -123,7 +132,7 @@ span.ccx-subscription-mobile-price {
   color: white;
 }
 
-span.ccx-subscription-mobile-price-span {
+span.ccx-mobile-price-span {
   font-family: Gellix;
   font-weight: 400;
   font-size: 15px;
@@ -132,7 +141,7 @@ span.ccx-subscription-mobile-price-span {
   color: white;
 }
 
-.ccx-subscription-mobile-highlight {
+.ccx-mobile-highlight {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
@@ -143,7 +152,7 @@ span.ccx-subscription-mobile-price-span {
   height: 44px;
 }
 
-.ccx-subscription-mobile-button {
+.ccx-mobile-button {
   background: #FFDD00;
   width: 145px;
   height: 48px;
@@ -161,7 +170,7 @@ span.ccx-subscription-mobile-price-span {
   color: #090F15;
 }
 
-.ccx-subscription-mobile-button:hover {
+.ccx-mobile-button:hover {
   color: #000;
   background-color: #fdee8c;
   outline: none;
@@ -169,6 +178,31 @@ span.ccx-subscription-mobile-price-span {
 }
 
 
+.ccx-mobile-card.ccx-payg-mobile-card {
+    background: #FFFFFF;
+}
+
+.ccx-mobile-card.ccx-payg-mobile-card .ccx-mobile-price {
+    color: #081F28;
+}
+
+.ccx-mobile-card.ccx-payg-mobile-card .ccx-mobile-highlight {
+    color: #081F28;
+    margin-top: 14px;
+}
+
+.ccx-desktop-card {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .ccx-mobile-card {
+      display: none;
+    }
+    .ccx-desktop-card {
+      display: flex;
+    }
+}
 
 `;
 
@@ -220,64 +254,129 @@ const addStyles = (css) => {
   customLog('Custom styles added.');
 };
 
-function createMobileSubscriptionCard(planData) {
+function createMobileCard(planData, type = 'subscription') {
   const card = document.createElement('div');
-  card.className = 'ccx-subscription-mobile-card md:hidden basis-1/5 flex-1';
+  card.className = `ccx-mobile-card ${type === 'subscription' ? 'ccx-subscription-mobile-card' : 'ccx-payg-mobile-card'} basis-1/5 flex-1`;
+  card.style.order = planData.order;
 
   const top = document.createElement('div');
-  top.className = 'ccx-subscription-mobile-top';
+  top.className = 'ccx-mobile-top';
 
   const bonus = document.createElement('div');
-  bonus.className = 'ccx-subscription-mobile-bonus';
+  bonus.className = 'ccx-mobile-bonus';
 
   const icon = document.createElement('span');
-  icon.className = 'ccx-subscription-mobile-icon';
+  icon.className = 'ccx-mobile-icon';
   icon.textContent = planData.icon || '';
 
   const bold = document.createElement('strong');
-  bold.className = 'ccx-subscription-mobile-bold';
-  bold.textContent = planData.bonusCount ? `${planData.bonusCount} Bonus Verlosung` : 'Bonus Verlosung';
+  bold.className = 'ccx-mobile-bold';
+  bold.textContent = planData.bonusCount
+    ? `${planData.bonusCount} Bonus Verlosung`
+    : 'Bonus Verlosung';
 
   const span = document.createElement('span');
-  span.className = 'ccx-subscription-mobile-span';
+  span.className = 'ccx-mobile-span';
   span.textContent = ' inklusive';
 
   const bottom = document.createElement('div');
-  bottom.className = 'ccx-subscription-mobile-bottom';
+  bottom.className = 'ccx-mobile-bottom';
 
   const left = document.createElement('div');
-  left.className = 'ccx-subscription-mobile-left';
+  left.className = 'ccx-mobile-left';
 
   const priceContainer = document.createElement('div');
-  priceContainer.className = 'ccx-subscription-mobile-price-container';
+  priceContainer.className = 'ccx-mobile-price-container';
 
   const price = document.createElement('span');
-  price.className = 'ccx-subscription-mobile-price';
+  price.className = 'ccx-mobile-price';
   price.textContent = planData.price || '';
 
-  const priceSpan = document.createElement('span');
-  priceSpan.className = 'ccx-subscription-mobile-price-span';
-  priceSpan.textContent = '/Monat' || '';
+  // Only add /Monat span for subscription cards
+  if (type === 'subscription') {
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'ccx-mobile-price-span';
+    priceSpan.textContent = '/Monat';
+    priceContainer.append(price, priceSpan);
+  } else {
+    priceContainer.append(price);
+  }
 
   const highlight = document.createElement('div');
-  highlight.className = 'ccx-subscription-mobile-highlight';
+  highlight.className = 'ccx-mobile-highlight';
   highlight.textContent = planData.highlight || '';
 
   const right = document.createElement('div');
-  right.className = 'ccx-subscription-mobile-right';
+  right.className = 'ccx-mobile-right';
 
   const button = document.createElement('button');
-  button.className = 'ccx-subscription-mobile-button';
+  button.className = 'ccx-mobile-button';
   button.textContent = 'Mitmachen';
-  button.setAttribute('aria-label', `Join ${planData.name} plan`);
 
   bonus.append(icon, bold, span);
-  priceContainer.append(price, priceSpan);
   left.append(priceContainer, highlight);
   right.append(button);
   top.append(bonus);
   bottom.append(left, right);
   card.append(top, bottom);
+
+  return card;
+}
+
+function createDesktopCard(planData, type = 'subscription') {
+  const card = document.createElement('div');
+  card.className = `ccx-desktop-card ${type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg'} flex-1`;
+  card.style.order = planData.order;
+
+  const inner = document.createElement('div');
+  inner.className = 'ccx-desktop-card__inner-container';
+
+  const top = document.createElement('div');
+  top.className = 'ccx-desktop-card__top';
+
+  // Highlight
+  const highlight = document.createElement('div');
+  highlight.className = 'ccx-desktop-card__highlight';
+  highlight.textContent = planData.highlight || '';
+
+  // Bonus
+  const bonus = document.createElement('div');
+  bonus.className = 'ccx-desktop-card__bonus';
+  bonus.textContent = planData.bonusCount
+    ? `${planData.bonusCount} Bonus Verlosung`
+    : 'Bonus Verlosung';
+
+  // Bottom
+  const bottom = document.createElement('div');
+  bottom.className = 'ccx-desktop-card__bottom';
+
+  const price = document.createElement('div');
+  price.className = 'ccx-desktop-card__price';
+
+  const priceValue = document.createElement('span');
+  priceValue.className = 'ccx-desktop-card__price-value';
+  priceValue.textContent = planData.price || '';
+
+  price.appendChild(priceValue);
+
+  // Only add /Monat for subscription cards
+  if (type === 'subscription') {
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'ccx-desktop-card__price-span';
+    priceSpan.textContent = '/Monat';
+    price.appendChild(priceSpan);
+  }
+
+  const button = document.createElement('button');
+  button.className = 'ccx-desktop-card__button';
+  button.textContent = type === 'subscription' ? 'Mitmachen' : 'Jetzt kaufen';
+  button.setAttribute('aria-label', `${type === 'subscription' ? 'Join' : 'Buy'} ${planData.name} plan`);
+
+  // Assemble
+  bottom.append(price, button);
+  top.append(highlight, bonus, bottom);
+  inner.append(top);
+  card.append(inner);
 
   return card;
 }
@@ -326,12 +425,30 @@ function init() {
         // Add custom styles
         addStyles(styles);
 
-        const targetElement = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
+        const controlMobileContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
+        const controlDesktopContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
 
-        if (targetElement) {
+        if (controlMobileContainer) {
+          plansData.payAsYouGo.forEach(planData => {
+            const card = createMobileCard(planData, 'payg');
+            controlMobileContainer.appendChild(card);
+          });
           plansData.subscriptions.forEach(planData => {
-            const card = createMobileSubscriptionCard(planData);
-            targetElement.appendChild(card);
+            const card = createMobileCard(planData);
+            console.log(card);
+            controlMobileContainer.appendChild(card);
+          });
+        }
+        
+        if (controlDesktopContainer) {
+          plansData.payAsYouGo.forEach(planData => {
+            const card = createDesktopCard(planData, 'payg');
+            controlDesktopContainer.appendChild(card);
+          });
+          plansData.subscriptions.forEach(planData => {
+            const card = createDesktopCard(planData);
+            console.log(card);
+            controlDesktopContainer.appendChild(card);
           });
         }
 
