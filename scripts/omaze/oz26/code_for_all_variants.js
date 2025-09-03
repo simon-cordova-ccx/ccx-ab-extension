@@ -196,6 +196,24 @@ const subscriptionItems = [
   }
 ];
 
+const fireEvents = (price) => {
+  console.log('Firing events for price ' + price);
+
+  if (price === '25') {
+    customLog('[init] ----- Price is 25, firing event');
+    DY.API('event', {
+      name: 'oz26_price_25'
+    });
+  }
+
+  if (price === '50') {
+    customLog('[init] ----- Price is 50, firing event');
+    DY.API('event', {
+      name: 'oz26_price_50'
+    });
+  }
+}
+
 const applyVariationChanges = (price, variation, subscriptionFeatures) => {
   const ccxContainer = document.querySelector('.subs-container');
 
@@ -290,6 +308,9 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
   // Replace subscription-features element
   subscriptionFeatures.replaceWith(container);
   customLog('Subscription container built for Variation ' + variation + ' and Price £' + price + '.');
+
+  // Fire events
+  fireEvents(variation, price);
 };
 
 function waitForElements(selectors, callback) {
