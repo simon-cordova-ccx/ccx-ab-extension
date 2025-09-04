@@ -53,15 +53,20 @@
       <label><input type="checkbox" id="hot-reload-toggle"> Enable Hot Reloading (Dev Mode)</label>
     </div>
 
-    <!-- New Event Viewer Section -->
     <div class="form-group event-viewer">
       <label for="event-vendor"><i class="fas fa-history"></i> Event Vendor</label>
       <select id="event-vendor">
         <option value="optimizely">Optimizely</option>
       </select>
-      <button id="refresh-events" class="button-group"><i class="fas fa-sync"></i> Refresh Events</button>
+      <label for="event-type-filter"><i class="fas fa-filter"></i> Event Type</label>
+      <select id="event-type-filter"></select>
+      <div class="button-group">
+        <button id="refresh-events"><i class="fas fa-sync"></i> Refresh Events</button>
+        <button id="clear-events"><i class="fas fa-trash"></i> Clear Events</button>
+      </div>
       <div id="event-logs" class="event-logs"></div>
     </div>
+
   </div>
   <script type="module" src="./popup.js"></script>
 </body>

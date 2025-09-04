@@ -99,6 +99,15 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.button-group button#clear-events {
+  background-color: #D32F2F; /* Red for clear action */
+}
+
+.button-group button#clear-events:hover:not(:disabled) {
+  background-color: #B71C1C; /* Darker red */
+  transform: translateY(-1px);
+}
+
 #status, #hot-reload-status {
   margin-top: 12px;
   padding: 10px;

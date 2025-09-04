@@ -435,9 +435,10 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.set({ hotReloadEnabled: hotReloadToggle.checked });
   });
 
-  // Function to load and display events
+  // Function to load and display events with type filter
   function loadEvents() {
     const vendor = document.getElementById('event-vendor').value;
+    const eventTypeFilter = document.getElementById('event-type-filter').value;
     chrome.storage.local.get([`vendorEvents_${vendor}`], (data) => {
       const events = data[`vendorEvents_${vendor}`] || [];
       const eventLogsDiv = document.getElementById('event-logs');
@@ -450,19 +451,27 @@ document.addEventListener("DOMContentLoaded", () => {
           const eventData = body.visitors?.[0]?.snapshots?.[0]?.events || [];
 
           if (eventData.length > 0) {
-            eventData.forEach((eventItem, index) => {
+            const filteredEvents = eventTypeFilter === 'all' ? eventData : eventData.filter(e => e.y === eventTypeFilter);
+            if (filteredEvents.length > 0) {
+              filteredEvents.forEach((eventItem, index) => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-log-item';
+                let content = `Event ${index + 1}:\n`;
+                content += `- Timestamp: ${new Date(eventItem.t).toISOString()}\n`;
+                content += `- Type: ${eventItem.y || 'N/A'}\n`;
+                content += `- Key: ${eventItem.k || 'N/A'}\n`;
+                content += `- UUID: ${eventItem.u || 'N/A'}\n`;
+                if (Object.keys(eventItem.p || {}).length > 0) content += `- Params: ${JSON.stringify(eventItem.p)}\n`;
+                if (Object.keys(eventItem.a || {}).length > 0) content += `- Attributes: ${JSON.stringify(eventItem.a)}\n`;
+                eventDiv.textContent = content.trim();
+                eventLogsDiv.appendChild(eventDiv);
+              });
+            } else {
               const eventDiv = document.createElement('div');
               eventDiv.className = 'event-log-item';
-              let content = `Event ${index + 1}:\n`;
-              content += `- Timestamp: ${new Date(eventItem.t).toISOString()}\n`;
-              content += `- Type: ${eventItem.y || 'N/A'}\n`;
-              content += `- Key: ${eventItem.k || 'N/A'}\n`;
-              content += `- UUID: ${eventItem.u || 'N/A'}\n`;
-              if (Object.keys(eventItem.p || {}).length > 0) content += `- Params: ${JSON.stringify(eventItem.p)}\n`;
-              if (Object.keys(eventItem.a || {}).length > 0) content += `- Attributes: ${JSON.stringify(eventItem.a)}\n`;
-              eventDiv.textContent = content.trim();
+              eventDiv.textContent = `No events found for type: ${eventTypeFilter}`;
               eventLogsDiv.appendChild(eventDiv);
-            });
+            }
           } else {
             const eventDiv = document.createElement('div');
             eventDiv.className = 'event-log-item';
@@ -477,15 +486,47 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      console.log(`Loaded ${events.length} events for ${vendor}`);
+      console.log(`Loaded ${events.length} events for ${vendor}, filtered by ${eventTypeFilter}`);
+    });
+  }
+
+  // Populate event type filter with Optimizely-specific types
+  function populateEventTypeFilter() {
+    const eventTypeFilter = document.getElementById('event-type-filter');
+    const optimizelyEventTypes = ['all', 'client_activation', 'view_activated', 'other', 'conversion', 'revenue'];
+    eventTypeFilter.innerHTML = '';
+    optimizelyEventTypes.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ');
+      eventTypeFilter.appendChild(option);
+    });
+    eventTypeFilter.value = 'all'; // Default to all events
+  }
+
+  // Function to clear events
+  function clearEvents() {
+    const vendor = document.getElementById('event-vendor').value;
+    chrome.storage.local.remove(`vendorEvents_${vendor}`, () => {
+      const eventLogsDiv = document.getElementById('event-logs');
+      eventLogsDiv.innerHTML = '';
+      console.log(`Cleared events for ${vendor}`);
+      statusDiv.textContent = `Events cleared for ${vendor}.`;
+      statusDiv.className = '';
     });
   }
 
   // Event listeners for event viewer
-  document.getElementById('refresh-events').addEventListener('click', loadEvents);
+  document.getElementById('refresh-events').addEventListener('click', () => {
+    console.log("Refresh button clicked"); // Debug log
+    loadEvents();
+  });
   document.getElementById('event-vendor').addEventListener('change', loadEvents);
+  document.getElementById('event-type-filter').addEventListener('change', loadEvents);
+  document.getElementById('clear-events').addEventListener('click', clearEvents);
 
   // Initialize event viewer on popup load
+  populateEventTypeFilter();
   loadEvents();
 
 
