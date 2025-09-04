@@ -704,13 +704,6 @@ function bindEvents() {
                     customLog('[bindEvents] .ais-SearchBox-reset not found.');
                 }
 
-                if (document.querySelector('.desktop.menu-open')) {
-                    const magnifyingGlass = document.querySelector('.app-tray-buttons > li:first-child')
-                    if (magnifyingGlass) {
-                        magnifyingGlass.click();
-                    }
-                }
-
                 setTimeout(() => {
                     ccxInput.focus();
                 }, 500);
