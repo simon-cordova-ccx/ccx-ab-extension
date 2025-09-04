@@ -24,18 +24,19 @@ entries-tab-nav[data-tab-container] {
   display: none !important;
 }
 
-[id*=single-purchase-tab-pane]>div:first-child {
+[id*=single-purchase-tab-pane] > div:first-child {
   display: none;
 }
 
-[id*=single-purchase-tab-pane]>div.mx-auto>div .card-ticket-icon {
-  display: none !important;
-  }
-[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="mobile-card-variant-payg"]:not([class*=ccx]) {
+[id*=single-purchase-tab-pane] > div.mx-auto > div .card-ticket-icon {
   display: none !important;
 }
 
-[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="desktop-card-variant-payg"]:not([class*=ccx]) {
+[id*=single-purchase-tab-pane] > div.mx-auto > div [data-test="mobile-card-variant-payg"]:not([class*=ccx]) {
+  display: none !important;
+}
+
+[id*=single-purchase-tab-pane] > div.mx-auto > div [data-test="desktop-card-variant-payg"]:not([class*=ccx]) {
   display: none !important;
 }
 
@@ -43,152 +44,123 @@ entries-tab-nav[data-tab-container] {
   width: 100%;
   border-radius: 10px;
   border-width: 1px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  opacity: 1;
+  padding: 16px 0;
   background: #081F28;
   border: 1px solid #ECF0F4;
   box-shadow: 0px 2px 4px 0px #0000001A;
   height: 151px;
 }
 
-.ccx-mobile-top {
+.ccx-mobile-card__top {
   margin-bottom: 0.75rem;
 }
 
-.ccx-mobile-bonus {
+.ccx-mobile-card__bonus {
   width: 260px;
   height: 30px;
   border-radius: 99px;
-  padding-right: 4px;
-  padding-left: 10px;
-  opacity: 1;
+  padding: 0 4px 0 10px;
   background: #F4F3E0;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: content-box;
 }
 
-.ccx-mobile-icon {
+.ccx-mobile-card__icon {
   display: none;
 }
 
-strong.ccx-mobile-bold {
+.ccx-mobile-card__bonus-text {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
-  line-height: 100%;
-  text-align: center;
-  vertical-align: bottom;
   color: #C06717;
   margin-right: 0.25rem;
 }
 
-span.ccx-mobile-span {
+.ccx-mobile-card__bonus-subtext {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
-  line-height: 100%;
-  text-align: center;
-  vertical-align: bottom;
   color: #000000;
 }
 
-.ccx-mobile-bottom {
-    opacity: 1;
-    display: flex;
-    justify-content: space-around;
-    height: 82px;
-    align-items: center;
+.ccx-mobile-card__bottom {
+  display: flex;
+  justify-content: space-around;
+  height: 82px;
+  align-items: center;
 }
 
-.ccx-mobile-left {
+.ccx-mobile-card__left {
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex: 1;
 }
 
-.ccx-mobile-right {
+.ccx-mobile-card__right {
   flex: 1;
 }
 
-.ccx-mobile-price-container {
+.ccx-mobile-card__price-container {
   width: 114px;
   height: 38px;
 }
 
-
-
-span.ccx-mobile-price {
+.ccx-mobile-card__price {
   font-family: Gellix;
   font-weight: 700;
   font-size: 32px;
-  line-height: 100%;
-  vertical-align: middle;
   color: white;
 }
 
-span.ccx-mobile-price-span {
+.ccx-mobile-card__price-unit {
   font-family: Gellix;
   font-weight: 400;
   font-size: 15px;
-  line-height: 100%;
-  vertical-align: bottom;
   color: white;
 }
 
-.ccx-mobile-highlight {
+.ccx-mobile-card__highlight {
   font-family: Gellix;
   font-weight: 700;
   font-size: 16px;
-  line-height: 100%;
   text-align: center;
   color: #FFDD00;
   width: 175px;
   height: 44px;
 }
 
-.ccx-mobile-button {
+.ccx-mobile-card__button {
   background: #FFDD00;
   width: 145px;
   height: 48px;
   border-radius: 76px;
-  padding-top: 10px;
-  padding-right: 24px;
-  padding-bottom: 11px;
-  padding-left: 24px;
-  opacity: 1;
   font-family: Gellix;
   font-weight: 700;
   font-size: 18px;
-  line-height: 150%;
-  text-align: center;
   color: #090F15;
 }
 
-.ccx-mobile-button:hover {
+.ccx-mobile-card__button:hover {
   color: #000;
   background-color: #fdee8c;
-  outline: none;
-  text-decoration: none;
 }
 
-
-.ccx-mobile-card.ccx-payg-mobile-card {
-    background: #FFFFFF;
+.ccx-mobile-card--payg {
+  background: #FFFFFF;
 }
 
-.ccx-mobile-card.ccx-payg-mobile-card .ccx-mobile-price {
-    color: #081F28;
+.ccx-mobile-card--payg .ccx-mobile-card__price {
+  color: #081F28;
 }
 
-.ccx-mobile-card.ccx-payg-mobile-card .ccx-mobile-highlight {
-    color: #081F28;
-    margin-top: 14px;
+.ccx-mobile-card--payg .ccx-mobile-card__highlight {
+  color: #081F28;
+  margin-top: 14px;
 }
 
 .ccx-desktop-card {
@@ -196,13 +168,156 @@ span.ccx-mobile-price-span {
 }
 
 @media screen and (min-width: 768px) {
-    .ccx-mobile-card {
-      display: none;
-    }
-    .ccx-desktop-card {
-      display: flex;
-    }
+  .ccx-mobile-card {
+    display: none;
+  }
+
+  .ccx-desktop-card {
+    display: flex;
+    width: 198px;
+    height: 300px;
+    border-radius: 20px;
+    border-width: 1px;
+    padding-top: 25px;
+    padding-right: 8px;
+    padding-left: 8px;
+    opacity: 1;
+    border: 1px solid #E6E6E6;
+    background: white;
+  }
+
+  .ccx-desktop-card__inner-container {
+    flex: 1;
+  }
+
+  .ccx-desktop-card__highlight {
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    height: 24px;
+    opacity: 1;
+    margin-bottom: 8px;
+  }
+
+  .ccx-desktop-card__bonus {
+    opacity: 1;
+    font-family: Gellix;
+    font-size: 14px;
+    line-height: 120%;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #87C7CA;
+    height: 50px;
+  }
+  
+  .ccx-desktop-card__bonus p {
+    font-size: inherit;
+  }
+
+  .ccx-desktop-card__bottom {
+    margin-top: 14.5px;
+  }
+
+  .ccx-desktop-card__price {
+    height: 65px;
+    opacity: 1;
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 46px;
+    vertical-align: middle;
+    line-height: 51px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ccx-desktop-card.ccx-desktop-card--subscription {
+    background: #081F28;
+  }
+
+  .ccx-desktop-card__button {
+    margin-top: 29.5px;
+    width: 183px;
+    height: 53px;
+    border-radius: 76px;
+    padding-top: 12px;
+    padding-right: 32px;
+    padding-bottom: 14px;
+    padding-left: 32px;
+    opacity: 1;
+    background: #FFDD00;
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 150%;
+    text-align: center;
+    color: #090F15;
+  }
+
+
+
+
+.ccx-desktop-card--subscription .ccx-desktop-card__highlight {
+  color: #FFDD00;
+  font-family: Gellix;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  text-align: center;
+  vertical-align: middle;
 }
+
+.ccx-desktop-card--subscription .ccx-desktop-card__bonus {
+  font-family: Gellix;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 14px;
+  leading-trim: NONE;
+  line-height: 120%;
+  letter-spacing: 1.5%;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+}
+
+.ccx-desktop-card--subscription .ccx-desktop-card__price {
+  display: flex;
+  flex-flow: column;
+  height: 79px;
+}
+
+.ccx-desktop-card--subscription .ccx-desktop-card__price-value {
+  font-family: Gellix;
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 150%;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+}
+
+  .ccx-desktop-card--subscription .ccx-desktop-card__price-span {
+    font-family: Gellix;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 150%;
+    vertical-align: middle;
+    color: #FFFFFF;
+  }
+
+  .ccx-desktop-card--subscription .ccx-desktop-card__button {
+    margin-top: 14.5px;
+  }
+
+
+
+}
+
+
 
 `;
 
@@ -256,46 +371,46 @@ const addStyles = (css) => {
 
 function createMobileCard(planData, type = 'subscription') {
   const card = document.createElement('div');
-  card.className = `ccx-mobile-card ${type === 'subscription' ? 'ccx-subscription-mobile-card' : 'ccx-payg-mobile-card'} basis-1/5 flex-1`;
+  card.className = `ccx-mobile-card ${type === 'subscription' ? 'ccx-mobile-card--subscription' : 'ccx-mobile-card--payg'} basis-1/5 flex-1`;
   card.style.order = planData.order;
+  card.setAttribute('data-test', "mobile-card-variant-payg");
 
   const top = document.createElement('div');
-  top.className = 'ccx-mobile-top';
+  top.className = 'ccx-mobile-card__top';
 
   const bonus = document.createElement('div');
-  bonus.className = 'ccx-mobile-bonus';
+  bonus.className = 'ccx-mobile-card__bonus';
 
   const icon = document.createElement('span');
-  icon.className = 'ccx-mobile-icon';
+  icon.className = 'ccx-mobile-card__icon';
   icon.textContent = planData.icon || '';
 
   const bold = document.createElement('strong');
-  bold.className = 'ccx-mobile-bold';
+  bold.className = 'ccx-mobile-card__bonus-text';
   bold.textContent = planData.bonusCount
     ? `${planData.bonusCount} Bonus Verlosung`
     : 'Bonus Verlosung';
 
   const span = document.createElement('span');
-  span.className = 'ccx-mobile-span';
+  span.className = 'ccx-mobile-card__bonus-subtext';
   span.textContent = ' inklusive';
 
   const bottom = document.createElement('div');
-  bottom.className = 'ccx-mobile-bottom';
+  bottom.className = 'ccx-mobile-card__bottom';
 
   const left = document.createElement('div');
-  left.className = 'ccx-mobile-left';
+  left.className = 'ccx-mobile-card__left';
 
   const priceContainer = document.createElement('div');
-  priceContainer.className = 'ccx-mobile-price-container';
+  priceContainer.className = 'ccx-mobile-card__price-container';
 
   const price = document.createElement('span');
-  price.className = 'ccx-mobile-price';
+  price.className = 'ccx-mobile-card__price';
   price.textContent = planData.price || '';
 
-  // Only add /Monat span for subscription cards
   if (type === 'subscription') {
     const priceSpan = document.createElement('span');
-    priceSpan.className = 'ccx-mobile-price-span';
+    priceSpan.className = 'ccx-mobile-card__price-unit';
     priceSpan.textContent = '/Monat';
     priceContainer.append(price, priceSpan);
   } else {
@@ -303,14 +418,14 @@ function createMobileCard(planData, type = 'subscription') {
   }
 
   const highlight = document.createElement('div');
-  highlight.className = 'ccx-mobile-highlight';
+  highlight.className = 'ccx-mobile-card__highlight';
   highlight.textContent = planData.highlight || '';
 
   const right = document.createElement('div');
-  right.className = 'ccx-mobile-right';
+  right.className = 'ccx-mobile-card__right';
 
   const button = document.createElement('button');
-  button.className = 'ccx-mobile-button';
+  button.className = 'ccx-mobile-card__button';
   button.textContent = 'Mitmachen';
 
   bonus.append(icon, bold, span);
@@ -325,7 +440,7 @@ function createMobileCard(planData, type = 'subscription') {
 
 function createDesktopCard(planData, type = 'subscription') {
   const card = document.createElement('div');
-  card.className = `ccx-desktop-card ${type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg'} flex-1`;
+  card.className = `ccx-desktop-card ${type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg'} flex-1 max-w-[380px] basis-1/5 `;
   card.style.order = planData.order;
 
   const inner = document.createElement('div');
@@ -342,9 +457,14 @@ function createDesktopCard(planData, type = 'subscription') {
   // Bonus
   const bonus = document.createElement('div');
   bonus.className = 'ccx-desktop-card__bonus';
-  bonus.textContent = planData.bonusCount
-    ? `${planData.bonusCount} Bonus Verlosung`
-    : 'Bonus Verlosung';
+  if (planData.bonusCount) {
+    bonus.textContent = `${planData.bonusCount} Bonus Verlosung `;
+  } else {
+    bonus.textContent = 'Bonus Verlosung ';
+  }
+  const inklusive = document.createElement('p');
+  inklusive.textContent = 'inklusive';
+  bonus.appendChild(inklusive);
 
   // Bottom
   const bottom = document.createElement('div');
@@ -369,8 +489,7 @@ function createDesktopCard(planData, type = 'subscription') {
 
   const button = document.createElement('button');
   button.className = 'ccx-desktop-card__button';
-  button.textContent = type === 'subscription' ? 'Mitmachen' : 'Jetzt kaufen';
-  button.setAttribute('aria-label', `${type === 'subscription' ? 'Join' : 'Buy'} ${planData.name} plan`);
+  button.textContent = 'Mitmachen';
 
   // Assemble
   bottom.append(price, button);
@@ -439,7 +558,7 @@ function init() {
             controlMobileContainer.appendChild(card);
           });
         }
-        
+
         if (controlDesktopContainer) {
           plansData.payAsYouGo.forEach(planData => {
             const card = createDesktopCard(planData, 'payg');
