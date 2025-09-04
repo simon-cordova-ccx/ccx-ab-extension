@@ -8,14 +8,14 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const plansData = {
   payAsYouGo: [
-    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 Lose', name: 'Subscription 10€', order: 1, },
-    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 Lose', name: 'Subscription 25€', order: 3, },
-    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 Lose', name: 'Subscription 35€', order: 5, },
+    { icon: '★', bonusCount: '2', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
+    { icon: '★', bonusCount: '4', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
+    { icon: '★', bonusCount: '4', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
   ],
   subscriptions: [
-    { icon: '★', bonusCount: '2', price: '10€', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, },
-    { icon: '★', bonusCount: '4', price: '25€', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, },
-    { icon: '★', bonusCount: '4', price: '35€', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, },
+    { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
+    { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
+    { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
   ],
 }
 
@@ -406,7 +406,7 @@ function createMobileCard(planData, type = 'subscription') {
 
   const price = document.createElement('span');
   price.className = 'ccx-mobile-card__price';
-  price.textContent = planData.price || '';
+  price.textContent = planData.price + '€' || '';
 
   if (type === 'subscription') {
     const priceSpan = document.createElement('span');
@@ -475,7 +475,7 @@ function createDesktopCard(planData, type = 'subscription') {
 
   const priceValue = document.createElement('span');
   priceValue.className = 'ccx-desktop-card__price-value';
-  priceValue.textContent = planData.price || '';
+  priceValue.textContent = planData.price + '€' || '';
 
   price.appendChild(priceValue);
 
@@ -500,7 +500,62 @@ function createDesktopCard(planData, type = 'subscription') {
   return card;
 }
 
-function waitForElements(selectors, callback) {
+function setupPaygButtonClicks(plansData, controlPaygButtons) {
+  // Select all new PAYG buttons (mobile and desktop)
+  const newPaygButtons = document.querySelectorAll('.ccx-mobile-card--payg .ccx-mobile-card__button, .ccx-desktop-card--payg .ccx-desktop-card__button');
+  
+  // Log the number of new PAYG buttons found
+  console.log('New PAYG buttons found:', newPaygButtons.length, 'Buttons:', Array.from(newPaygButtons).map(btn => btn.outerHTML));
+
+  // Log the number of control PAYG buttons and their data-entries-amount values
+  console.log('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
+    html: btn.outerHTML,
+    entriesAmount: btn.getAttribute('data-entries-amount')
+  })));
+
+  // Function to extract number from data-entries-amount (e.g., "20" from "20 Lose")
+  function extractNumberFromEntries(element) {
+    const value = element.getAttribute('data-entries-amount');
+    if (value) {
+      const match = value.match(/^\d+/);
+      return match ? match[0] : null;
+    }
+    return null;
+  }
+
+  // Add click event listeners to new PAYG buttons
+  newPaygButtons.forEach((newButton, index) => {
+    newButton.addEventListener('click', () => {
+      // Calculate the correct plansData index (handles both mobile and desktop)
+      const planIndex = index % plansData.payAsYouGo.length;
+
+      // Get the price and entriesAmount from plansData for this button
+      const price = plansData.payAsYouGo[planIndex].price;
+      const entriesAmount = plansData.payAsYouGo[planIndex].entriesAmount;
+
+      // Log the clicked button, price, and entriesAmount
+      console.log('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
+
+      // Find the matching control button
+      const matchingControlButton = Array.from(controlPaygButtons).find(button => {
+        const controlEntriesAmount = extractNumberFromEntries(button);
+        // Log comparison for each control button
+        console.log('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
+        return controlEntriesAmount === entriesAmount;
+      });
+
+      // Programmatically click the matching control button
+      if (matchingControlButton) {
+        console.log('Found matching control button:', matchingControlButton.outerHTML);
+        matchingControlButton.click();
+      } else {
+        console.error(`No control button found for price: ${price}, entriesAmount: ${entriesAmount}`);
+      }
+    });
+  });
+}
+
+function waitForElements(selectors, numberOfElementsToWaitFor, callback) {
   customLog('[waitForElements] Starting to wait for elements...');
 
   if (!selectors || !Array.isArray(selectors) || selectors.length === 0) {
@@ -515,7 +570,7 @@ function waitForElements(selectors, callback) {
 
   // Create promises for each selector
   const promises = selectors.map(selector =>
-    DYO.waitForElementAsync(selector, 9, 100, 150)
+    DYO.waitForElementAsync(selector, numberOfElementsToWaitFor, 100, 150)
   );
 
   Promise.all(promises)
@@ -537,9 +592,12 @@ function init() {
     customLog('[init] Added class ccx-omaze-de5-v1 to body');
 
     waitForElements(
-      ['#enter-now-material-tab-buttons-design .add-to-cart-button'],
+      ['#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button'], 6,
       function (results) {
-        console.log('[waitForElements] Elements found', results);
+        // console.log('[waitForElements] Elements found', results);
+
+        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+        const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
 
         // Add custom styles
         addStyles(styles);
@@ -547,29 +605,29 @@ function init() {
         const controlMobileContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
         const controlDesktopContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
 
-        if (controlMobileContainer) {
+        if (controlMobileContainer && controlDesktopContainer) {
           plansData.payAsYouGo.forEach(planData => {
             const card = createMobileCard(planData, 'payg');
             controlMobileContainer.appendChild(card);
           });
           plansData.subscriptions.forEach(planData => {
             const card = createMobileCard(planData);
-            console.log(card);
             controlMobileContainer.appendChild(card);
           });
-        }
 
-        if (controlDesktopContainer) {
           plansData.payAsYouGo.forEach(planData => {
             const card = createDesktopCard(planData, 'payg');
             controlDesktopContainer.appendChild(card);
           });
           plansData.subscriptions.forEach(planData => {
             const card = createDesktopCard(planData);
-            console.log(card);
             controlDesktopContainer.appendChild(card);
           });
+
+          setupPaygButtonClicks(plansData, controlPayAsYouGoButtons);
         }
+
+        
 
       }
     );
