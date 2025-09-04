@@ -20,7 +20,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/content.js", "scripts/page/detector.js"]
+      "js": ["scripts/content.js", "scripts/page/detector.js", "scripts/page/networkInterceptor.js"]
     }
   ],
   "background": {
@@ -31,7 +31,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["scripts/*"],
+      "resources": ["scripts/page/detector.js", "scripts/page/networkInterceptor.js", "scripts/*"],
       "matches": ["<all_urls>"]
     }
   ]

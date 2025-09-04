@@ -35,3 +35,26 @@ if (process.env.NODE_ENV === 'development') {
   ws.onerror = (error) => console.error('WebSocket error:', error);
   ws.onclose = () => console.log('WebSocket closed');
 }
+
+// Handle network event storage
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'storeNetworkEvent') {
+    const { eventData } = request;
+    chrome.storage.local.get([`vendorEvents_${eventData.vendor}`], (data) => {
+      const events = data[`vendorEvents_${eventData.vendor}`] || [];
+      events.push(eventData);
+      // Limit to last 100 events to prevent storage overflow
+      if (events.length > 100) events.shift();
+      chrome.storage.local.set({ [`vendorEvents_${eventData.vendor}`]: events }, () => {
+        console.log(`✅ Stored network event for ${eventData.vendor}`);
+        // Notify open popups
+        chrome.runtime.sendMessage({
+          action: 'newEvent',
+          event: eventData
+        });
+        sendResponse({ success: true });
+      });
+    });
+  }
+  return true;
+});

@@ -30,6 +30,28 @@ function injectDetectorScript() {
   }
 }
 
+// Function to inject networkInterceptor.js into the webpage's context
+function injectNetworkInterceptorScript() {
+  try {
+    if (document.querySelector(`script[src="${chrome.runtime.getURL("scripts/page/networkInterceptor.js")}"]`)) {
+      console.log("ℹ️ networkInterceptor.js already injected");
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = chrome.runtime.getURL("scripts/page/networkInterceptor.js");
+    script.onload = () => {
+      console.log("✅ networkInterceptor.js injected successfully");
+      script.remove();
+    };
+    script.onerror = () => {
+      console.error("❌ Failed to inject networkInterceptor.js");
+    };
+    (document.head || document.documentElement).appendChild(script);
+  } catch (error) {
+    console.error("❌ Error injecting networkInterceptor.js:", error.message);
+  }
+}
+
 // Function to load client configuration
 async function loadConfig() {
   try {
@@ -135,29 +157,50 @@ function injectScript(scriptData, callback) {
   }
 }
 
-// Auto-detect A/B tools on page load
+// Auto-detect A/B tools and inject network interceptor on page load
 (function () {
   injectDetectorScript();
+  injectNetworkInterceptorScript(); // Inject interceptor
   const detectedTools = [];
   window.addEventListener("message", async (event) => {
-    if (event.source !== window || !event.data || !Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) return;
-    const detectedTool = event.data.tool;
-    if (!detectedTools.includes(detectedTool)) {
-      detectedTools.push(detectedTool);
-      // console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
-      const { preferredTool, allTools } = await getPreferredTool(detectedTools);
-      console.log(`✅ Storing detectedTools: ${allTools}, preferredTool: ${preferredTool}`);
-      chrome.storage.local.set({ detectedTools: allTools, preferredTool }, () => {
-        console.log("🧠 Stored detectedTools and preferredTool");
+    if (event.source !== window || !event.data) return;
+    
+    // Handle A/B tool detection
+    if (Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) {
+      const detectedTool = event.data.tool;
+      if (!detectedTools.includes(detectedTool)) {
+        detectedTools.push(detectedTool);
+        console.log(`🚀 ${detectedTool} is available! Functions:`, event.data.functions);
+        const { preferredTool, allTools } = await getPreferredTool(detectedTools);
+        console.log(`✅ Storing detectedTools: ${allTools}, preferredTool: ${preferredTool}`);
+        chrome.storage.local.set({ detectedTools: allTools, preferredTool }, () => {
+          console.log("🧠 Stored detectedTools and preferredTool");
+        });
+      }
+    }
+    
+    // Handle network events
+    if (event.data.type === 'NETWORK_EVENT') {
+      console.log(`📡 Received network event:`, event.data);
+      // Relay to background script for storage
+      chrome.runtime.sendMessage({
+        action: 'storeNetworkEvent',
+        eventData: event.data
+      }, (response) => {
+        if (response?.success) {
+          console.log(`✅ Network event stored for ${event.data.vendor}`);
+        } else {
+          console.error(`❌ Failed to store network event:`, response?.error);
+        }
       });
     }
   });
 })();
 
-// --- Place the auto-inject IIFE here ---
+// Auto-inject logic
 (async function () {
   injectDetectorScript();
-  // Auto-inject logic
+  injectNetworkInterceptorScript();
   chrome.storage.local.get("autoInject", (data) => {
     const autoInject = data.autoInject;
     if (
@@ -224,6 +267,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Listen for tool detection messages (for debugging)
 window.addEventListener("message", (event) => {
   if (event.source !== window || !event.data || !Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) return;
-  // console.log(`🚀 ${event.data.type.replace('_FOUND', '')} is available! Functions:`, event.data.functions);
   console.log(`✅ You can now run ${event.data.type.replace('_FOUND', '')}-dependent code!`);
 });
