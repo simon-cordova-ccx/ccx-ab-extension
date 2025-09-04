@@ -509,10 +509,10 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
   const newPaygButtons = document.querySelectorAll('.ccx-mobile-card--payg .ccx-mobile-card__button, .ccx-desktop-card--payg .ccx-desktop-card__button');
   
   // Log the number of new PAYG buttons found
-  console.log('New PAYG buttons found:', newPaygButtons.length, 'Buttons:', Array.from(newPaygButtons).map(btn => btn.outerHTML));
+  customLog('New PAYG buttons found:', newPaygButtons.length, 'Buttons:', Array.from(newPaygButtons).map(btn => btn.outerHTML));
 
   // Log the number of control PAYG buttons and their data-entries-amount values
-  console.log('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
+  customLog('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
     html: btn.outerHTML,
     entriesAmount: btn.getAttribute('data-entries-amount')
   })));
@@ -538,22 +538,72 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
       const entriesAmount = plansData.payAsYouGo[planIndex].entriesAmount;
 
       // Log the clicked button, price, and entriesAmount
-      console.log('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
+      customLog('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
 
       // Find the matching control button
       const matchingControlButton = Array.from(controlPaygButtons).find(button => {
         const controlEntriesAmount = extractNumberFromEntries(button);
         // Log comparison for each control button
-        console.log('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
+        customLog('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
         return controlEntriesAmount === entriesAmount;
       });
 
       // Programmatically click the matching control button
       if (matchingControlButton) {
-        console.log('Found matching control button:', matchingControlButton.outerHTML);
+        customLog('Found matching control button:', matchingControlButton.outerHTML);
         matchingControlButton.click();
       } else {
         console.error(`No control button found for price: ${price}, entriesAmount: ${entriesAmount}`);
+      }
+    });
+  });
+}
+
+function setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons) {
+  // Select all new subscription buttons (mobile and desktop)
+  const newSubscriptionButtons = document.querySelectorAll('.ccx-mobile-card--subscription .ccx-mobile-card__button, .ccx-desktop-card--subscription .ccx-desktop-card__button');
+  
+  // Log the number of new subscription buttons found
+  customLog('New subscription buttons found:', newSubscriptionButtons.length, 'Buttons:', Array.from(newSubscriptionButtons).map(btn => btn.outerHTML));
+
+  // Log the number of control subscription buttons and their price values
+  customLog('Control subscription buttons found:', controlSubscriptionButtons.length, 'Buttons:', Array.from(controlSubscriptionButtons).map(btn => ({
+    html: btn.outerHTML,
+    price: btn.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]')?.textContent.trim()
+  })));
+
+  // Function to extract price from control button's parent [data-test="card-variant-subscription"] [data-test="price"]
+  function extractPriceFromControlButton(element) {
+    const priceElement = element.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]');
+    return priceElement ? priceElement.textContent.trim() : null;
+  }
+
+  // Add click event listeners to new subscription buttons
+  newSubscriptionButtons.forEach((newButton, index) => {
+    newButton.addEventListener('click', () => {
+      // Calculate the correct plansData index (handles both mobile and desktop)
+      const planIndex = index % plansData.subscriptions.length;
+
+      // Get the price from plansData for this button
+      const price = plansData.subscriptions[planIndex].price;
+
+      // Log the clicked button and its price
+      customLog('Clicked button:', newButton.outerHTML, 'Price:', price);
+
+      // Find the matching control button
+      const matchingControlButton = Array.from(controlSubscriptionButtons).find(button => {
+        const controlPrice = extractPriceFromControlButton(button);
+        // Log comparison for each control button
+        customLog('Comparing control button price:', controlPrice, 'with price:', price);
+        return controlPrice === price;
+      });
+
+      // Programmatically click the matching control button
+      if (matchingControlButton) {
+        customLog('Found matching control button:', matchingControlButton.outerHTML);
+        matchingControlButton.click();
+      } else {
+        console.error(`No control button found for price: ${price}`);
       }
     });
   });
@@ -629,6 +679,8 @@ function init() {
           });
 
           setupPaygButtonClicks(plansData, controlPayAsYouGoButtons);
+
+          setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons);
         }
 
         
