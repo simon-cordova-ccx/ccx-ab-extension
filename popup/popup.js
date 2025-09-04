@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   folderStructure.clients.forEach(client => {
     const option = document.createElement("option");
     option.value = client.name;
-    option.textContent = client.name;
+    option.textContent = client.name.charAt(0).toUpperCase() + client.name.slice(1);
     clientSelect.appendChild(option);
   });
 
@@ -222,7 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auto-select detected tool and check for multiple tools
   chrome.storage.local.get(["detectedTools", "preferredTool"], (data) => {
     const detectedTools = data.detectedTools || [];
-    const preferredTool = data.preferredTool || "";
+    let preferredTool = data.preferredTool || "";
+    if (!preferredTool && detectedTools.length > 0) {
+      preferredTool = detectedTools[0]; // Fall back to first detected if no preferred
+    }
     if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
       console.log(`Auto-selecting preferred tool: ${preferredTool}`);
       abToolSelect.value = preferredTool;

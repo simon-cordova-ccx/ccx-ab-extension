@@ -46,6 +46,7 @@ function injectNetworkInterceptorScript() {
     script.onerror = () => {
       console.error("❌ Failed to inject networkInterceptor.js");
     };
+    // console.log("Injecting networkInterceptor.js at", new Date().toISOString());
     (document.head || document.documentElement).appendChild(script);
   } catch (error) {
     console.error("❌ Error injecting networkInterceptor.js:", error.message);
@@ -160,11 +161,15 @@ function injectScript(scriptData, callback) {
 // Auto-detect A/B tools and inject network interceptor on page load
 (function () {
   injectDetectorScript();
-  injectNetworkInterceptorScript(); // Inject interceptor
+  injectNetworkInterceptorScript();
   const detectedTools = [];
   window.addEventListener("message", async (event) => {
-    if (event.source !== window || !event.data) return;
+    // Strict filtering: reject if not from window, no data, wrong origin, or from React DevTools
+    if (event.source !== window || !event.data || event.origin !== window.location.origin || 
+        (event.data.source && event.data.source.includes('react-devtools'))) return;
     
+    // console.log("📩 Received valid message from page:", event.data); // Log only valid messages
+
     // Handle A/B tool detection
     if (Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) {
       const detectedTool = event.data.tool;
@@ -178,11 +183,10 @@ function injectScript(scriptData, callback) {
         });
       }
     }
-    
+
     // Handle network events
     if (event.data.type === 'NETWORK_EVENT') {
       console.log(`📡 Received network event:`, event.data);
-      // Relay to background script for storage
       chrome.runtime.sendMessage({
         action: 'storeNetworkEvent',
         eventData: event.data
@@ -190,7 +194,7 @@ function injectScript(scriptData, callback) {
         if (response?.success) {
           console.log(`✅ Network event stored for ${event.data.vendor}`);
         } else {
-          console.error(`❌ Failed to store network event:`, response?.error);
+          console.error(`❌ Failed to store network event:`, response?.error || 'No response');
         }
       });
     }

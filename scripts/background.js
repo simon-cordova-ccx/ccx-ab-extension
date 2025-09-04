@@ -1,6 +1,6 @@
 console.log("CCX AB background script loaded");
 
-if (process.env.NODE_ENV === 'development') {
+if (__IS_DEV__) {
   const ws = new WebSocket('ws://localhost:8080');
   ws.onopen = () => {
     console.log('Connected to WebSocket server');
