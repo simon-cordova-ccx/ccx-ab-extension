@@ -434,4 +434,30 @@ document.addEventListener("DOMContentLoaded", () => {
   hotReloadToggle.addEventListener('change', () => {
     chrome.storage.local.set({ hotReloadEnabled: hotReloadToggle.checked });
   });
+
+  // Function to load and display events
+  function loadEvents() {
+    const vendor = document.getElementById('event-vendor').value;
+    chrome.storage.local.get([`vendorEvents_${vendor}`], (data) => {
+      const events = data[`vendorEvents_${vendor}`] || [];
+      const eventLogsDiv = document.getElementById('event-logs');
+      eventLogsDiv.innerHTML = ''; // Clear existing logs
+      events.forEach(event => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = 'event-log-item';
+        eventDiv.textContent = `Timestamp: ${event.timestamp}, URL: ${event.url}, Method: ${event.method}, Body: ${event.body || 'N/A'}`;
+        eventLogsDiv.appendChild(eventDiv);
+      });
+      console.log(`Loaded ${events.length} events for ${vendor}`);
+    });
+  }
+
+  // Event listeners for event viewer
+  document.getElementById('refresh-events').addEventListener('click', loadEvents);
+  document.getElementById('event-vendor').addEventListener('change', loadEvents);
+
+  // Initialize event viewer on popup load
+  loadEvents();
+
+
 });
