@@ -442,12 +442,41 @@ document.addEventListener("DOMContentLoaded", () => {
       const events = data[`vendorEvents_${vendor}`] || [];
       const eventLogsDiv = document.getElementById('event-logs');
       eventLogsDiv.innerHTML = ''; // Clear existing logs
+
       events.forEach(event => {
-        const eventDiv = document.createElement('div');
-        eventDiv.className = 'event-log-item';
-        eventDiv.textContent = `Timestamp: ${event.timestamp}, URL: ${event.url}, Method: ${event.method}, Body: ${event.body || 'N/A'}`;
-        eventLogsDiv.appendChild(eventDiv);
+        try {
+          // Parse the body JSON and navigate to visitors[0].snapshots[0].events
+          const body = JSON.parse(event.body);
+          const eventData = body.visitors?.[0]?.snapshots?.[0]?.events || [];
+
+          if (eventData.length > 0) {
+            eventData.forEach((eventItem, index) => {
+              const eventDiv = document.createElement('div');
+              eventDiv.className = 'event-log-item';
+              let content = `Event ${index + 1}:\n`;
+              content += `- Timestamp: ${new Date(eventItem.t).toISOString()}\n`;
+              content += `- Type: ${eventItem.y || 'N/A'}\n`;
+              content += `- Key: ${eventItem.k || 'N/A'}\n`;
+              content += `- UUID: ${eventItem.u || 'N/A'}\n`;
+              if (Object.keys(eventItem.p || {}).length > 0) content += `- Params: ${JSON.stringify(eventItem.p)}\n`;
+              if (Object.keys(eventItem.a || {}).length > 0) content += `- Attributes: ${JSON.stringify(eventItem.a)}\n`;
+              eventDiv.textContent = content.trim();
+              eventLogsDiv.appendChild(eventDiv);
+            });
+          } else {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-log-item';
+            eventDiv.textContent = 'No events found in visitors[0].snapshots[0].events';
+            eventLogsDiv.appendChild(eventDiv);
+          }
+        } catch (e) {
+          const eventDiv = document.createElement('div');
+          eventDiv.className = 'event-log-item';
+          eventDiv.textContent = `Error parsing event body: ${e.message}`;
+          eventLogsDiv.appendChild(eventDiv);
+        }
       });
+
       console.log(`Loaded ${events.length} events for ${vendor}`);
     });
   }
