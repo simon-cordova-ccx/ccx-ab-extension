@@ -375,7 +375,7 @@ const addStyles = (css) => {
 
 function createMobileCard(planData, type = 'subscription') {
   const card = document.createElement('div');
-  card.className = `ccx-mobile-card ${type === 'subscription' ? 'ccx-mobile-card--subscription' : 'ccx-mobile-card--payg'} basis-1/5 flex-1`;
+  card.className = 'ccx-mobile-card ' + (type === 'subscription' ? 'ccx-mobile-card--subscription' : 'ccx-mobile-card--payg') + ' basis-1/5 flex-1';
   card.style.order = planData.order;
   card.setAttribute('data-test', "mobile-card-variant-payg");
 
@@ -392,7 +392,7 @@ function createMobileCard(planData, type = 'subscription') {
   const bold = document.createElement('strong');
   bold.className = 'ccx-mobile-card__bonus-text';
   bold.textContent = planData.bonusCount
-    ? `${planData.bonusCount} Bonus Verlosung`
+    ? planData.bonusCount + ' Bonus Verlosung'
     : 'Bonus Verlosung';
 
   const span = document.createElement('span');
@@ -444,7 +444,7 @@ function createMobileCard(planData, type = 'subscription') {
 
 function createDesktopCard(planData, type = 'subscription') {
   const card = document.createElement('div');
-  card.className = `ccx-desktop-card ${type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg'} flex-1 max-w-[380px] basis-1/5 `;
+  card.className = 'ccx-desktop-card ' + (type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg') + ' flex-1 max-w-[380px] basis-1/5';
   card.style.order = planData.order;
 
   const inner = document.createElement('div');
@@ -462,7 +462,7 @@ function createDesktopCard(planData, type = 'subscription') {
   const bonus = document.createElement('div');
   bonus.className = 'ccx-desktop-card__bonus';
   if (planData.bonusCount) {
-    bonus.textContent = `${planData.bonusCount} Bonus Verlosung `;
+    bonus.textContent = planData.bonusCount + ' Bonus Verlosung ';
   } else {
     bonus.textContent = 'Bonus Verlosung ';
   }
@@ -553,7 +553,7 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
         customLog('Found matching control button:', matchingControlButton.outerHTML);
         matchingControlButton.click();
       } else {
-        console.error(`No control button found for price: ${price}, entriesAmount: ${entriesAmount}`);
+        console.error('No control button found for price: ' + price + ', entriesAmount: ' + entriesAmount);
       }
     });
   });
@@ -603,7 +603,7 @@ function setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons) {
         customLog('Found matching control button:', matchingControlButton.outerHTML);
         matchingControlButton.click();
       } else {
-        console.error(`No control button found for price: ${price}`);
+        console.error('No control button found for price: ' + price);
       }
     });
   });
