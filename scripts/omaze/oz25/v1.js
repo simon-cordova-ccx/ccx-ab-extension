@@ -47,7 +47,6 @@ const STYLES = `
 
     /* Second <ol> */
     #payg-multi-step-container > payg-cart-container > div > nav > ol:nth-child(2) {
-        background: lightblue;
         display: flex !important;
         justify-content: space-between !important;
         margin: 0px calc(33% - 45px) !important;
@@ -71,7 +70,6 @@ const addStyles = (css) => {
     document.head.appendChild(style);
     customLog('Custom styles added.');
 };
-
 
 function autoCheckoutAfterUpsellNext() {
     console.log('[Debug] Starting observer on document.body to detect upsell container.');
@@ -160,6 +158,42 @@ function hideMontlyMillionaireContainer() {
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function watchProgressAndUpdateBonus() {
+    const progressOl = document.querySelector('nav[aria-label="Progress"] > ol:first-child');
+
+    if (!progressOl) {
+        console.log('[Debug] Progress <ol> not found.');
+        return;
+    }
+
+    // Helper to check and update
+    const checkAndUpdate = () => {
+        const listItems = progressOl.querySelectorAll('li');
+        console.log('[Debug] Progress list length:', listItems.length);
+
+        if (listItems.length < 5) {
+            const targetDiv = document.querySelector(
+                'nav[aria-label="Progress"] > ol:nth-child(2) li:nth-child(2) > div'
+            );
+
+            if (targetDiv) {
+                targetDiv.textContent = 'Bonus Entries';
+                console.log('[Debug] Updated text to "Bonus Entries"');
+            } else {
+                console.log('[Debug] Target <div> not found.');
+            }
+        }
+    };
+
+    // Run once immediately
+    checkAndUpdate();
+
+    // Then observe for future changes
+    const observer = new MutationObserver(checkAndUpdate);
+    observer.observe(progressOl, { childList: true, subtree: true });
+    console.log('[Debug] Observer started on Progress <ol>');
 }
 
 function waitForElements(selectors, callback) {
@@ -273,6 +307,9 @@ function init() {
             autoCheckoutAfterUpsellNext();
 
             hideMontlyMillionaireContainer();
+
+            // Start it
+            watchProgressAndUpdateBonus();
         });
     } catch (error) {
         console.error(error.message);
