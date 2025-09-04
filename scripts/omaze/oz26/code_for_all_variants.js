@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "1";
+const VARIATION = "2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -148,7 +148,7 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "640 Entries"
     },
-    description: "Your chance to win a multi-million house.",
+    description: "Your chance to win a multi-million house",
     button: {
       text: "See this month’s house",
       url: "https://omaze.co.uk/pages/new-forest"
@@ -162,7 +162,7 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "640 Entries"
     },
-    description: "Your chance to win £1,000,000 a month.",
+    description: "Your chance to win £1,000,000 a month",
     button: {
       text: "Find out more",
       url: "https://omaze.co.uk/pages/monthly-millionaire"
@@ -175,7 +175,7 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "640 Entries"
     },
-    description: "Your chance to win £100,000 in cash a month.",
+    description: "Your chance to win £100,000 in cash a month",
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/015443682e58.png",
@@ -185,13 +185,13 @@ const subscriptionItems = [
       25: "200 Entries",
       50: "640 Entries"
     },
-    description: "Your chance to win cars and cash.",
+    description: "Your chance to win cars and cash",
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png",
     title: "Supporting a UK Charity",
-    highlight: {}, // No highlight for this item
-    description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year.",
+    highlight: {},
+    description: "You’re helping fund <strong>Teenage Cancer Trust</strong>, who provide specialised care and support to over 7,000 young people with cancer every year",
     button: {
       text: "Find out more",
       url: "https://omaze.co.uk/pages/our-charity-partners"
