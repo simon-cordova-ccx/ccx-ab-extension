@@ -24,19 +24,19 @@ entries-tab-nav[data-tab-container] {
   display: none !important;
 }
 
-[id*=single-purchase-tab-pane] > div:first-child {
+[id*=single-purchase-tab-pane]>div:first-child {
   display: none;
 }
 
-[id*=single-purchase-tab-pane] > div.mx-auto > div .card-ticket-icon {
+[id*=single-purchase-tab-pane]>div.mx-auto>div .card-ticket-icon {
   display: none !important;
 }
 
-[id*=single-purchase-tab-pane] > div.mx-auto > div [data-test="mobile-card-variant-payg"]:not([class*=ccx]) {
+[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="mobile-card-variant-payg"]:not([class*=ccx]) {
   display: none !important;
 }
 
-[id*=single-purchase-tab-pane] > div.mx-auto > div [data-test="desktop-card-variant-payg"]:not([class*=ccx]) {
+[id*=single-purchase-tab-pane]>div.mx-auto>div [data-test="desktop-card-variant-payg"]:not([class*=ccx]) {
   display: none !important;
 }
 
@@ -212,7 +212,7 @@ entries-tab-nav[data-tab-container] {
     border-bottom: 1px solid #87C7CA;
     height: 50px;
   }
-  
+
   .ccx-desktop-card__bonus p {
     font-size: inherit;
   }
@@ -258,47 +258,54 @@ entries-tab-nav[data-tab-container] {
     color: #090F15;
   }
 
+  .ccx-desktop-card__button:hover,
+  .ccx-desktop-card__button:focus {
+    color: #000;
+    background-color: #fdee8c;
+    outline: none;
+    text-decoration: none;
+    cursor: pointer;
+  }
 
 
+  .ccx-desktop-card--subscription .ccx-desktop-card__highlight {
+    color: #FFDD00;
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+  }
 
-.ccx-desktop-card--subscription .ccx-desktop-card__highlight {
-  color: #FFDD00;
-  font-family: Gellix;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-  text-align: center;
-  vertical-align: middle;
-}
+  .ccx-desktop-card--subscription .ccx-desktop-card__bonus {
+    font-family: Gellix;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 14px;
+    leading-trim: NONE;
+    line-height: 120%;
+    letter-spacing: 1.5%;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+  }
 
-.ccx-desktop-card--subscription .ccx-desktop-card__bonus {
-  font-family: Gellix;
-  font-weight: 700;
-  font-style: Bold;
-  font-size: 14px;
-  leading-trim: NONE;
-  line-height: 120%;
-  letter-spacing: 1.5%;
-  text-align: center;
-  vertical-align: middle;
-  color: white;
-}
+  .ccx-desktop-card--subscription .ccx-desktop-card__price {
+    display: flex;
+    flex-flow: column;
+    height: 79px;
+  }
 
-.ccx-desktop-card--subscription .ccx-desktop-card__price {
-  display: flex;
-  flex-flow: column;
-  height: 79px;
-}
-
-.ccx-desktop-card--subscription .ccx-desktop-card__price-value {
-  font-family: Gellix;
-  font-weight: 700;
-  font-size: 46px;
-  line-height: 150%;
-  text-align: center;
-  vertical-align: middle;
-  color: white;
-}
+  .ccx-desktop-card--subscription .ccx-desktop-card__price-value {
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 46px;
+    line-height: 150%;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+  }
 
   .ccx-desktop-card--subscription .ccx-desktop-card__price-span {
     font-family: Gellix;
@@ -312,9 +319,6 @@ entries-tab-nav[data-tab-container] {
   .ccx-desktop-card--subscription .ccx-desktop-card__button {
     margin-top: 14.5px;
   }
-
-
-
 }
 
 
