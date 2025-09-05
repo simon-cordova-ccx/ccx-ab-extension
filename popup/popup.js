@@ -446,37 +446,135 @@ document.addEventListener("DOMContentLoaded", () => {
 
       events.forEach(event => {
         try {
-          // Parse the body JSON and navigate to visitors[0].snapshots[0].events
-          const body = JSON.parse(event.body);
-          const eventData = body.visitors?.[0]?.snapshots?.[0]?.events || [];
+          if (vendor === 'optimizely') {
+            // Parse the body JSON and navigate to visitors[0].snapshots[0].events for Optimizely
+            const body = JSON.parse(event.body);
+            const eventData = body.visitors?.[0]?.snapshots?.[0]?.events || [];
+            if (eventData.length > 0) {
+              const filteredEvents = eventTypeFilter === 'all' ? eventData : eventData.filter(e => e.y === eventTypeFilter);
+              if (filteredEvents.length > 0) {
+                filteredEvents.forEach((eventItem, index) => {
+                  const eventDiv = document.createElement('div');
+                  eventDiv.className = 'event-log-item optimizely-event';
 
-          if (eventData.length > 0) {
-            const filteredEvents = eventTypeFilter === 'all' ? eventData : eventData.filter(e => e.y === eventTypeFilter);
-            if (filteredEvents.length > 0) {
-              filteredEvents.forEach((eventItem, index) => {
+                  const headerDiv = document.createElement('div');
+                  headerDiv.className = 'event-header';
+                  headerDiv.textContent = `Event ${index + 1}`;
+                  eventDiv.appendChild(headerDiv);
+
+                  const detailsDiv = document.createElement('div');
+                  detailsDiv.className = 'event-details';
+
+                  const rows = [
+                    { label: 'Timestamp', value: new Date(eventItem.t).toISOString() },
+                    { label: 'Type', value: eventItem.y || 'N/A' },
+                    { label: 'Key', value: eventItem.k || 'N/A' }
+                  ];
+                  rows.forEach(row => {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'event-row';
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'event-label';
+                    labelSpan.textContent = `${row.label}: `;
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'event-value';
+                    valueSpan.textContent = row.value;
+                    rowDiv.appendChild(labelSpan);
+                    rowDiv.appendChild(valueSpan);
+                    detailsDiv.appendChild(rowDiv);
+                  });
+
+                  if (Object.keys(eventItem.p || {}).length > 0) {
+                    const paramsDiv = document.createElement('div');
+                    paramsDiv.className = 'event-row';
+                    const paramsLabel = document.createElement('span');
+                    paramsLabel.className = 'event-label';
+                    paramsLabel.textContent = 'Params: ';
+                    const paramsValue = document.createElement('span');
+                    paramsValue.className = 'event-value';
+                    paramsValue.textContent = JSON.stringify(eventItem.p);
+                    paramsDiv.appendChild(paramsLabel);
+                    paramsDiv.appendChild(paramsValue);
+                    detailsDiv.appendChild(paramsDiv);
+                  }
+
+                  if (Object.keys(eventItem.a || {}).length > 0) {
+                    const attrsDiv = document.createElement('div');
+                    attrsDiv.className = 'event-row';
+                    const attrsLabel = document.createElement('span');
+                    attrsLabel.className = 'event-label';
+                    attrsLabel.textContent = 'Attributes: ';
+                    const attrsValue = document.createElement('span');
+                    attrsValue.className = 'event-value';
+                    attrsValue.textContent = JSON.stringify(eventItem.a);
+                    attrsDiv.appendChild(attrsLabel);
+                    attrsDiv.appendChild(attrsValue);
+                    detailsDiv.appendChild(attrsDiv);
+                  }
+
+                  eventDiv.appendChild(detailsDiv);
+                  eventLogsDiv.appendChild(eventDiv);
+                });
+              } else {
                 const eventDiv = document.createElement('div');
                 eventDiv.className = 'event-log-item';
-                let content = `Event ${index + 1}:\n`;
-                content += `- Timestamp: ${new Date(eventItem.t).toISOString()}\n`;
-                content += `- Type: ${eventItem.y || 'N/A'}\n`;
-                content += `- Key: ${eventItem.k || 'N/A'}\n`;
-                content += `- UUID: ${eventItem.u || 'N/A'}\n`;
-                if (Object.keys(eventItem.p || {}).length > 0) content += `- Params: ${JSON.stringify(eventItem.p)}\n`;
-                if (Object.keys(eventItem.a || {}).length > 0) content += `- Attributes: ${JSON.stringify(eventItem.a)}\n`;
-                eventDiv.textContent = content.trim();
+                eventDiv.textContent = `No events found for type: ${eventTypeFilter}`;
                 eventLogsDiv.appendChild(eventDiv);
-              });
+              }
             } else {
               const eventDiv = document.createElement('div');
               eventDiv.className = 'event-log-item';
-              eventDiv.textContent = `No events found for type: ${eventTypeFilter}`;
+              eventDiv.textContent = 'No events found in visitors[0].snapshots[0].events';
               eventLogsDiv.appendChild(eventDiv);
             }
-          } else {
-            const eventDiv = document.createElement('div');
-            eventDiv.className = 'event-log-item';
-            eventDiv.textContent = 'No events found in visitors[0].snapshots[0].events';
-            eventLogsDiv.appendChild(eventDiv);
+          } else if (vendor === 'dynamicyield') {
+            // Handle Dynamic Yield custom events
+            const eventData = [event]; // Treat the event object as a single event for consistency
+            if (eventData.length > 0) {
+              const filteredEvents = eventTypeFilter === 'all' ? eventData : eventData.filter(e => e.name === eventTypeFilter);
+              if (filteredEvents.length > 0) {
+                filteredEvents.forEach((eventItem, index) => {
+                  const eventDiv = document.createElement('div');
+                  eventDiv.className = 'event-log-item dynamicyield-event';
+
+                  const headerDiv = document.createElement('div');
+                  headerDiv.className = 'event-header';
+                  headerDiv.textContent = `Custom Event ${index + 1}`;
+                  eventDiv.appendChild(headerDiv);
+
+                  const detailsDiv = document.createElement('div');
+                  detailsDiv.className = 'event-details';
+
+                  const rows = [
+                    { label: 'Timestamp', value: eventItem.timestamp },
+                    { label: 'Name', value: eventItem.name || 'N/A' },
+                    { label: 'Traffic Source', value: eventItem.tsrc || 'N/A' },
+                    { label: 'URL', value: eventItem.urlProp || 'N/A' }
+                  ];
+                  rows.forEach(row => {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'event-row';
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'event-label';
+                    labelSpan.textContent = `${row.label}: `;
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'event-value';
+                    valueSpan.textContent = row.value;
+                    rowDiv.appendChild(labelSpan);
+                    rowDiv.appendChild(valueSpan);
+                    detailsDiv.appendChild(rowDiv);
+                  });
+
+                  eventDiv.appendChild(detailsDiv);
+                  eventLogsDiv.appendChild(eventDiv);
+                });
+              } else {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-log-item';
+                eventDiv.textContent = `No events found for name: ${eventTypeFilter}`;
+                eventLogsDiv.appendChild(eventDiv);
+              }
+            }
           }
         } catch (e) {
           const eventDiv = document.createElement('div');
@@ -490,18 +588,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Populate event type filter with Optimizely-specific types
+  // Populate event type filter with vendor-specific types
   function populateEventTypeFilter() {
     const eventTypeFilter = document.getElementById('event-type-filter');
-    const optimizelyEventTypes = ['all', 'client_activation', 'view_activated', 'other', 'conversion', 'revenue'];
+    const vendor = document.getElementById('event-vendor').value;
     eventTypeFilter.innerHTML = '';
-    optimizelyEventTypes.forEach(type => {
-      const option = document.createElement('option');
-      option.value = type;
-      option.textContent = type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ');
-      eventTypeFilter.appendChild(option);
-    });
-    eventTypeFilter.value = 'all'; // Default to all events
+    if (vendor === 'optimizely') {
+      const optimizelyEventTypes = ['all', 'client_activation', 'view_activated', 'other', 'conversion', 'revenue'];
+      optimizelyEventTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ');
+        eventTypeFilter.appendChild(option);
+      });
+    } else if (vendor === 'dynamicyield') {
+      // For Dynamic Yield, use event names as filters (custom events)
+      chrome.storage.local.get(['vendorEvents_dynamicyield'], (data) => {
+        const events = data['vendorEvents_dynamicyield'] || [];
+        const uniqueNames = ['all', ...new Set(events.map(e => e.name))];
+        uniqueNames.forEach(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+          eventTypeFilter.appendChild(option);
+        });
+        eventTypeFilter.value = 'all'; // Default to all events
+      });
+    }
+    eventTypeFilter.value = 'all'; // Fallback default
   }
 
   // Function to clear events
@@ -513,21 +627,23 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(`Cleared events for ${vendor}`);
       statusDiv.textContent = `Events cleared for ${vendor}.`;
       statusDiv.className = '';
+      populateEventTypeFilter(); // Refresh filter options after clearing
     });
   }
 
   // Event listeners for event viewer
   document.getElementById('refresh-events').addEventListener('click', () => {
-    console.log("Refresh button clicked"); // Debug log
+    console.log("Refresh button clicked");
     loadEvents();
   });
-  document.getElementById('event-vendor').addEventListener('change', loadEvents);
+  document.getElementById('event-vendor').addEventListener('change', () => {
+    populateEventTypeFilter();
+    loadEvents();
+  });
   document.getElementById('event-type-filter').addEventListener('change', loadEvents);
   document.getElementById('clear-events').addEventListener('click', clearEvents);
 
   // Initialize event viewer on popup load
   populateEventTypeFilter();
   loadEvents();
-
-
 });

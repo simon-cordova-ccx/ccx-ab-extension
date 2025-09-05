@@ -160,7 +160,7 @@ button:disabled {
 }
 
 .event-logs {
-  max-height: 150px;
+  max-height: 300px;
   overflow-y: auto;
   background-color: #1F2A44; /* Darker gray for contrast */
   padding: 8px;
@@ -176,4 +176,84 @@ button:disabled {
   border-left: 4px solid #00C4B4; /* Teal accent */
   word-wrap: break-word;
   color: #FFFFFF;
+}
+
+* Optimizely-specific event styling */
+.optimizely-event {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #2E4057; /* Slightly lighter than event-logs for distinction */
+  border-radius: 6px;
+}
+
+.event-header {
+  font-weight: 600;
+  color: #00C4B4; /* Teal for header */
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #00C4B4; /* Underline effect */
+}
+
+.event-details {
+  padding-left: 10px;
+}
+
+.event-row {
+  display: flex;
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.event-label {
+  font-weight: 500;
+  color: #A3BFFA; /* Light blue for labels */
+  min-width: 80px; /* Fixed width for alignment */
+  text-align: right;
+  padding-right: 10px;
+}
+
+.event-value {
+  color: #FFFFFF; /* White for values */
+  word-wrap: break-word;
+  flex-grow: 1;
+}
+
+/* Dynamic Yield-specific event styling */
+.dynamicyield-event {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #2E4057; /* Consistent with Optimizely */
+  border-radius: 6px;
+}
+
+.dynamicyield-event .event-header {
+  font-weight: 600;
+  color: #00C4B4; /* Teal for header */
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #00C4B4; /* Underline effect */
+}
+
+.dynamicyield-event .event-details {
+  padding-left: 10px;
+}
+
+.dynamicyield-event .event-row {
+  display: flex;
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.dynamicyield-event .event-label {
+  font-weight: 500;
+  color: #A3BFFA; /* Light blue for labels */
+  min-width: 100px; /* Slightly wider for longer labels like 'Traffic Source' */
+  text-align: right;
+  padding-right: 10px;
+}
+
+.dynamicyield-event .event-value {
+  color: #FFFFFF; /* White for values */
+  word-wrap: break-word;
+  flex-grow: 1;
 }
