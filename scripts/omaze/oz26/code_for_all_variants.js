@@ -55,6 +55,7 @@ const styles = `
     font-size: 20px;
     line-height: 22.22px;
     color: #081F28;
+    text-transform: none;
   }
 
  .subs-item {
@@ -71,6 +72,10 @@ const styles = `
 
   .subs-icon {
     margin-top: 0.5rem;
+  }
+  
+  .subs-icon img[alt*="Early Bird"] {
+    transform: scaleX(-1);
   }
 
   .subs-content {
@@ -272,6 +277,11 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
       return;
     }
 
+    // Skip "Monthly Subscriber Cash Draw" if price is 15
+    if (item.title === "Monthly Subscriber Cash Draw" && price === '15') {
+      return; // Skip rendering this item
+    }
+
     const itemDiv = document.createElement('div');
     itemDiv.className = 'subs-item';
 
@@ -295,7 +305,7 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     // Title and highlight
     const titleEl = document.createElement('h3');
     titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-      (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "")
+      (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "");
 
     // Description
     const descEl = document.createElement('p');
