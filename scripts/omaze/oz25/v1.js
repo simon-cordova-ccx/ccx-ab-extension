@@ -31,6 +31,12 @@ const SELECTORS = {
 }
 
 const STYLES = `
+    button[name="checkout"] {
+        display: none !important;
+    }
+    button[name="checkout"] + div {
+        display: none !important;
+    }
     #payg-multi-step-container > payg-cart-container > div > nav > ol.flex.items-center.justify-center.p-0.list-none > li:nth-child(4) {
         display: none !important;
     }
@@ -51,6 +57,10 @@ const STYLES = `
         justify-content: space-between !important;
         margin: 0px calc(33% - 45px) !important;
     }
+
+    .block-qty {
+        display: none !important;
+    }
 `;
 
 const addStyles = (css) => {
@@ -58,13 +68,13 @@ const addStyles = (css) => {
 
     if (!css) return;
 
-    if (document.querySelector('.ccx-styles-subs-callout-v1')) {
+    if (document.querySelector('.ccx-styles-oz25-v1')) {
         customLog('[addStyles] Custom styles already exist.');
         return;
     }
 
     const style = document.createElement('style');
-    style.classList.add('ccx-styles-subs-callout-v1');
+    style.classList.add('ccx-styles-oz25-v1');
     style.appendChild(document.createTextNode(css));
 
     document.head.appendChild(style);
@@ -131,7 +141,7 @@ function hideMontlyMillionaireContainer() {
 
     const observer = new MutationObserver(() => {
         const targetLi = document.querySelector(
-            '#payg-multi-step-container > payg-cart-container > div.max-w-\\[400px\\].my-0.mx-auto.p-0 > nav > ol:first-child > li:nth-child(5)'
+            '#payg-multi-step-container > payg-cart-container nav[aria-label="Progress"] > ol:first-child > li:nth-child(5)'
         );
 
         if (!targetLi) {
@@ -140,9 +150,13 @@ function hideMontlyMillionaireContainer() {
         }
 
         if (targetLi.classList.contains('active')) {
+
             console.log('[Debug] Fifth <li> is active! Hiding the sibling div with !important.');
 
             const siblingDiv = document.querySelector('nav[aria-label="Progress"] + div');
+            const totalPrice = document.querySelector('.total-price.text-center');
+            const nextButton = document.querySelector('.next-button');
+
             if (siblingDiv) {
                 const existingStyle = siblingDiv.getAttribute('style') || '';
                 siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
@@ -151,8 +165,25 @@ function hideMontlyMillionaireContainer() {
                 console.log('[Debug] Sibling div not found.');
             }
 
+            if (totalPrice) {
+                const existingStyle = totalPrice.getAttribute('style') || '';
+                totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
+                console.log('[Debug] Total price hidden.');
+            } else {
+                console.log('[Debug] Total price element not found.');
+            }
+
+            if (nextButton) {
+                const existingStyle = nextButton.getAttribute('style') || '';
+                nextButton.setAttribute('style', existingStyle + '; display: none !important;');
+                console.log('[Debug] Next button hidden.');
+
+            } else {
+                console.log('[Debug] Next button not found.');
+            }
+
             // Optional: stop observing
-            observer.disconnect();
+            // observer.disconnect();
             console.log('[Debug] Observer disconnected.');
         }
     });
@@ -185,6 +216,40 @@ function watchProgressAndUpdateBonus() {
                 console.log('[Debug] Target <div> not found.');
             }
         }
+
+        const lastItem = progressOl.querySelector('li:last-child');
+        if (lastItem) {
+            // if last item has the class active
+            if (lastItem.classList.contains('active')) {
+                console.log('[Debug] Last <li> is active! Hiding the sibling div with !important.');
+
+                const siblingDiv = document.querySelector('nav[aria-label="Progress"] + div');
+                if (siblingDiv) {
+                    const existingStyle = siblingDiv.getAttribute('style') || '';
+                    siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
+                    console.log('[Debug] Sibling div hidden.');
+
+                    const totalPrice = document.querySelector('.total-price.text-center');
+                    if (totalPrice) {
+                        const existingStyle = totalPrice.getAttribute('style') || '';
+                        totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
+                        console.log('[Debug] Total price hidden.');
+                    } else {
+                        console.log('[Debug] Total price element not found.');
+                    }
+
+                } else {
+                    console.log('[Debug] Sibling div not found.');
+                }
+
+                // Optional: stop observing
+                // observer.disconnect();
+                console.log('[Debug] Observer disconnected.');
+            } else {
+                console.log('[Debug] Last <li> is not active.');
+            }
+        }
+
     };
 
     // Run once immediately
@@ -306,10 +371,10 @@ function init() {
             // Start the observer
             autoCheckoutAfterUpsellNext();
 
-            hideMontlyMillionaireContainer();
-
             // Start it
             watchProgressAndUpdateBonus();
+
+            hideMontlyMillionaireContainer();
         });
     } catch (error) {
         console.error(error.message);

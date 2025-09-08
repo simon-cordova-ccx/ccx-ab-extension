@@ -1,5 +1,5 @@
 const LOG_ENABLED = true;
-const TEST_NAME = "REMOVE MONTHLY MILLIONAIRE";
+const TEST_NAME = "REMOVE BONUS ENTRIES";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "2";
 const CURRENT_URL = window.location.href;
@@ -31,6 +31,9 @@ const SELECTORS = {
 }
 
 const STYLES = `
+    .block-qty {
+        display: none !important;
+    }
     #payg-multi-step-container > payg-cart-container > div > nav > ol:first-child > li:nth-child(4) {
         display: none !important;
     }
@@ -60,13 +63,13 @@ const addStyles = (css) => {
 
     if (!css) return;
 
-    if (document.querySelector('.ccx-styles-subs-callout-v1')) {
+    if (document.querySelector('.ccx-styles-oz25-v2')) {
         customLog('[addStyles] Custom styles already exist.');
         return;
     }
 
     const style = document.createElement('style');
-    style.classList.add('ccx-styles-subs-callout-v1');
+    style.classList.add('ccx-styles-oz25-v2');
     style.appendChild(document.createTextNode(css));
 
     document.head.appendChild(style);
@@ -210,8 +213,8 @@ function init() {
         customLog('[init] Current URL: ' + CURRENT_URL);
         customLog('[init] Environment: ' + ENVIRONMENT);
 
-        document.body.classList.add('omaze-25-v1');
-        customLog('[init] Added class omaze-25-v1 to body');
+        document.body.classList.add('omaze-oz25-v2');
+        customLog('[init] Added class omaze-oz25-v2 to body');
 
         const elementSelectors = [SELECTORS.paygMultiStepContainer]; // reference the selectors constants
 
