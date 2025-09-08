@@ -662,6 +662,19 @@ function bindEvents() {
             } else {
                 customLog('[bindEvents] .ccx-mobile-clear-btn not found.');
             }
+
+            // Track in session storage if the user has logged at least 3 characters
+            if (ccxInput.value.length >= 3 && !sessionStorage.getItem('ccx_loggedThreeChars')) {
+                customLog('[bindEvents] at least 3 characters');
+                DY.API("event", {
+                    name: "algolia-search-engagement"
+                });
+                customLog('[bindEvents] Logged algolia-search-engagement event.');
+                sessionStorage.setItem('ccx_loggedThreeChars', 'true');
+                customLog('[bindEvents] Set sessionStorage flag ccx_loggedThreeChars.');
+            } else {
+                customLog('[bindEvents] less than 3 characters or already logged');
+            }
         });
 
         ccxCloseIcon.addEventListener('click', () => {
