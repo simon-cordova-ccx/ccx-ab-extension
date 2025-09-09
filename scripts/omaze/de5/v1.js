@@ -173,21 +173,26 @@ entries-tab-nav[data-tab-container] {
   }
 
   .ccx-desktop-card {
+    border-width: 1px;
+    position: relative;
     display: flex;
-    width: 198px;
     height: 300px;
     border-radius: 20px;
-    border-width: 1px;
+    border: 1px solid #E6E6E6;
+    background: white;
     padding-top: 25px;
     padding-right: 8px;
     padding-left: 8px;
     opacity: 1;
-    border: 1px solid #E6E6E6;
-    background: white;
+    max-width: 380px;
+    min-width: 150px;
+    flex: 1 1 calc(16.66% - 16px) !important;
   }
 
   .ccx-desktop-card__inner-container {
     flex: 1;
+    width: 100%;
+    max-width: 380px;
   }
 
   .ccx-desktop-card__highlight {
@@ -241,13 +246,11 @@ entries-tab-nav[data-tab-container] {
 
   .ccx-desktop-card__button {
     margin-top: 29.5px;
-    width: 183px;
+    width: 100%;
     height: 53px;
     border-radius: 76px;
     padding-top: 12px;
-    padding-right: 32px;
     padding-bottom: 14px;
-    padding-left: 32px;
     opacity: 1;
     background: #FFDD00;
     font-family: Gellix;
@@ -272,7 +275,7 @@ entries-tab-nav[data-tab-container] {
     color: #FFDD00;
     font-family: Gellix;
     font-weight: 700;
-    font-size: 20px;
+    font-size: clamp(17px, 1.5vw, 20px) !important;
     line-height: 100%;
     text-align: center;
     vertical-align: middle;
