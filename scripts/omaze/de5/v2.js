@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-5 | Entry Tab Removal";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 1";
+const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -22,6 +22,11 @@ const plansData = {
 const styles = `
 entries-tab-nav[data-tab-container] {
   display: none !important;
+}
+
+entries-tab-nav[data-tab-container] + div {
+  min-height: 409px;
+  padding-bottom: 8rem;
 }
 
 [id*=single-purchase-tab-pane]>div:first-child {
@@ -173,10 +178,11 @@ entries-tab-nav[data-tab-container] {
   }
 
   .ccx-desktop-card {
+    position: relative;
     display: flex;
     width: 198px;
     height: 300px;
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     border-width: 1px;
     padding-top: 25px;
     padding-right: 8px;
@@ -319,10 +325,52 @@ entries-tab-nav[data-tab-container] {
   .ccx-desktop-card--subscription .ccx-desktop-card__button {
     margin-top: 14.5px;
   }
+
+  .ccx-desktop-card__footer {
+    display: flex;
+    flex-flow: column;
+    color: #081F28;
+    background: white;
+    position: absolute;
+    bottom: -6.5rem;
+    left: 0;
+    opacity: 1;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    padding-top: 8px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    border-style: solid;
+    border-color: #ECF0F4;
+    box-shadow: 0px 2px 4px 0px #0000001A;
+  }
+
+  span.ccx-desktop-card__footer-bold {
+    font-family: Gellix;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 100%;
+    text-align: center;
+    margin-right: 0.25rem;
+  }
+
+  span.ccx-desktop-card__footer-regular {
+    font-family: Gellix;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    text-align: center;
+  }
+
+
+
+
+
 }
-
-
-
 `;
 
 const customLog = (...messages) => {
@@ -358,14 +406,14 @@ const addStyles = (css) => {
   }
 
   // Check if the style tag already exists
-  if (document.querySelector('.ccx-styles-de1-v1')) {
+  if (document.querySelector('.ccx-styles-de1-v2')) {
     customLog('[addStyles] Custom styles already exist.');
     return;
   }
 
   // Create a new <style> element
   const style = document.createElement('style');
-  style.classList.add('ccx-styles-de1-v1');
+  style.classList.add('ccx-styles-de1-v2');
   style.appendChild(document.createTextNode(css));
 
   // Append the style tag to the document head
@@ -495,10 +543,39 @@ function createDesktopCard(planData, type = 'subscription') {
   button.className = 'ccx-desktop-card__button';
   button.textContent = 'Mitmachen';
 
+  // Footer for subscription plans with price 25 or 35
+  let footer = null;
+  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+    footer = document.createElement('div');
+    footer.className = 'ccx-desktop-card__footer';
+
+    const footerImageDiv = document.createElement('div');
+    footerImageDiv.className = 'ccx-desktop-card__footer-image';
+    const footerImage = document.createElement('img');
+    footerImageDiv.appendChild(footerImage);
+
+    const footerTextDiv = document.createElement('div');
+    footerTextDiv.className = 'ccx-desktop-card__footer-text';
+    
+    const footerBoldSpan = document.createElement('span');
+    footerBoldSpan.className = 'ccx-desktop-card__footer-bold';
+    footerBoldSpan.textContent = '+1 Los/Monat';
+    
+    const footerRegularSpan = document.createElement('span');
+    footerRegularSpan.className = 'ccx-desktop-card__footer-regular';
+    footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
+
+    footerTextDiv.append(footerBoldSpan, footerRegularSpan);
+    footer.append(footerImageDiv, footerTextDiv);
+  }
+
   // Assemble
   bottom.append(price, button);
   top.append(highlight, bonus, bottom);
   inner.append(top);
+  if (footer) {
+    inner.append(footer);
+  }
   card.append(inner);
 
   return card;
@@ -642,8 +719,8 @@ function init() {
     customLog(TEST_NAME + ' | ' + VARIATION);
     customLog('[init] Current URL: ' + CURRENT_URL);
 
-    document.body.classList.add('ccx-omaze-de5-v1');
-    customLog('[init] Added class ccx-omaze-de5-v1 to body');
+    document.body.classList.add('ccx-omaze-de5-v2');
+    customLog('[init] Added class ccx-omaze-de5-v2 to body');
 
     waitForElements(
       ['#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button'], 6,
@@ -682,8 +759,6 @@ function init() {
 
           setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons);
         }
-
-        
 
       }
     );
