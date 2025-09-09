@@ -272,11 +272,12 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
   }
 
   subscriptionItems.forEach(item => {
-    if (!item) {
-      console.warn('Invalid item in subscriptionItems');
-      return;
-    }
+  if (!item) {
+    console.warn('Invalid item in subscriptionItems');
+    return;
+  }
 
+<<<<<<< HEAD
     // Skip "Monthly Subscriber Cash Draw" if price is 15
     if (item.title === "Monthly Subscriber Cash Draw" && price === '15') {
       return; // Skip rendering this item
@@ -284,49 +285,65 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
 
     const itemDiv = document.createElement('div');
     itemDiv.className = 'subs-item';
+=======
+  // Skip "Monthly Subscriber Cash Draw" if price is 15
+  if (item.title === "Monthly Subscriber Cash Draw" && price === '15') {
+    return; // Skip rendering this item
+  }
+>>>>>>> dev
 
-    // Create icon container with image
-    const iconDiv = document.createElement('div');
-    iconDiv.className = 'subs-icon';
-    if (item.icon) {
-      const imgElement = document.createElement('img');
-      imgElement.src = item.icon;
-      imgElement.alt = item.title ? item.title + ' icon' : 'Subscription item icon';
-      imgElement.style.width = '34px';
-      imgElement.style.height = '34px';
-      iconDiv.appendChild(imgElement);
-    } else {
-      console.warn('Missing icon for item:', item.title || 'unknown item');
-    }
+  const itemDiv = document.createElement('div');
+  itemDiv.className = 'subs-item';
 
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'subs-content';
+  // Create icon container with image
+  const iconDiv = document.createElement('div');
+  iconDiv.className = 'subs-icon';
+  if (item.icon) {
+    const imgElement = document.createElement('img');
+    imgElement.src = item.icon;
+    imgElement.alt = item.title ? item.title + ' icon' : 'Subscription item icon';
+    imgElement.style.width = '34px';
+    imgElement.style.height = '34px';
+    iconDiv.appendChild(imgElement);
+  } else {
+    console.warn('Missing icon for item:', item.title || 'unknown item');
+  }
 
+<<<<<<< HEAD
     // Title and highlight
     const titleEl = document.createElement('h3');
     titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
       (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "");
+=======
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'subs-content';
+>>>>>>> dev
 
-    // Description
-    const descEl = document.createElement('p');
-    descEl.innerHTML = item.description || '';
+  // Title and highlight
+  const titleEl = document.createElement('h3');
+  titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
+    (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "");
 
-    contentDiv.appendChild(titleEl);
-    contentDiv.appendChild(descEl);
+  // Description
+  const descEl = document.createElement('p');
+  descEl.innerHTML = item.description || '';
 
-    // Add button if present and valid for Variation 2
-    if (variation === '2' && item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
-      const btn = document.createElement('a');
-      btn.href = item.button.url;
-      btn.className = 'subs-btn';
-      btn.textContent = item.button.text;
-      contentDiv.appendChild(btn);
-    }
+  contentDiv.appendChild(titleEl);
+  contentDiv.appendChild(descEl);
 
-    itemDiv.appendChild(iconDiv);
-    itemDiv.appendChild(contentDiv);
-    container.appendChild(itemDiv);
-  });
+  // Add button if present and valid for Variation 2
+  if (variation === '2' && item.button && typeof item.button === 'object' && item.button.text && item.button.url) {
+    const btn = document.createElement('a');
+    btn.href = item.button.url;
+    btn.className = 'subs-btn';
+    btn.textContent = item.button.text;
+    contentDiv.appendChild(btn);
+  }
+
+  itemDiv.appendChild(iconDiv);
+  itemDiv.appendChild(contentDiv);
+  container.appendChild(itemDiv);
+});
 
   // Replace subscription-features element
   subscriptionFeatures.replaceWith(container);
