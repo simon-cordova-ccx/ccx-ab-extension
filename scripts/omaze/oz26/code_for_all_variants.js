@@ -1,7 +1,7 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "2";
+const VARIATION = "1";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
