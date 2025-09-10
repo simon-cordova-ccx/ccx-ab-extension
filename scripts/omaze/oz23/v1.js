@@ -298,26 +298,6 @@ function createDesktopContainer(element) {
   element.insertAdjacentElement('afterend', desktopContainer);
 }
 
-<<<<<<< HEAD
-function attachEventsListeners() {
-  customLog('[attachEventsListeners] Starting to attach events listeners...');
-  const heroLink = document.querySelector('.campaign-hero__content a.yellow-btn');
-
-  if (!heroLink) return;
-
-  const href = heroLink.getAttribute('href');
-  customLog('[attachEventsListeners] Found hero link href:', href);
-
-  document.querySelectorAll('.ccx-cta').forEach(button => {
-    button.addEventListener('click', () => {
-      window.location.href = href;
-    });
-  });
-}
-
-function waitForElements(elementSelector) {
-  customLog('[waitForElements] Starting to wait for elements...');
-=======
 function createSubscriptionEnterNowPageChanges() {
   customLog('[createSubscriptionEnterNowPageChanges] Creating Enter Now page changes...');
 
@@ -522,7 +502,6 @@ async function waitForEnterHouseCampaign() {
 // --- CASE 1: Home pages ---
 function waitForHomeCarousel(elementSelector) {
   customLog('[waitForHomeCarousel] Starting check...');
->>>>>>> feat/omaze-23
 
   Promise.all([
     DYO.waitForElementAsync(elementSelector, 1, 100, 150)
@@ -530,19 +509,6 @@ function waitForHomeCarousel(elementSelector) {
     .then(function (results) {
       const homeCarousel = results[0];
 
-<<<<<<< HEAD
-      customLog('Carousel found:', homeCarousel[0]);
-
-      createMobileContainer(homeCarousel[0]);
-      createDesktopContainer(homeCarousel[0]);
-
-      attachEventsListeners();
-
-      addStyles(styles);
-    })
-    .catch(function (error) {
-      console.warn('[waitForElements] Home carousel not found within timeout.');
-=======
       if (homeCarousel?.[0]) {
         customLog('[waitForHomeCarousel] Carousel found:', homeCarousel[0]);
         createMobileContainer(homeCarousel[0]);
@@ -555,7 +521,6 @@ function waitForHomeCarousel(elementSelector) {
     })
     .catch(function (error) {
       console.warn('[waitForHomeCarousel] Error while waiting for carousel:', error);
->>>>>>> feat/omaze-23
     });
 }
 

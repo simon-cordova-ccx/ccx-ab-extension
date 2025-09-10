@@ -277,20 +277,10 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     return;
   }
 
-<<<<<<< HEAD
-    // Skip "Monthly Subscriber Cash Draw" if price is 15
-    if (item.title === "Monthly Subscriber Cash Draw" && price === '15') {
-      return; // Skip rendering this item
-    }
-
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'subs-item';
-=======
   // Skip "Monthly Subscriber Cash Draw" if price is 15
   if (item.title === "Monthly Subscriber Cash Draw" && price === '15') {
     return; // Skip rendering this item
   }
->>>>>>> dev
 
   const itemDiv = document.createElement('div');
   itemDiv.className = 'subs-item';
@@ -309,15 +299,8 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
     console.warn('Missing icon for item:', item.title || 'unknown item');
   }
 
-<<<<<<< HEAD
-    // Title and highlight
-    const titleEl = document.createElement('h3');
-    titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-      (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "");
-=======
   const contentDiv = document.createElement('div');
   contentDiv.className = 'subs-content';
->>>>>>> dev
 
   // Title and highlight
   const titleEl = document.createElement('h3');

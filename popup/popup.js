@@ -61,8 +61,46 @@ document.addEventListener("DOMContentLoaded", () => {
         ]
       },
       {
+        name: 'liberty',
+        tests: [
+          {
+            name: 'L01',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/liberty/L01/v1.js' } }
+            ]
+          }
+        ]
+      },
+      {
         name: 'omaze',
         tests: [
+          {
+            name: 'de1',
+            scripts: [
+              { name: 'new_control.js', script: { type: 'file', src: 'scripts/omaze/de1/new_control.js' } },
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de1/v1.js' } }
+            ]
+          },
+          {
+            name: 'de2',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de2/v1.js' } }
+            ]
+          },
+          {
+            name: 'de3',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de3/v1.js' } },
+              { name: 'v2.js', script: { type: 'file', src: 'scripts/omaze/de3/v2.js' } }
+            ]
+          },
+          {
+            name: 'de5',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de5/v1.js' } },
+              { name: 'v2.js', script: { type: 'file', src: 'scripts/omaze/de5/v2.js' } }
+            ]
+          },
           {
             name: 'oz18',
             scripts: [
@@ -70,14 +108,15 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
           },
           {
-            name: 'de1',
+            name: 'oz19',
             scripts: [
-              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/de1/v1.js' } }
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz19/v1.js' } }
             ]
           },
           {
             name: 'oz20',
             scripts: [
+              { name: 'new_control.js', script: { type: 'file', src: 'scripts/omaze/oz20/new_control.js' } },
               { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz20/v1.js' } }
             ]
           },
@@ -85,6 +124,33 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'oz21',
             scripts: [
               { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz21/v1.js' } }
+            ]
+          },
+          {
+            name: 'oz22',
+            scripts: [
+              { name: 'v1_payg.js', script: { type: 'file', src: 'scripts/omaze/oz22/v1_payg.js' } },
+              { name: 'v1_subs.js', script: { type: 'file', src: 'scripts/omaze/oz22/v1_subs.js' } }
+            ]
+          },
+          {
+            name: 'oz23',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz23/v1.js' } },
+              { name: 'v2.js', script: { type: 'file', src: 'scripts/omaze/oz23/v2.js' } }
+            ]
+          },
+          {
+            name: 'oz25',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/omaze/oz25/v1.js' } },
+              { name: 'v2.js', script: { type: 'file', src: 'scripts/omaze/oz25/v2.js' } }
+            ]
+          },
+          {
+            name: 'oz26',
+            scripts: [
+              { name: 'code_for_all_variants.js', script: { type: 'file', src: 'scripts/omaze/oz26/code_for_all_variants.js' } }
             ]
           }
         ]
