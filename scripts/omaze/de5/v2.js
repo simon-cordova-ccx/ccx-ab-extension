@@ -44,7 +44,6 @@ entries-tab-nav[data-tab-container] {
 
 entries-tab-nav[data-tab-container] + div {
   min-height: 409px;
-  padding-bottom: 13rem;
 }
 
 [id*=single-purchase-tab-pane]>div:first-child {
@@ -191,6 +190,10 @@ entries-tab-nav[data-tab-container] + div {
 }
 
 @media screen and (min-width: 1024px) {
+  entries-tab-nav[data-tab-container] + div {
+    padding-bottom: 9.25rem;
+  }
+
   .ccx-mobile-card {
     display: none;
   }
@@ -398,6 +401,12 @@ entries-tab-nav[data-tab-container] + div {
 @media screen and (min-width: 1142px) {
   .ccx-desktop-card__footer {
     bottom: -9rem;
+  }
+}
+
+@media screen and (min-width: 1632px) {
+  .ccx-desktop-card__footer {
+    bottom: -7rem;
   }
 }
 `;
