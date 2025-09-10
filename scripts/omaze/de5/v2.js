@@ -66,11 +66,13 @@ entries-tab-nav[data-tab-container] {
   width: 100%;
   border-radius: 10px;
   border-width: 1px;
-  padding: 16px 0;
+  padding: 0;
+  padding-top: 16px;
   background: #081F28;
   border: 1px solid #ECF0F4;
   box-shadow: 0px 2px 4px 0px #0000001A;
-  height: 151px;
+  height: 152px;
+  min-height: 152px;
 }
 
 .ccx-mobile-card__top {
@@ -185,12 +187,50 @@ entries-tab-nav[data-tab-container] {
   margin-top: 14px;
 }
 
+.ccx-mobile-card__footer {
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #081F28;
+  padding: 1rem;
+  border-radius: 0 0 8px 8px;
+}
+
+.ccx-mobile-card__footer-image {
+  flex-basis: 15%;
+  display: flex;
+  justify-content: center;
+}
+
+.ccx-mobile-card__footer-text {
+  flex-basis: 90%;
+  line-height: 24px;
+}
+
+span.ccx-mobile-card__footer-bold {
+  font-family: Gellix;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 100%;
+  text-align: center;
+  margin-right: 0.25rem;
+}
+
+span.ccx-mobile-card__footer-regular {
+  font-family: Gellix;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 100%;
+  text-align: center;
+}
+
 .ccx-desktop-card {
   display: none;
 }
 
 @media screen and (min-width: 1024px) {
-  entries-tab-nav[data-tab-container] + div {
+  entries-tab-nav[data-tab-container]+div {
     margin-bottom: 9.25rem;
   }
 
@@ -216,8 +256,8 @@ entries-tab-nav[data-tab-container] {
     max-width: 198px !important;
   }
 
-  [id=enter-now-material-tab-buttons-design] [id*=single-purchase-tab] > div:nth-child(2) .ccx-desktop-card--subscription:nth-child(17),
-  [id=enter-now-material-tab-buttons-design] [id*=single-purchase-tab] > div:nth-child(2) .ccx-desktop-card--subscription:nth-child(18) {
+  [id=enter-now-material-tab-buttons-design] [id*=single-purchase-tab]>div:nth-child(2) .ccx-desktop-card--subscription:nth-child(17),
+  [id=enter-now-material-tab-buttons-design] [id*=single-purchase-tab]>div:nth-child(2) .ccx-desktop-card--subscription:nth-child(18) {
     border-radius: 20px 20px 0 0;
   }
 
@@ -512,12 +552,42 @@ function createMobileCard(planData, type = 'subscription') {
   button.className = 'ccx-mobile-card__button';
   button.textContent = 'Mitmachen';
 
+  // Footer for subscription plans with price 25 or 35
+  let footer = null;
+  console.log('Type:', type, 'Price:', planData.price);
+  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+    footer = document.createElement('div');
+    footer.className = 'ccx-mobile-card__footer';
+
+    const footerImageDiv = document.createElement('div');
+    footerImageDiv.className = 'ccx-mobile-card__footer-image';
+    footerImageDiv.innerHTML = ticketIconSVG;
+
+    const footerTextDiv = document.createElement('div');
+    footerTextDiv.className = 'ccx-mobile-card__footer-text';
+
+    const footerBoldSpan = document.createElement('span');
+    footerBoldSpan.className = 'ccx-mobile-card__footer-bold';
+    footerBoldSpan.textContent = '+ 1 Los/Monat';
+
+    const footerRegularSpan = document.createElement('span');
+    footerRegularSpan.className = 'ccx-mobile-card__footer-regular';
+    footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
+
+    footerTextDiv.append(footerBoldSpan, footerRegularSpan);
+    footer.append(footerImageDiv, footerTextDiv);
+  }
+
   bonus.append(icon, bold, span);
   left.append(priceContainer, highlight);
   right.append(button);
   top.append(bonus);
   bottom.append(left, right);
   card.append(top, bottom);
+
+  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+    card.append(footer);
+  }
 
   return card;
 }
@@ -590,7 +660,7 @@ function createDesktopCard(planData, type = 'subscription') {
 
     const footerBoldSpan = document.createElement('span');
     footerBoldSpan.className = 'ccx-desktop-card__footer-bold';
-    footerBoldSpan.textContent = '+1 Los/Monat';
+    footerBoldSpan.textContent = '+ 1 Los/Monat';
 
     const footerRegularSpan = document.createElement('span');
     footerRegularSpan.className = 'ccx-desktop-card__footer-regular';
