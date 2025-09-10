@@ -27,10 +27,13 @@ const customLog = (...messages) => {
 };
 
 const SELECTORS = {
-    paygMultiStepContainer: '#payg-multi-step-container',
+    paygMultiStepContainer: '#payg-multi-step-container [aria-label="Progress"] ol:first-child li',
 }
 
 const STYLES = `
+    #payg-multi-step-container > payg-cart-container > div:nth-child(2) {
+        display: none !important;
+    }
     button[name="checkout"] {
         display: none !important;
     }
@@ -159,7 +162,8 @@ function hideMontlyMillionaireContainer() {
 
             if (siblingDiv) {
                 const existingStyle = siblingDiv.getAttribute('style') || '';
-                siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
+                // siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
+                siblingDiv.setAttribute('style', existingStyle + '; visibility: hidden !important;');
                 console.log('[Debug] Sibling div hidden.');
             } else {
                 console.log('[Debug] Sibling div not found.');
@@ -167,7 +171,8 @@ function hideMontlyMillionaireContainer() {
 
             if (totalPrice) {
                 const existingStyle = totalPrice.getAttribute('style') || '';
-                totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
+                // totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
+                totalPrice.setAttribute('style', existingStyle + '; visibility: hidden !important;');
                 console.log('[Debug] Total price hidden.');
             } else {
                 console.log('[Debug] Total price element not found.');
@@ -175,7 +180,8 @@ function hideMontlyMillionaireContainer() {
 
             if (nextButton) {
                 const existingStyle = nextButton.getAttribute('style') || '';
-                nextButton.setAttribute('style', existingStyle + '; display: none !important;');
+                // nextButton.setAttribute('style', existingStyle + '; display: none !important;');
+                nextButton.setAttribute('style', existingStyle + '; visibility: hidden !important;');
                 console.log('[Debug] Next button hidden.');
 
             } else {
@@ -346,6 +352,44 @@ function waitForElements(selectors, callback) {
         });
 }
 
+function monitorLastStepStatus() {
+    // Create a MutationObserver to monitor changes in the DOM
+    const observer = new MutationObserver((mutations) => {
+        // Select the target elements
+        const steps = document.querySelectorAll(
+            '#payg-multi-step-container [aria-label="Progress"] ol:first-child li'
+        );
+
+        // Check if there are any elements
+        if (steps.length > 0) {
+            // Get the last step
+            const lastStep = steps[steps.length - 1];
+
+            // Check if the last step has the 'active' class
+            if (lastStep.classList.contains('active')) {
+                console.log('Last step is active, reloading page...');
+
+                setTimeout(() => {
+                    console.log('Reloading page now...');
+                    window.location.reload();
+                }, 2000);
+            } else {
+                console.log('Last step is not active');
+            }
+        } else {
+            console.log('No steps found');
+        }
+    });
+
+    // Observe the document body for changes in child elements or subtree
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class'] // Only watch for class attribute changes
+    });
+}
+
 function init() {
     try {
         customLog(TEST_NAME + ' | ' + SOURCE_TYPE + ' | ' + VARIATION);
@@ -375,6 +419,9 @@ function init() {
             watchProgressAndUpdateBonus();
 
             hideMontlyMillionaireContainer();
+
+            // Call the function to execute
+            monitorLastStepStatus();
         });
     } catch (error) {
         console.error(error.message);
