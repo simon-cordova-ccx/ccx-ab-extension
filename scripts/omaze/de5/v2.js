@@ -26,9 +26,9 @@ const ticketIconSVG = `<svg width="39" height="38" viewBox="0 0 39 38" fill="non
 
 const plansData = {
   payAsYouGo: [
-    { icon: '★', bonusCount: '2', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
-    { icon: '★', bonusCount: '4', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
-    { icon: '★', bonusCount: '4', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
+    { icon: '★', bonusCount: '1', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
+    { icon: '★', bonusCount: '1', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
+    { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
   ],
   subscriptions: [
     { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
@@ -38,12 +38,12 @@ const plansData = {
 }
 
 const styles = `
-entries-tab-nav[data-tab-container] {
-  display: none !important;
+#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] {
+  background: #F5F5F5;
 }
 
-entries-tab-nav[data-tab-container] + div {
-  min-height: 409px;
+entries-tab-nav[data-tab-container] {
+  display: none !important;
 }
 
 [id*=single-purchase-tab-pane]>div:first-child {
@@ -191,7 +191,7 @@ entries-tab-nav[data-tab-container] + div {
 
 @media screen and (min-width: 1024px) {
   entries-tab-nav[data-tab-container] + div {
-    padding-bottom: 9.25rem;
+    margin-bottom: 9.25rem;
   }
 
   .ccx-mobile-card {
@@ -213,7 +213,7 @@ entries-tab-nav[data-tab-container] + div {
     max-width: 380px;
     min-width: 150px;
     flex: 1 1 calc(16.66% - 16px) !important;
-    max-width: 198px;
+    max-width: 198px !important;
   }
 
   [id=enter-now-material-tab-buttons-design] [id*=single-purchase-tab] > div:nth-child(2) .ccx-desktop-card--subscription:nth-child(17),
@@ -398,15 +398,9 @@ entries-tab-nav[data-tab-container] + div {
   }
 }
 
-@media screen and (min-width: 1142px) {
+@media screen and (min-width: 1139px) {
   .ccx-desktop-card__footer {
     bottom: -9rem;
-  }
-}
-
-@media screen and (min-width: 1632px) {
-  .ccx-desktop-card__footer {
-    bottom: -7rem;
   }
 }
 `;
@@ -764,7 +758,8 @@ function init() {
       function (results) {
         // console.log('[waitForElements] Elements found', results);
 
-        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+        // const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"] .add-to-cart-button');
         const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
 
         // Add custom styles

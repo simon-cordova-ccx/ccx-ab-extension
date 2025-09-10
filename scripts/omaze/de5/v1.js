@@ -8,9 +8,9 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const plansData = {
   payAsYouGo: [
-    { icon: '★', bonusCount: '2', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
-    { icon: '★', bonusCount: '4', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
-    { icon: '★', bonusCount: '4', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
+    { icon: '★', bonusCount: '1', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
+    { icon: '★', bonusCount: '1', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
+    { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
   ],
   subscriptions: [
     { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
@@ -20,6 +20,9 @@ const plansData = {
 }
 
 const styles = `
+#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] {
+  background: #F5F5F5;
+}
 entries-tab-nav[data-tab-container] {
   display: none !important;
 }
@@ -187,6 +190,7 @@ entries-tab-nav[data-tab-container] {
     max-width: 380px;
     min-width: 150px;
     flex: 1 1 calc(16.66% - 16px) !important;
+    max-width: 198px !important;
   }
 
   .ccx-desktop-card__inner-container {
@@ -653,7 +657,9 @@ function init() {
       function (results) {
         // console.log('[waitForElements] Elements found', results);
 
-        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+        // const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"] .add-to-cart-button');
+
         const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
 
         // Add custom styles
