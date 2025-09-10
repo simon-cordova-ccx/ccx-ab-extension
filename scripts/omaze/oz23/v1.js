@@ -24,6 +24,10 @@ const selectors = {
 }
 
 const stylesHomepage = `
+main > .shopify-section:nth-child(2) {
+  display: none;
+}
+
 .ccx-desktop-only {
   max-width: 200px;
   margin: 0;

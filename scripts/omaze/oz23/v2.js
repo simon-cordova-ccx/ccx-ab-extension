@@ -29,6 +29,9 @@ const selectors = {
 }
 
 const stylesHomepage = `
+main > .shopify-section:nth-child(2) {
+  display: none;
+}
 .ccx-container {
   background: url(https://cdn-eu.dynamicyield.com/api/9880449/images/dbacba4af7fd.jpg);
   background-size: cover;
