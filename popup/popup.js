@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const detectedTools = data.detectedTools || [];
     let preferredTool = data.preferredTool || "";
     if (!preferredTool && detectedTools.length > 0) {
-      preferredTool = detectedTools[0];
+      preferredTool = detectedTools[0]; // Fall back to first detected if no preferred
     }
     if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
       console.log(`Auto-selecting preferred tool: ${preferredTool}`);
