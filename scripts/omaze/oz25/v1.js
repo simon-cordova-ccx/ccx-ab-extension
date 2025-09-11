@@ -23,7 +23,7 @@ const customLog = (...messages) => {
         }
     });
 
-    console.log(parts.join(" "), ...values);
+    customLog(parts.join(" "), ...values);
 };
 
 const SELECTORS = {
@@ -85,7 +85,7 @@ const addStyles = (css) => {
 };
 
 function autoCheckoutAfterUpsellNext() {
-    console.log('[Debug] Starting observer on document.body to detect upsell container.');
+    customLog('[Debug] Starting observer on document.body to detect upsell container.');
 
     const observer = new MutationObserver((mutationsList, observer) => {
         for (const mutation of mutationsList) {
@@ -97,27 +97,27 @@ function autoCheckoutAfterUpsellNext() {
                             : node.querySelector('[data-test="upsell-container"]');
 
                         if (upsell) {
-                            console.log('[Debug] Upsell container detected! Listening for .next-button click.');
+                            customLog('[Debug] Upsell container detected! Listening for .next-button click.');
 
                             const nextButton = document.querySelector('.next-button');
                             if (!nextButton) {
-                                console.log('[Debug] .next-button not found yet.');
+                                customLog('[Debug] .next-button not found yet.');
                                 return;
                             }
 
                             // Listen for user click on .next-button
                             const onNextClick = () => {
-                                console.log('[Debug] .next-button clicked! Starting polling for checkout button.');
+                                customLog('[Debug] .next-button clicked! Starting polling for checkout button.');
 
                                 const intervalId = setInterval(() => {
                                     const checkoutButton = document.querySelector('button[name="checkout"]');
                                     if (checkoutButton) {
-                                        console.log('[Debug] Checkout button found! Clicking...');
+                                        customLog('[Debug] Checkout button found! Clicking...');
                                         checkoutButton.click();
                                         clearInterval(intervalId);
-                                        console.log('[Debug] Polling stopped.');
+                                        customLog('[Debug] Polling stopped.');
                                     } else {
-                                        console.log('[Debug] Checkout button not yet available. Polling...');
+                                        customLog('[Debug] Checkout button not yet available. Polling...');
                                     }
                                 }, 200);
 
@@ -140,7 +140,7 @@ function autoCheckoutAfterUpsellNext() {
 }
 
 function hideMontlyMillionaireContainer() {
-    console.log('[Debug] Starting observer on document.body');
+    customLog('[Debug] Starting observer on document.body');
 
     const observer = new MutationObserver(() => {
         const targetLi = document.querySelector(
@@ -148,13 +148,13 @@ function hideMontlyMillionaireContainer() {
         );
 
         if (!targetLi) {
-            console.log('[Debug] Target fifth <li> not found yet.');
+            customLog('[Debug] Target fifth <li> not found yet.');
             return;
         }
 
         if (targetLi.classList.contains('active')) {
 
-            console.log('[Debug] Fifth <li> is active! Hiding the sibling div with !important.');
+            customLog('[Debug] Fifth <li> is active! Hiding the sibling div with !important.');
 
             const siblingDiv = document.querySelector('nav[aria-label="Progress"] + div');
             const totalPrice = document.querySelector('.total-price.text-center');
@@ -164,33 +164,33 @@ function hideMontlyMillionaireContainer() {
                 const existingStyle = siblingDiv.getAttribute('style') || '';
                 // siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
                 siblingDiv.setAttribute('style', existingStyle + '; visibility: hidden !important;');
-                console.log('[Debug] Sibling div hidden.');
+                customLog('[Debug] Sibling div hidden.');
             } else {
-                console.log('[Debug] Sibling div not found.');
+                customLog('[Debug] Sibling div not found.');
             }
 
             if (totalPrice) {
                 const existingStyle = totalPrice.getAttribute('style') || '';
                 // totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
                 totalPrice.setAttribute('style', existingStyle + '; visibility: hidden !important;');
-                console.log('[Debug] Total price hidden.');
+                customLog('[Debug] Total price hidden.');
             } else {
-                console.log('[Debug] Total price element not found.');
+                customLog('[Debug] Total price element not found.');
             }
 
             if (nextButton) {
                 const existingStyle = nextButton.getAttribute('style') || '';
                 // nextButton.setAttribute('style', existingStyle + '; display: none !important;');
                 nextButton.setAttribute('style', existingStyle + '; visibility: hidden !important;');
-                console.log('[Debug] Next button hidden.');
+                customLog('[Debug] Next button hidden.');
 
             } else {
-                console.log('[Debug] Next button not found.');
+                customLog('[Debug] Next button not found.');
             }
 
             // Optional: stop observing
             // observer.disconnect();
-            console.log('[Debug] Observer disconnected.');
+            customLog('[Debug] Observer disconnected.');
         }
     });
 
@@ -201,14 +201,14 @@ function watchProgressAndUpdateBonus() {
     const progressOl = document.querySelector('nav[aria-label="Progress"] > ol:first-child');
 
     if (!progressOl) {
-        console.log('[Debug] Progress <ol> not found.');
+        customLog('[Debug] Progress <ol> not found.');
         return;
     }
 
     // Helper to check and update
     const checkAndUpdate = () => {
         const listItems = progressOl.querySelectorAll('li');
-        console.log('[Debug] Progress list length:', listItems.length);
+        customLog('[Debug] Progress list length:', listItems.length);
 
         if (listItems.length < 5) {
             const targetDiv = document.querySelector(
@@ -217,9 +217,9 @@ function watchProgressAndUpdateBonus() {
 
             if (targetDiv) {
                 targetDiv.textContent = 'Bonus Entries';
-                console.log('[Debug] Updated text to "Bonus Entries"');
+                customLog('[Debug] Updated text to "Bonus Entries"');
             } else {
-                console.log('[Debug] Target <div> not found.');
+                customLog('[Debug] Target <div> not found.');
             }
         }
 
@@ -227,32 +227,32 @@ function watchProgressAndUpdateBonus() {
         if (lastItem) {
             // if last item has the class active
             if (lastItem.classList.contains('active')) {
-                console.log('[Debug] Last <li> is active! Hiding the sibling div with !important.');
+                customLog('[Debug] Last <li> is active! Hiding the sibling div with !important.');
 
                 const siblingDiv = document.querySelector('nav[aria-label="Progress"] + div');
                 if (siblingDiv) {
                     const existingStyle = siblingDiv.getAttribute('style') || '';
                     siblingDiv.setAttribute('style', existingStyle + '; display: none !important;');
-                    console.log('[Debug] Sibling div hidden.');
+                    customLog('[Debug] Sibling div hidden.');
 
                     const totalPrice = document.querySelector('.total-price.text-center');
                     if (totalPrice) {
                         const existingStyle = totalPrice.getAttribute('style') || '';
                         totalPrice.setAttribute('style', existingStyle + '; display: none !important;');
-                        console.log('[Debug] Total price hidden.');
+                        customLog('[Debug] Total price hidden.');
                     } else {
-                        console.log('[Debug] Total price element not found.');
+                        customLog('[Debug] Total price element not found.');
                     }
 
                 } else {
-                    console.log('[Debug] Sibling div not found.');
+                    customLog('[Debug] Sibling div not found.');
                 }
 
                 // Optional: stop observing
                 // observer.disconnect();
-                console.log('[Debug] Observer disconnected.');
+                customLog('[Debug] Observer disconnected.');
             } else {
-                console.log('[Debug] Last <li> is not active.');
+                customLog('[Debug] Last <li> is not active.');
             }
         }
 
@@ -264,7 +264,7 @@ function watchProgressAndUpdateBonus() {
     // Then observe for future changes
     const observer = new MutationObserver(checkAndUpdate);
     observer.observe(progressOl, { childList: true, subtree: true });
-    console.log('[Debug] Observer started on Progress <ol>');
+    customLog('[Debug] Observer started on Progress <ol>');
 }
 
 function waitForElements(selectors, callback) {
@@ -353,41 +353,61 @@ function waitForElements(selectors, callback) {
 }
 
 function monitorLastStepStatus() {
-    // Create a MutationObserver to monitor changes in the DOM
-    const observer = new MutationObserver((mutations) => {
-        // Select the target elements
-        const steps = document.querySelectorAll(
-            '#payg-multi-step-container [aria-label="Progress"] ol:first-child li'
-        );
+  const observer = new MutationObserver(() => {
+    const steps = document.querySelectorAll(
+      '#payg-multi-step-container [aria-label="Progress"] ol:first-child li'
+    );
 
-        // Check if there are any elements
-        if (steps.length > 0) {
-            // Get the last step
-            const lastStep = steps[steps.length - 1];
+    if (steps.length > 0) {
+      const lastStep = steps[steps.length - 1];
 
-            // Check if the last step has the 'active' class
-            if (lastStep.classList.contains('active')) {
-                console.log('Last step is active, reloading page...');
+      if (lastStep.classList.contains('active')) {
+        if (document.body.classList.contains('ccx-clicked-offer-button')) {
+          customLog("✅ Last step active & offer button was clicked. Triggering checkout...");
 
-                setTimeout(() => {
-                    console.log('Reloading page now...');
-                    window.location.reload();
-                }, 2000);
-            } else {
-                console.log('Last step is not active');
-            }
+          const checkoutBtn = document.querySelector("[name='checkout']");
+          if (checkoutBtn) {
+            document.body.classList.remove("ccx-clicked-offer-button");
+            checkoutBtn.click()
+          } else {
+            console.warn("⚠️ Checkout button not found.");
+          }
         } else {
-            console.log('No steps found');
+          customLog("❌ Last step active but offer button never clicked. Reloading...");
+          setTimeout(() => window.location.reload(), 1000);
         }
-    });
+      } else {
+        customLog("ℹ️ Last step is not active");
+      }
+    } else {
+      customLog("⚠️ No steps found");
+    }
+  });
 
-    // Observe the document body for changes in child elements or subtree
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['class'] // Only watch for class attribute changes
-    });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class"]
+  });
+}
+
+function waitForOfferButton() {
+  const observer = new MutationObserver(() => {
+    const offerBtn = document.querySelector('[data-mobile="apply-offer-button"]');
+    if (offerBtn) {
+        customLog('Offer button found:', offerBtn);
+      offerBtn.addEventListener("click", () => {
+        document.body.classList.add("ccx-clicked-offer-button");
+      });
+      observer.disconnect(); // stop watching once found
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 }
 
 function init() {
@@ -422,6 +442,8 @@ function init() {
 
             // Call the function to execute
             monitorLastStepStatus();
+
+            waitForOfferButton();
         });
     } catch (error) {
         console.error(error.message);
