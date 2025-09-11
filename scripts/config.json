@@ -6,6 +6,11 @@
       "urlPattern": "omaze.co.uk"
     },
     {
+      "client": "liberty",
+      "preferredTool": "dynamicyield",
+      "urlPattern": "https://www.libertylondon.com/"
+    },
+    {
       "client": "davidlloyd",
       "preferredTool": "optimizely",
       "urlPattern": "davidlloyd.co.uk"
