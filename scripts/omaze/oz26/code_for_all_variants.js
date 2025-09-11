@@ -73,6 +73,10 @@ const styles = `
   .subs-icon {
     margin-top: 0.5rem;
   }
+  
+  .subs-icon img[alt*="Early Bird"] {
+    transform: scaleX(-1);
+  }
 
   .subs-content {
     flex: 1;

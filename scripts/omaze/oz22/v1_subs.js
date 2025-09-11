@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 const LOG_ENABLED = true;
-=======
-const LOG_ENABLED = false;
->>>>>>> feat/omaze-22
 const TEST_NAME = "OZ22 | Sticky button on cart page";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 1 - SUBS";
@@ -282,11 +278,7 @@ function observeActiveListItems(containerSelector) {
         const lastActive = activeItems.sort((a, b) => itemOrder.indexOf(b) - itemOrder.indexOf(a))[0];
 
         if (lastActive && itemHandlers[lastActive]) {
-<<<<<<< HEAD
-            console.log('[observeActiveListItems] Last active list item: "' + lastActive + '"');
-=======
             customLog('[observeActiveListItems] Last active list item: "' + lastActive + '"');
->>>>>>> feat/omaze-22
             itemHandlers[lastActive]();
         }
     }
