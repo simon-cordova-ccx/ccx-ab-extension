@@ -51,6 +51,17 @@ document.addEventListener("DOMContentLoaded", () => {
         ]
       },
       {
+        name: 'Bat',
+        tests: [
+          {
+            name: '069',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/bat/069/v1.js' } }
+            ]
+          }
+        ]
+      },
+      {
         name: 'davidlloyd',
         tests: [
           {
@@ -68,6 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
             name: 'test1',
             scripts: [
               { name: 'v1.js', script: { type: 'file', src: 'scripts/heathrow/test1/v1.js' } }
+            ]
+          },
+          {
+            name: 'hex16',
+            scripts: [
+              { name: 'v1.js', script: { type: 'file', src: 'scripts/heathrow/hex16/v1.js' } },
+              { name: 'v2.js', script: { type: 'file', src: 'scripts/heathrow/hex16/v2.js' } }
             ]
           }
         ]

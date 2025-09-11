@@ -439,13 +439,13 @@ const addStyles = (css) => {
 
   if (!css) return;
 
-  if (document.querySelector('.ccx-styles-oz25-v2')) {
+  if (document.querySelector('.ccx-styles-o69-v1')) {
     console.log('[addStyles] Custom styles already exist.');
     return;
   }
 
   const style = document.createElement('style');
-  style.classList.add('ccx-styles-oz25-v2');
+  style.classList.add('ccx-styles-o69-v1');
   style.appendChild(document.createTextNode(css));
 
   document.head.appendChild(style);
