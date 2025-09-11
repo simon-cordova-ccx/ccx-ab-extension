@@ -141,10 +141,8 @@ button:disabled {
 }
 
 /* Show dev-only elements in development mode */
-@media (prefers-color-scheme: development) {
-  .dev-only {
-    display: block;
-  }
+body.dev-mode .dev-only {
+  display: block;
 }
 
 /* New Event Viewer Styles */

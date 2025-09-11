@@ -168,7 +168,7 @@ function injectScript(scriptData, callback) {
     if (event.source !== window || !event.data || event.origin !== window.location.origin || 
         (event.data.source && event.data.source.includes('react-devtools'))) return;
     
-    console.log("📩 Received valid message from page:", event.data); // Log only valid messages
+    console.log("📩 Received valid message from page:", event.data);
 
     // Handle A/B tool detection
     if (Object.values(toolIdentifiers).some(config => config.messageType === event.data.type)) {
