@@ -41,7 +41,7 @@ module.exports = [
             console.log('WebSocket client connected');
             ws.on('message', (message) => console.log('Received:', message));
           });
-          chokidar.watch(['scripts/**/*.js', 'scripts/config.json']).on('change', (path) => {
+          chokidar.watch(['scripts/**/*.js', 'popup/popup.js', 'scripts/config.json']).on('change', (path) => {
             console.log(`File changed: ${path}`);
             wss.clients.forEach((client) => {
               if (client.readyState === client.OPEN) {
@@ -59,6 +59,24 @@ module.exports = [
     output: {
       file: 'dist/scripts/background.js',
       format: 'es',
+      sourcemap: isDev
+    },
+    plugins: [
+      resolve({ browser: true }),
+      commonjs(),
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+        __IS_DEV__: isDev
+      })
+    ]
+  },
+  // Bundle for content.js
+  {
+    input: 'scripts/content.js',
+    output: {
+      file: 'dist/scripts/content.js',
+      format: 'iife', // Changed from 'es' to 'iife' for content script compatibility
       sourcemap: isDev
     },
     plugins: [

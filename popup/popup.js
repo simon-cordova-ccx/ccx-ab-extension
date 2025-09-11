@@ -17,12 +17,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const reinjectButton = document.getElementById("reinject-button");
   const hotReloadToggle = document.getElementById("hot-reload-toggle");
 
-  // Hide dev-only elements in production
-  if (!IS_DEV) {
+  // Show dev-only elements in development mode
+  if (IS_DEV) {
+    document.body.classList.add('dev-mode');
+    hotReloadToggle.parentElement.style.display = 'block';
+    reinjectButton.style.display = 'block';
+    hotReloadStatus.style.display = 'block';
+  } else {
     hotReloadToggle.parentElement.style.display = 'none';
     reinjectButton.style.display = 'none';
     hotReloadStatus.style.display = 'none';
   }
+
+  // Load and set initial hot reload state
+  chrome.storage.local.get(['hotReloadEnabled'], (data) => {
+    const isHotReloadEnabled = data.hotReloadEnabled || false;
+    hotReloadToggle.checked = isHotReloadEnabled;
+    console.log('Loaded hot reload state:', isHotReloadEnabled);
+  });
 
   // Static folder structure
   const folderStructure = {
@@ -290,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const detectedTools = data.detectedTools || [];
     let preferredTool = data.preferredTool || "";
     if (!preferredTool && detectedTools.length > 0) {
-      preferredTool = detectedTools[0]; // Fall back to first detected if no preferred
+      preferredTool = detectedTools[0];
     }
     if (preferredTool && abToolSelect.querySelector(`option[value="${preferredTool}"]`)) {
       console.log(`Auto-selecting preferred tool: ${preferredTool}`);
@@ -397,31 +409,44 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Store auto-inject selection and last injected script
-      chrome.storage.local.set({
-        autoInject: {
-          tool: selectedTool,
-          scriptData: selectedScript,
-          url: tabs[0].url
-        },
-        lastInjectedScript: selectedScript
-      });
-
-      chrome.tabs.sendMessage(tabs[0].id, { action: "injectScript", tool: selectedTool, scriptData: selectedScript }, (response) => {
+      // Ensure content script is injected
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        files: ['scripts/content.js']
+      }, () => {
         if (chrome.runtime.lastError) {
-          console.error("❌ Error sending message:", chrome.runtime.lastError.message);
+          console.error("❌ Failed to inject content script:", chrome.runtime.lastError.message);
           statusDiv.textContent = `Error: ${chrome.runtime.lastError.message}`;
           statusDiv.className = "error";
           return;
         }
-        console.log("Injection response:", response);
-        if (response && response.success) {
-          statusDiv.textContent = "Script injected successfully!";
-          statusDiv.className = "";
-        } else {
-          statusDiv.textContent = `Injection failed: ${response?.error || 'Unknown error'}`;
-          statusDiv.className = "error";
-        }
+
+        // Store auto-inject selection and last injected script
+        chrome.storage.local.set({
+          autoInject: {
+            tool: selectedTool,
+            scriptData: selectedScript,
+            url: tabs[0].url
+          },
+          lastInjectedScript: selectedScript
+        });
+
+        chrome.tabs.sendMessage(tabs[0].id, { action: "injectScript", tool: selectedTool, scriptData: selectedScript }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.error("❌ Error sending message:", chrome.runtime.lastError.message);
+            statusDiv.textContent = `Error: ${chrome.runtime.lastError.message}`;
+            statusDiv.className = "error";
+            return;
+          }
+          console.log("Injection response:", response);
+          if (response && response.success) {
+            statusDiv.textContent = "Script injected successfully!";
+            statusDiv.className = "";
+          } else {
+            statusDiv.textContent = `Injection failed: ${response?.error || 'Unknown error'}`;
+            statusDiv.className = "error";
+          }
+        });
       });
     });
   });
@@ -498,7 +523,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Toggle hot reloading
   hotReloadToggle.addEventListener('change', () => {
-    chrome.storage.local.set({ hotReloadEnabled: hotReloadToggle.checked });
+    const isEnabled = hotReloadToggle.checked;
+    chrome.storage.local.set({ hotReloadEnabled: isEnabled }, () => {
+      console.log('Hot reload toggled to:', isEnabled);
+      hotReloadStatus.textContent = isEnabled ? 'Hot reloading enabled' : 'Hot reloading disabled';
+      hotReloadStatus.className = isEnabled ? '' : 'warning';
+    });
   });
 
   // Function to load and display events with type filter
@@ -508,12 +538,11 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get([`vendorEvents_${vendor}`], (data) => {
       const events = data[`vendorEvents_${vendor}`] || [];
       const eventLogsDiv = document.getElementById('event-logs');
-      eventLogsDiv.innerHTML = ''; // Clear existing logs
+      eventLogsDiv.innerHTML = '';
 
       events.forEach(event => {
         try {
           if (vendor === 'optimizely') {
-            // Parse the body JSON and navigate to visitors[0].snapshots[0].events for Optimizely
             const body = JSON.parse(event.body);
             const eventData = body.visitors?.[0]?.snapshots?.[0]?.events || [];
             if (eventData.length > 0) {
@@ -522,15 +551,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 filteredEvents.forEach((eventItem, index) => {
                   const eventDiv = document.createElement('div');
                   eventDiv.className = 'event-log-item optimizely-event';
-
                   const headerDiv = document.createElement('div');
                   headerDiv.className = 'event-header';
                   headerDiv.textContent = `Event ${index + 1}`;
                   eventDiv.appendChild(headerDiv);
-
                   const detailsDiv = document.createElement('div');
                   detailsDiv.className = 'event-details';
-
                   const rows = [
                     { label: 'Timestamp', value: new Date(eventItem.t).toISOString() },
                     { label: 'Type', value: eventItem.y || 'N/A' },
@@ -549,7 +575,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     rowDiv.appendChild(valueSpan);
                     detailsDiv.appendChild(rowDiv);
                   });
-
                   if (Object.keys(eventItem.p || {}).length > 0) {
                     const paramsDiv = document.createElement('div');
                     paramsDiv.className = 'event-row';
@@ -563,7 +588,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     paramsDiv.appendChild(paramsValue);
                     detailsDiv.appendChild(paramsDiv);
                   }
-
                   if (Object.keys(eventItem.a || {}).length > 0) {
                     const attrsDiv = document.createElement('div');
                     attrsDiv.className = 'event-row';
@@ -577,7 +601,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     attrsDiv.appendChild(attrsValue);
                     detailsDiv.appendChild(attrsDiv);
                   }
-
                   eventDiv.appendChild(detailsDiv);
                   eventLogsDiv.appendChild(eventDiv);
                 });
@@ -594,23 +617,19 @@ document.addEventListener("DOMContentLoaded", () => {
               eventLogsDiv.appendChild(eventDiv);
             }
           } else if (vendor === 'dynamicyield') {
-            // Handle Dynamic Yield custom events
-            const eventData = [event]; // Treat the event object as a single event for consistency
+            const eventData = [event];
             if (eventData.length > 0) {
               const filteredEvents = eventTypeFilter === 'all' ? eventData : eventData.filter(e => e.name === eventTypeFilter);
               if (filteredEvents.length > 0) {
                 filteredEvents.forEach((eventItem, index) => {
                   const eventDiv = document.createElement('div');
                   eventDiv.className = 'event-log-item dynamicyield-event';
-
                   const headerDiv = document.createElement('div');
                   headerDiv.className = 'event-header';
                   headerDiv.textContent = `Custom Event ${index + 1}`;
                   eventDiv.appendChild(headerDiv);
-
                   const detailsDiv = document.createElement('div');
                   detailsDiv.className = 'event-details';
-
                   const rows = [
                     { label: 'Timestamp', value: eventItem.timestamp },
                     { label: 'Name', value: eventItem.name || 'N/A' },
@@ -630,7 +649,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     rowDiv.appendChild(valueSpan);
                     detailsDiv.appendChild(rowDiv);
                   });
-
                   eventDiv.appendChild(detailsDiv);
                   eventLogsDiv.appendChild(eventDiv);
                 });
@@ -649,7 +667,6 @@ document.addEventListener("DOMContentLoaded", () => {
           eventLogsDiv.appendChild(eventDiv);
         }
       });
-
       console.log(`Loaded ${events.length} events for ${vendor}, filtered by ${eventTypeFilter}`);
     });
   }
@@ -668,7 +685,6 @@ document.addEventListener("DOMContentLoaded", () => {
         eventTypeFilter.appendChild(option);
       });
     } else if (vendor === 'dynamicyield') {
-      // For Dynamic Yield, use event names as filters (custom events)
       chrome.storage.local.get(['vendorEvents_dynamicyield'], (data) => {
         const events = data['vendorEvents_dynamicyield'] || [];
         const uniqueNames = ['all', ...new Set(events.map(e => e.name))];
@@ -678,10 +694,10 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
           eventTypeFilter.appendChild(option);
         });
-        eventTypeFilter.value = 'all'; // Default to all events
+        eventTypeFilter.value = 'all';
       });
     }
-    eventTypeFilter.value = 'all'; // Fallback default
+    eventTypeFilter.value = 'all';
   }
 
   // Function to clear events
@@ -693,7 +709,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(`Cleared events for ${vendor}`);
       statusDiv.textContent = `Events cleared for ${vendor}.`;
       statusDiv.className = '';
-      populateEventTypeFilter(); // Refresh filter options after clearing
+      populateEventTypeFilter();
     });
   }
 
