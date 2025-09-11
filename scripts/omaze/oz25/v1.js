@@ -23,7 +23,7 @@ const customLog = (...messages) => {
         }
     });
 
-    customLog(parts.join(" "), ...values);
+    console.log(parts.join(" "), ...values);
 };
 
 const SELECTORS = {
