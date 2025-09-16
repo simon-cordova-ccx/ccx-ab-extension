@@ -424,7 +424,8 @@ function modal() {
       const result = await reorderLastOrder();
       closeModal();
       if (result?.success) {
-        window.location.href = 'https://www.velo.com/gb/en/basket';
+        console.log(result.results);
+        // window.location.href = 'https://stage5-velo-cx.secure-update.co.uk/gb/en/basket';
       } else {
         console.warn('Some items may not have been added. Not reloading.');
       }
