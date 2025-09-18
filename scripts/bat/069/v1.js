@@ -9,11 +9,12 @@ const STYLES = `
   z-index: 9998;
 }
 
-&.ccx-modal-open {
+.ccx-modal-open {
   overflow: hidden;
   position: fixed;
   width: 100%;
 }
+
 #promo-modal {
   position: fixed;
   top: 50%;
@@ -29,89 +30,107 @@ const STYLES = `
 .promo-modal-content {
   color: #2b2b2b;
   position: relative;
-  &__heading {
-    font-size: 34px;
-    font-weight: 700;
-    strong {
-      color: #254aa2;
-    }
-  }
-  p {
-    margin: 0 !important;
-  }
-  &__subheading {
-    font-size: 18px;
-    font-weight: 500;
-  }
-  &__copy {
-    font-size: 16px;
-  }
-  &__img {
-    max-width: 100%;
-    height: auto;
-    display: inline-block;
-  }
-  &__body {
-    padding: 20px 30px;
-    gap: 16px;
-    display: flex;
-    flex-direction: column;
-  }
-  &__close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  &__actions {
-    display: flex;
-    gap: 16px;
-  }
-  &__subscribe-btn,
-  &__dismiss-btn {
-    padding: 11px 30px;
-    border-radius: 100px;
-    border: 1px solid;
-    cursor: pointer;
-  }
-  &__subscribe-btn {
-    background-color: #254aa2;
-    border: 2px solid #254aa2;
-    color: #fff;
-    width: 100%;
+}
+
+.promo-modal-content__heading {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.promo-modal-content__heading strong {
+  color: #254aa2;
+}
+
+.promo-modal-content p {
+  margin: 0 !important;
+}
+
+.promo-modal-content__subheading {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.promo-modal-content__copy {
+  font-size: 16px;
+}
+
+.promo-modal-content__img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.promo-modal-content__body {
+  padding: 20px 30px;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-modal-content__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.promo-modal-content__actions {
+  display: flex;
+  gap: 16px;
+}
+
+.promo-modal-content__subscribe-btn,
+.promo-modal-content__dismiss-btn {
+  padding: 11px 30px;
+  border-radius: 100px;
+  border: 1px solid;
+  cursor: pointer;
+}
+
+.promo-modal-content__subscribe-btn {
+  background-color: #254aa2;
+  border: 2px solid #254aa2;
+  color: #fff;
+  width: 100%;
+}
+
+.promo-modal-content__dismiss-btn {
+  background-color: #fff;
+  color: #2b2b2b;
+  border: 2px solid #01567e;
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .promo-modal-content__body {
+    padding: 30px 40px;
   }
 
-  &__dismiss-btn {
-    background-color: #fff;
-    color: #2b2b2b;
-    border: 2px solid #01567e;
-    display: none;
+  .promo-modal-content__heading {
+    font-size: 44px;
   }
-  @media screen and (min-width: 768px) {
-    &__body {
-      padding: 30px 40px;
-    }
-    &__heading {
-      font-size: 44px;
-    }
-    &__subscribe-btn {
-      width: auto;
-    }
-    &__dismiss-btn {
-      display: inline-block;
-    }
+
+  .promo-modal-content__subscribe-btn {
+    width: auto;
+  }
+
+  .promo-modal-content__dismiss-btn {
+    display: inline-block;
   }
 }
 
 .mb {
   display: inline-block;
 }
+
 .lg {
   display: none;
 }
+
 @media screen and (min-width: 768px) {
   .mb {
     display: none;
@@ -258,7 +277,7 @@ function savingAmount() {
  *   a `success` boolean property, and either a `results` property containing
  *   the JSON response from the server, or an `error` property containing the
  *   error message.
- */
+ */ 
 async function reorderLastOrder() {
   try {
     const lastOrderData = sessionStorage.getItem('ccx_lastOrder');
@@ -334,14 +353,15 @@ function testTrigger() {
     savings,
   })
 
-  // if (
-  //   !lastOrderStr ||
-  //   hasSubscribed === 'false' ||
-  //   promoModalDismissed === 'true' ||
-  //   Number(savings) <= 0
-  // ) {
-  //   return false;
-  // }
+  // convert to usable values
+  const hasLastOrder = !!lastOrderStr; // true if it exists
+  const isSubscribed = hasSubscribed === 'true';
+  const isDismissed = promoModalDismissed === 'true';
+  const hasPositiveSavings = Number(savings) > 0;
+
+  if (!hasLastOrder || isSubscribed || isDismissed || !hasPositiveSavings) {
+    return false;
+  }
 
   try {
     const lastOrder = JSON.parse(lastOrderStr);
@@ -356,20 +376,82 @@ function testTrigger() {
 }
 
 /**
- * Displays a modal with a personalized offer to subscribe to a newsletter
- * and save some money on the last order.
+ * Updates the basket with subscription-eligible items from the last order.
  *
- * @function
- * @returns {void}
+ * @return {Promise<Object>} A promise that resolves with an object containing
+ *   a `success` boolean property, and either a `results` property containing
+ *   the JSON response from the server, or an `error` property containing the
+ *   error message.
+ */
+async function updateBasketWithSubscriptions() {
+  try {
+    const lastOrderData = sessionStorage.getItem('ccx_lastOrder');
+    if (!lastOrderData) {
+      console.error('Last order data not found in session storage.');
+      return { success: false, error: 'Last order data not found.' };
+    }
+
+    const orderData = JSON.parse(lastOrderData);
+    const hasSubscribed = sessionStorage.getItem('ccx_hasSubscription');
+    if (hasSubscribed === 'true') {
+      return { success: true, results: 'User already subscribed.' };
+    }
+
+    const eligibleItems = orderData.products
+      .filter(product => product.is_subscription_product === '1')
+      .map(product => ({
+        product_id: product.product_id,
+        colour_id: product.colour_id,
+        variation_id: product.variation_id,
+        qty: product.quantity,
+        // payment_method_val: 'subscription'
+        payment_method_val: 'subscribe'
+      }));
+
+    if (eligibleItems.length === 0) {
+      console.log('No subscription-eligible items found.');
+      return { success: true, results: 'No eligible items.' };
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!csrfToken) {
+      console.error('CSRF token not found');
+      return { success: false, error: 'CSRF token not found' };
+    }
+
+    const response = await fetch('/gb/en/basket/add', {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/javascript, */*; q=0.01',
+      },
+      body: JSON.stringify({ items: eligibleItems }),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Successfully updated basket with subscription items.', responseData);
+      return { success: true, results: responseData };
+    } else {
+      console.error(`Failed to update basket:`, response.statusText);
+      return { success: false, error: response.statusText };
+    }
+  } catch (error) {
+    console.error('Error in updateBasketWithSubscriptions:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Modified modal function to handle subscription update before redirect.
  */
 function modal() {
   const hydrate = () => {
-
     console.log('Modal trigger test:', testTrigger());
-
-    // if (!testTrigger()) {
-    //   return;
-    // }
 
     let firstName = getFirstName()?.toUpperCase();
     let price = savingAmount()?.savings;
@@ -388,10 +470,8 @@ function modal() {
 </svg></button>
           </div>
           <div class="promo-modal-content__body">
-          <h2 class="promo-modal-content__heading mb">FANCY <strong>£${price}</strong> OFF${firstName ? `, ${firstName}` : ''
-      }?</h2>
-          <h2 class="promo-modal-content__heading lg">${firstName ? `${firstName},` : ''
-      } FANCY <strong>£${price}</strong> OFF FROM NOW ON?</h2>
+          <h2 class="promo-modal-content__heading mb">FANCY <strong>£${price}</strong> OFF${firstName ? `, ${firstName}` : ''}?</h2>
+          <h2 class="promo-modal-content__heading lg">${firstName ? `${firstName},` : ''} FANCY <strong>£${price}</strong> OFF FROM NOW ON?</h2>
           <p class="promo-modal-content__subheading">Subscribe and save £${price}</p>
           <p class="promo-modal-content__copy">Turn your last order into a subscription and save £${price} going forward. We’ll fill your basket to make it easy.</p>
           <div class="promo-modal-content__actions">
@@ -403,7 +483,7 @@ function modal() {
       `;
     document.body.appendChild(overlay);
     document.body.appendChild(modal);
-    document.body.classList.add('x');
+    document.body.classList.add('ccx-modal-open');
 
     overlay.addEventListener('click', function () {
       closeModal();
@@ -421,13 +501,28 @@ function modal() {
 
     const addOrderToCartButton = domGet('#addOrderToCart');
     addOrderToCartButton?.addEventListener('click', async () => {
-      const result = await reorderLastOrder();
-      closeModal();
-      if (result?.success) {
-        console.log(result.results);
-        // window.location.href = 'https://stage5-velo-cx.secure-update.co.uk/gb/en/basket';
+      const reorderResult = await reorderLastOrder();
+      if (reorderResult?.success) {
+        const updateResult = await updateBasketWithSubscriptions();
+        closeModal();
+        if (updateResult?.success) {
+          console.log('Basket updated with subscriptions:', updateResult.results);
+
+          if (window.location.href.includes('stage5')) {
+            // window.location.href = 'https://stage5-velo-cx.secure-update.co.uk/gb/en/basket';
+            document.querySelector('.popup-overlay-background')?.classList.add('mini-basket-active');
+            document.querySelector('#mini-basket-popup')?.classList.add('mini-basket-active');
+          } else {
+            // window.location.href = 'https://www.velo.com/gb/en/basket';
+          }
+
+        } else {
+          console.warn('Failed to update basket with subscriptions:', updateResult?.error);
+        }
+
       } else {
-        console.warn('Some items may not have been added. Not reloading.');
+        console.warn('Failed to reorder last order:', reorderResult?.error);
+        closeModal();
       }
     });
   };
@@ -435,6 +530,11 @@ function modal() {
   hydrate();
 }
 
+/**
+ * Adds custom CSS styles to the page.
+ * @param {string} css - The CSS rules to add to the page.
+ * @returns {void}
+ */
 const addStyles = (css) => {
   console.log('[addStyles] Starting the addStyles function...');
 
