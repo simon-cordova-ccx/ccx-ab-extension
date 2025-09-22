@@ -28,6 +28,7 @@ const customLog = (...messages) => {
 
 const SELECTORS = {
     paygMultiStepContainer: '#payg-multi-step-container',
+    navListItems: 'nav[aria-label="Progress"] > ol:first-child li'
 }
 
 const STYLES = `
@@ -115,7 +116,7 @@ function waitForElements(selectors, callback) {
 
     // Create promises for each selector
     const promises = selectors.map(selector =>
-        DYO.waitForElementAsync(selector, 1, 200, 100) // 200ms interval, 100 retries = 20s
+        DYO.waitForElementAsync(selector, 5, 200, 100) // 200ms interval, 100 retries = 20s
             .then(result => {
                 customLog('[waitForElements] Found elements for ' + selector + ':', result);
                 return result;
@@ -216,7 +217,7 @@ function init() {
         document.body.classList.add('omaze-oz25-v2');
         customLog('[init] Added class omaze-oz25-v2 to body');
 
-        const elementSelectors = [SELECTORS.paygMultiStepContainer]; // reference the selectors constants
+        const elementSelectors = [SELECTORS.navListItems]; // reference the selectors constants
 
         waitForElements(elementSelectors, (results) => {
             // Create variables for each element
