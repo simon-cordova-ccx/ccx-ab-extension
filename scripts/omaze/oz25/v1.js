@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "REMOVE MONTHLY MILLIONAIRE";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "1";
@@ -352,7 +352,27 @@ function waitForElements(selectors, callback) {
         });
 }
 
+
 function monitorLastStepStatus() {
+  let reloadAttempts = 0;
+  const MAX_RELOAD_ATTEMPTS = 3;
+  let waitingForOfferButton = false;
+  let waitTimeoutId = null;
+  
+  const getWaitTime = () => {
+    if ('connection' in navigator && navigator.connection) {
+      const effectiveType = navigator.connection.effectiveType;
+      switch(effectiveType) {
+        case 'slow-2g': return 15000;
+        case '2g': return 10000;     
+        case '3g': return 5000;      
+        case '4g': return 2000;      
+        default: return 5000;        
+      }
+    }
+    return 5000;
+  };
+  
   const observer = new MutationObserver(() => {
     const steps = document.querySelectorAll(
       '#payg-multi-step-container [aria-label="Progress"] ol:first-child li'
@@ -363,24 +383,46 @@ function monitorLastStepStatus() {
 
       if (lastStep.classList.contains('active')) {
         if (document.body.classList.contains('ccx-clicked-offer-button')) {
-          customLog("✅ Last step active & offer button was clicked. Triggering checkout...");
+          if (waitTimeoutId) {
+            clearTimeout(waitTimeoutId);
+            waitTimeoutId = null;
+          }
+          waitingForOfferButton = false;
 
           const checkoutBtn = document.querySelector("[name='checkout']");
           if (checkoutBtn) {
             document.body.classList.remove("ccx-clicked-offer-button");
-            checkoutBtn.click()
-          } else {
-            console.warn("⚠️ Checkout button not found.");
+            checkoutBtn.click();
           }
-        } else {
-          customLog("❌ Last step active but offer button never clicked. Reloading...");
-          setTimeout(() => window.location.reload(), 1000);
+        } else if (!waitingForOfferButton) {
+          waitingForOfferButton = true;
+          const waitTime = getWaitTime();
+          
+          waitTimeoutId = setTimeout(() => {
+            if (!document.body.classList.contains('ccx-clicked-offer-button')) {
+              reloadAttempts++;
+              waitingForOfferButton = false;
+              waitTimeoutId = null;
+              
+              if (reloadAttempts >= MAX_RELOAD_ATTEMPTS) {
+                observer.disconnect();
+                window.location.reload();
+              } else {
+                window.location.reload();
+              }
+            } else {
+              waitingForOfferButton = false;
+              waitTimeoutId = null;
+            }
+          }, waitTime);
         }
       } else {
-        customLog("ℹ️ Last step is not active");
+        if (waitTimeoutId) {
+          clearTimeout(waitTimeoutId);
+          waitTimeoutId = null;
+        }
+        waitingForOfferButton = false;
       }
-    } else {
-      customLog("⚠️ No steps found");
     }
   });
 
@@ -391,6 +433,52 @@ function monitorLastStepStatus() {
     attributeFilter: ["class"]
   });
 }
+
+
+
+// function monitorLastStepStatus() {
+//   let reloadAttempts = 0;
+//   const MAX_RELOAD_ATTEMPTS = 3;
+//   let waitingForOfferButton = false;
+
+//   const observer = new MutationObserver(() => {
+//     const steps = document.querySelectorAll(
+//       '#payg-multi-step-container [aria-label="Progress"] ol:first-child li'
+//     );
+
+//     if (steps.length > 0) {
+//       const lastStep = steps[steps.length - 1];
+
+//       if (lastStep.classList.contains('active')) {
+//         if (document.body.classList.contains('ccx-clicked-offer-button')) {
+//           customLog("✅ Last step active & offer button was clicked. Triggering checkout...");
+
+//           const checkoutBtn = document.querySelector("[name='checkout']");
+//           if (checkoutBtn) {
+//             document.body.classList.remove("ccx-clicked-offer-button");
+//             checkoutBtn.click()
+//           } else {
+//             console.warn("⚠️ Checkout button not found.");
+//           }
+//         } else {
+//           customLog("❌ Last step active but offer button never clicked. Reloading...");
+//           setTimeout(() => window.location.reload(), 1000);
+//         }
+//       } else {
+//         customLog("ℹ️ Last step is not active");
+//       }
+//     } else {
+//       customLog("⚠️ No steps found");
+//     }
+//   });
+
+//   observer.observe(document.body, {
+//     childList: true,
+//     subtree: true,
+//     attributes: true,
+//     attributeFilter: ["class"]
+//   });
+// }
 
 function waitForOfferButton() {
   const observer = new MutationObserver(() => {
