@@ -515,22 +515,76 @@ entries-tab-nav[data-tab-container] {
 const customLog = (...messages) => {
     if (!LOG_ENABLED) return;
 
-    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
+    const style = `
+        background: linear-gradient(90deg, #6a6971, #2a1f60);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+    `;
+
     const parts = [];
     const values = [];
 
     messages.forEach(msg => {
         if (msg instanceof Element) {
+            // Single DOM element
             parts.push("%o");
             values.push(msg);
+
+        } else if (Array.isArray(msg)) {
+            // Handle arrays
+            msg.forEach(item => {
+                if (item instanceof Element) {
+                    parts.push("%o");
+                    values.push(item);
+                } else if (item && typeof item === "object" && "html" in item) {
+                    // Object with HTML string
+                    const wrapper = document.createElement("div");
+                    wrapper.innerHTML = item.html.trim();
+                    const el = wrapper.firstElementChild;
+
+                    parts.push("%o");
+                    values.push(el);
+
+                    // Log other props (e.g., entriesAmount)
+                    const { html, ...rest } = item;
+                    if (Object.keys(rest).length > 0) {
+                        parts.push("%O");
+                        values.push(rest);
+                    }
+                } else {
+                    parts.push("%O");
+                    values.push(item);
+                }
+            });
+
+        } else if (msg && typeof msg === "object" && "html" in msg) {
+            // Single object with HTML string
+            const wrapper = document.createElement("div");
+            wrapper.innerHTML = msg.html.trim();
+            const el = wrapper.firstElementChild;
+
+            parts.push("%o");
+            values.push(el);
+
+            const { html, ...rest } = msg;
+            if (Object.keys(rest).length > 0) {
+                parts.push("%O");
+                values.push(rest);
+            }
+
         } else {
-            // Wrap each text message with %c to apply the style
-            parts.push("%c" + String(msg).toUpperCase());
-            values.push(style);
+            // Normal text/objects
+            if (typeof msg === "string") {
+                parts.push("%c" + msg.toUpperCase());
+                values.push(style);
+            } else {
+                parts.push("%O");
+                values.push(msg);
+            }
         }
     });
 
-    // Join parts with spaces so the log is more readable
     console.log(parts.join(" "), ...values);
 };
 
@@ -694,8 +748,6 @@ function createDesktopCard(planData, type = 'subscription') {
 function createUpsellCard(planIndex, planPrice, entriesAmount) {
     customLog('[createUpsellCard] Creating upsell card...');
 
-    console.log(planIndex, planPrice, entriesAmount);
-
     // Root card
     const card = document.createElement('div');
     card.className = 'ccx-card-upsell ccx-card-upsell--root flex flex-col';
@@ -780,32 +832,15 @@ function createUpsellCard(planIndex, planPrice, entriesAmount) {
 function bindUpsellElements(upsellCard, matchingControlButton, skipButton) {
     customLog('[bindUpsellElements] Binding upsell elements...');
 
-    console.log('mathcingControlButton:', matchingControlButton);
-
-    const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
-
-     // Find the matching control button
-      const matchingControlSubscriptionButton = Array.from(controlSubscriptionButtons).find(button => {
-        const controlPrice = extractPriceFromControlButton(button);
-        // Log comparison for each control button
-        customLog('Comparing control button price:', controlPrice, 'with price:', price);
-        return controlPrice === price;
-      });
+    customLog('matchingControlButton:', matchingControlButton);
 
     const upsellButton = upsellCard.querySelector('.ccx-card-upsell__button');
     const upsellNoThanks = upsellCard.querySelector('.ccx-card-upsell__no_thanks');
 
-    if (matchingControlButton) {
-        const entriesAttr = matchingControlPAYGButton.getAttribute('data-entries-amount'); // "50 Lose"
-        const entriesNumber = parseInt(entriesAttr, 10); // 50
-
-        console.log(entriesNumber);
-    }
-
     if (upsellButton) {
         upsellButton.addEventListener('click', () => {
             customLog('[bindUpsellElements] Upsell button clicked');
-            // matchingControlButton.click();
+            matchingControlButton.click();
         });
     }
 
@@ -825,7 +860,7 @@ function bindUpsellElements(upsellCard, matchingControlButton, skipButton) {
     }
 }
 
-function setupPaygButtonClicks(plansData, controlPaygButtons) {
+function setupPaygButtonClicks(plansData, controlPAYGButtons, controlSubscriptionButtons) {
     // Select all new PAYG buttons (mobile and desktop)
     const newPaygButtons = document.querySelectorAll('.ccx-mobile-card--payg .ccx-mobile-card__button, .ccx-desktop-card--payg .ccx-desktop-card__button');
 
@@ -834,6 +869,10 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
 
     // Log the number of control PAYG buttons and their data-entries-amount values
     customLog('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
+        html: btn.outerHTML,
+        entriesAmount: btn.getAttribute('data-entries-amount')
+    })));
+    console.log('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
         html: btn.outerHTML,
         entriesAmount: btn.getAttribute('data-entries-amount')
     })));
@@ -873,7 +912,7 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
             if (matchingControlButton) {
                 customLog('Found matching control button:', matchingControlButton.outerHTML);
 
-                console.log('Plan index:', planIndex);
+                customLog('Plan index:', planIndex);
 
                 // if (planIndex != 0) { // if it is not the €10 PAYG card
                 //     matchingControlButton.click();
@@ -932,11 +971,11 @@ function setupPaygButtonClicks(plansData, controlPaygButtons) {
     });
 }
 
-function waitForElements(selectors, numberOfElementsToWaitFor, callback) {
+function waitForElements(configs, callback) {
     customLog('[waitForElements] Starting to wait for elements...');
 
-    if (!selectors || !Array.isArray(selectors) || selectors.length === 0) {
-        customLog('[waitForElements] No selectors provided.');
+    if (!configs || !Array.isArray(configs) || configs.length === 0) {
+        customLog('[waitForElements] No configs provided.');
         return;
     }
 
@@ -945,14 +984,19 @@ function waitForElements(selectors, numberOfElementsToWaitFor, callback) {
         return;
     }
 
-    // Create promises for each selector
-    const promises = selectors.map(selector =>
-        DYO.waitForElementAsync(selector, numberOfElementsToWaitFor, 100, 150)
-    );
+    // Create promises for each config
+    const promises = configs.map(cfg => {
+        const { selector, count } = cfg;
+        return DYO.waitForElementAsync(selector, count, 100, 150)
+            .then(elements => {
+                customLog(`[waitForElements] Found ${elements.length} for ${selector}`);
+                return { selector, elements };
+            });
+    });
 
     Promise.all(promises)
         .then(results => {
-            customLog('[waitForElements] All elements found:', results[0]);
+            // customLog('[waitForElements] All elements found:', results);
             if (typeof callback === 'function') callback(results);
         })
         .catch(error => {
@@ -969,48 +1013,31 @@ function init() {
         customLog('[init] Added class ccx-omaze-de6-v1 to body');
 
         waitForElements(
-            ['#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button'], 6,
+          [
+              { selector: '#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button', count: 6 },
+              { selector: '#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div', count: 1 },
+              { selector: '#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button', count: 1 },
+          ],
             function (results) {
-                // console.log('[waitForElements] Elements found', results);
+                console.log('[waitForElements] Elements found', results);
 
-                const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"] .add-to-cart-button');
-
-                const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
+                const controlPAYGButtons = results[0].elements;
+                const controlPAYGContainer = results[1].elements[0];
+                const controlSubscriptionButtons = results[2].elements;
 
                 // Add custom styles
                 addStyles(styles);
-
-                const controlMobileContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div');
-                const controlDesktopContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div');
-
-                if (!controlMobileContainer || !controlDesktopContainer) return;
-
-                if (controlMobileContainer) {
+                
+                if (controlPAYGContainer) {
                     plansData.payAsYouGo.forEach(planData => {
                         const card = createMobileCard(planData, 'payg');
-                        controlMobileContainer.appendChild(card);
+                        controlPAYGContainer.appendChild(card);
                     });
-                    //   plansData.subscriptions.forEach(planData => {
-                    //     const card = createMobileCard(planData);
-                    //     controlMobileContainer.appendChild(card);
-                    //   });
                 }
 
-                if (controlDesktopContainer) {
-                  plansData.payAsYouGo.forEach(planData => {
-                    const card = createDesktopCard(planData, 'payg');
-                    controlDesktopContainer.appendChild(card);
-                  });
+                return;
 
-                //   plansData.subscriptions.forEach(planData => {
-                //     const card = createDesktopCard(planData);
-                //     controlDesktopContainer.appendChild(card);
-                //   });
-                }
-
-                setupPaygButtonClicks(plansData, controlPayAsYouGoButtons);
-
-                //   setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons);
+                setupPaygButtonClicks(plansData, controlPAYGButtons, controlSubscriptionButtons);
 
             }
         );
