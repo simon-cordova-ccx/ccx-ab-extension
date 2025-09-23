@@ -35,7 +35,6 @@ const STYLES = `
     flex-direction: column !important;
     flex-shrink: 0 !important;
     max-width: 340px !important;
-    width: 260px !important;
 }
 
 .OZ24-entries-page-variation-2 .card-redesign.rounded-3xl {
@@ -383,6 +382,13 @@ const STYLES = `
 @media (min-width: 1101px) {
     .OZ24-entries-page-variation-2 .subscription-cards-container {
         justify-content: center !important
+    }
+}
+
+@media (max-width: 768px) {
+    .OZ24-entries-page-variation-2 [data-test="card-variant-subscription"].card-redesign {
+        max-width: 340px !important;
+        width: 260px !important;
     }
 }
 `

@@ -48,7 +48,6 @@ const STYLES = `
     min-height: auto !important;
     flex-shrink: 0 !important;
     max-width: 340px !important;
-    width: 260px !important;
 }
 
 .OZ24-entries-page-variation-1 .card-redesign.rounded-3xl {
@@ -380,6 +379,13 @@ const STYLES = `
 
 .OZ24-entries-page-variation-1 .tab-pane div[class*="enter-subs-offer.png"] {
     display: none !important
+}
+
+@media (max-width: 768px) {
+    .OZ24-entries-page-variation-1 [data-test="card-variant-subscription"].card-redesign {
+        max-width: 340px !important;
+        width: 260px !important;
+    }
 }
 
 `
