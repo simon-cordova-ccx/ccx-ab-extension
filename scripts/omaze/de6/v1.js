@@ -62,6 +62,13 @@ entries-tab-nav[data-tab-container] {
     display: none !important;
 }
 
+#enter-now-material-tab-buttons-design [data-test="mobile-card-variant-payg"] .text-sm {
+    display: none !important;
+}
+#enter-now-material-tab-buttons-design [id*=nav-latest] > div:first-child > div:nth-child(4) {
+    justify-content: center !important;
+}
+
 
 
 
@@ -96,13 +103,6 @@ entries-tab-nav[data-tab-container] {
     line-height: 18px;
     vertical-align: middle;
     height: 44px;
-}
-
-.ccx-card-upsell__headline strong {
-    font-family: Gellix;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 100%;
 }
 
 .ccx-card-upsell__pill {
@@ -195,7 +195,7 @@ entries-tab-nav[data-tab-container] {
     line-height: 100%;
     text-align: center;
     vertical-align: middle;
-    text-decoration: underline;
+    text-decoration: underline !important;
     text-decoration-style: solid;
     text-decoration-thickness: 0%;
     text-decoration-skip-ink: auto;
@@ -398,7 +398,7 @@ function createUpsellCard(pageType, matchingSubscription) {
     const headline = document.createElement('p');
     headline.className = 'ccx-card-upsell__headline';
     headline.innerHTML =
-        'Aktualisieren <strong>Du Ihre</strong> Bestellung – und <strong>keine Ziehung entgeht Ihnen</strong>';
+        'Wechsle zum Abo und dir entgeht keine Ziehung mehr';
     middle.appendChild(headline);
 
     // Info pills
@@ -441,12 +441,12 @@ function createUpsellCard(pageType, matchingSubscription) {
 
     const button = document.createElement('button');
     button.className = 'ccx-card-upsell__button';
-    button.textContent = 'Bestellung aufwerten';
+    button.textContent = 'Abo aktivieren';
 
     const link = document.createElement('a');
     link.className = 'ccx-card-upsell__no_thanks';
 
-    link.textContent = 'Nein danke';
+    link.textContent = 'Nein, danke';
     if (pageType === 'cart') {
         link.addEventListener('click', (function (event) {
             event.preventDefault();
