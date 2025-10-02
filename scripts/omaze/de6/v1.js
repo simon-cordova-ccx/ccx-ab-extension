@@ -97,6 +97,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__headline {
+    letter-spacing: 0.3px;
     font-family: Gellix;
     font-weight: 400;
     font-size: 18px;
@@ -106,6 +107,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__pill {
+    letter-spacing: 0.3px;
     background: #F4F3E0;
     margin-bottom: 0.5rem;
     width: 238px;
@@ -129,6 +131,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__price {
+    letter-spacing: 0.5px;
     width: 124px;
     height: 38px;
     font-family: Gellix;
@@ -146,6 +149,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__entries {
+    letter-spacing: 0.3px;
     font-family: Gellix;
     font-weight: 700;
     font-size: 18px;
@@ -160,6 +164,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__button {
+    letter-spacing: 0.3px;
     width: 316px;
     height: 56px;
     opacity: 1;
@@ -186,6 +191,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__no_thanks {
+    letter-spacing: 0.3px;
     width: 316px;
     height: 22px;
     opacity: 1;

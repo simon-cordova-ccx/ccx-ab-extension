@@ -22,6 +22,7 @@ const plansData = {
 };
 
 const styles = `
+
 #enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] {
   background: #F5F5F5;
 }
@@ -104,6 +105,7 @@ entries-tab-nav[data-tab-container] {
 
 .ccx-mobile-card__right {
   flex: 1;
+  text-align: left;
 }
 
 .ccx-mobile-card__price-container {
@@ -164,6 +166,9 @@ entries-tab-nav[data-tab-container] {
   margin-top: 14px;
 }
 
+#enter-now-material-tab-buttons-design [id*=nav-latest] > div:first-child > div:nth-child(4) {
+    justify-content: center !important;
+}
 
 
 
@@ -192,6 +197,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__headline {
+    letter-spacing: 0.3px;
     font-family: Gellix;
     font-weight: 400;
     font-size: 18px;
@@ -200,14 +206,8 @@ entries-tab-nav[data-tab-container] {
     height: 44px;
 }
 
-.ccx-card-upsell__headline strong {
-    font-family: Gellix;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 100%;
-}
-
 .ccx-card-upsell__pill {
+    letter-spacing: 0.3px;
     background: #F4F3E0;
     margin-bottom: 0.5rem;
     width: 238px;
@@ -231,6 +231,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__price {
+    letter-spacing: 0.5px;
     width: 124px;
     height: 38px;
     font-family: Gellix;
@@ -248,6 +249,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__entries {
+    letter-spacing: 0.3px;
     font-family: Gellix;
     font-weight: 700;
     font-size: 18px;
@@ -262,6 +264,7 @@ entries-tab-nav[data-tab-container] {
 }
 
 .ccx-card-upsell__button {
+    letter-spacing: 0.3px;
     width: 316px;
     height: 56px;
     opacity: 1;
@@ -282,12 +285,13 @@ entries-tab-nav[data-tab-container] {
     margin-bottom: 1rem;
 }
 
-.ccx-card-upsell__button:hover {
+.ccx-card-upsell__button:active {
     border-color: #ffdc03;
     color: black;
 }
 
 .ccx-card-upsell__no_thanks {
+    letter-spacing: 0.3px;
     width: 316px;
     height: 22px;
     opacity: 1;
@@ -297,7 +301,7 @@ entries-tab-nav[data-tab-container] {
     line-height: 100%;
     text-align: center;
     vertical-align: middle;
-    text-decoration: underline;
+    text-decoration: underline !important;
     text-decoration-style: solid;
     text-decoration-thickness: 0%;
     text-decoration-skip-ink: auto;
@@ -305,6 +309,11 @@ entries-tab-nav[data-tab-container] {
     margin: 0 auto;
     margin-bottom: 1.5rem;
 }
+
+.ccx-card-upsell__no_thanks:active, .ccx-card-upsell__no_thanks:hover {
+    color: white !important;
+}
+
 
 .ccx-skip {
     width: 348px;
@@ -523,7 +532,7 @@ function createMobileCard(planData, type = 'subscription') {
   return card;
 }
 
-function createUpsellCard(planPrice, entriesAmount) {
+function createUpsellCard(planIndex, planPrice, entriesAmount) {
   customLog('[createUpsellCard] Creating upsell card...');
 
   // Root card
@@ -546,7 +555,7 @@ function createUpsellCard(planPrice, entriesAmount) {
   const headline = document.createElement('p');
   headline.className = 'ccx-card-upsell__headline';
   headline.innerHTML =
-    'Aktualisieren <strong>Du Ihre</strong> Bestellung – und <strong>keine Ziehung entgeht Ihnen</strong>';
+    'Wechsle zum Abo und dir entgeht keine Ziehung mehr';
   middle.appendChild(headline);
 
   // Info pills
@@ -594,7 +603,7 @@ function createUpsellCard(planPrice, entriesAmount) {
   const link = document.createElement('a');
   link.className = 'ccx-card-upsell__no_thanks';
   link.href = '#';
-  link.textContent = 'Nein danke';
+  link.textContent = 'Nein, danke';
 
   bottom.appendChild(button);
   bottom.appendChild(link);
