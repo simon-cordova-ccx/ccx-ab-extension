@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZDE-6 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 2";
@@ -210,7 +210,7 @@ entries-tab-nav[data-tab-container] {
     letter-spacing: 0.3px;
     background: #F4F3E0;
     margin-bottom: 0.5rem;
-    width: 238px;
+    width: fit-content;
     height: 30px;
     opacity: 1;
     border-radius: 99px;
@@ -448,14 +448,14 @@ const addStyles = (css) => {
   }
 
   // Check if the style tag already exists
-  if (document.querySelector('.ccx-styles-de6-v1')) {
+  if (document.querySelector('.ccx-styles-de6-v2')) {
     customLog('[addStyles] Custom styles already exist.');
     return;
   }
 
   // Create a new <style> element
   const style = document.createElement('style');
-  style.classList.add('ccx-styles-de6-v1');
+  style.classList.add('ccx-styles-de6-v2');
   style.appendChild(document.createTextNode(css));
 
   // Append the style tag to the document head
@@ -627,6 +627,7 @@ function bindUpsellElements(upsellCard, matchingControlButton, skipButton) {
   if (upsellButton) {
     upsellButton.addEventListener('click', () => {
       customLog('[bindUpsellElements] Upsell button clicked');
+      console.log(matchingControlButton);
       matchingControlButton.click();
     });
   }
@@ -795,13 +796,14 @@ function waitForElements(configs, callback) {
     });
 }
 
+
 function init() {
   try {
     customLog(TEST_NAME + ' | ' + VARIATION);
     customLog('[init] Current URL: ' + CURRENT_URL);
 
-    document.body.classList.add('ccx-omaze-de6-v1');
-    customLog('[init] Added class ccx-omaze-de6-v1 to body');
+    document.body.classList.add('ccx-omaze-de6-v2');
+    customLog('[init] Added class ccx-omaze-de6-v2 to body');
 
     waitForElements(
       [

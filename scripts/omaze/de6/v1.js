@@ -1,6 +1,4 @@
-// [data-test="mobile-card-variant-payg"] ::first-child
-
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZDE-6 | Remove discount";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 1";
@@ -110,7 +108,7 @@ entries-tab-nav[data-tab-container] {
     letter-spacing: 0.3px;
     background: #F4F3E0;
     margin-bottom: 0.5rem;
-    width: 238px;
+    width: fit-content;
     height: 30px;
     opacity: 1;
     border-radius: 99px;
@@ -475,18 +473,142 @@ function removeEmojis() {
     const mobileCards = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"]');
 
     mobileCards.forEach(card => {
-        //  if (card.firstChild.nodeType === Node.TEXT_NODE && card.firstChild.textContent.includes('🎉')) {
-        // card.firstChild.remove();
-        // console.log(card);
-
         const emojiContainer = card.querySelector('.flex > .mx-auto');
-        console.log(emojiContainer);
-
-
         if (emojiContainer.firstChild.nodeType === Node.TEXT_NODE && emojiContainer.firstChild.textContent.includes('🎉')) {
             emojiContainer.firstChild.remove();
         }
     });
+}
+
+function updateControlComponents(matchingSubscription) {
+
+    // Control card entries
+    const CONTROL_CARD_ENTRIES_COUNT = document.querySelector('#cart-item-control > span');
+    if (!CONTROL_CARD_ENTRIES_COUNT) return;
+
+    // find the plansData.payAsYouGo entry that matches the subscription with the same price
+    const matchingPayAsYouGoEntry = plansData.payAsYouGo.find(entry => entry.price === matchingSubscription.price);
+
+    // update the entries count
+    CONTROL_CARD_ENTRIES_COUNT.textContent = matchingPayAsYouGoEntry.entriesAmount + ' Einträge';
+    CONTROL_CARD_ENTRIES_COUNT.style.fontWeight = '500';
+    CONTROL_CARD_ENTRIES_COUNT.style.letterSpacing = '0.5px';
+
+    // Control card title replace '&' with '+'
+    const CONTROL_CARD_ENTRIES_TITLE = document.querySelector('#cart-item-control > h5');
+    const text = CONTROL_CARD_ENTRIES_TITLE.textContent;
+    const updatedText = text.replace(/&/g, '+');
+    CONTROL_CARD_ENTRIES_TITLE.innerHTML = updatedText;
+
+
+    // append div element to .cart-table__details-column
+    const CONTROL_CARD_TABLE_DETAILS_COLUMN = document.querySelector('.cart-table__details-col');
+    if (!CONTROL_CARD_TABLE_DETAILS_COLUMN) return;
+
+    const CCX_CARD_TABLE_CLOSE_CONTAINER = document.createElement('p');
+    CCX_CARD_TABLE_CLOSE_CONTAINER.textContent = 'Entfernen';
+    CCX_CARD_TABLE_CLOSE_CONTAINER.classList.add('ccx-card-table__close-container');
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.fontFamily = "Gellix";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.fontWeight = "700";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.fontSize = "12px";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.lineHeight = "150%";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.letterSpacing = "1.5%";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.cursor = "pointer";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.marginBottom = "0";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.borderBottom = "1px solid #3B5C6B";
+    CCX_CARD_TABLE_CLOSE_CONTAINER.style.width = "max-content";
+
+    CONTROL_CARD_TABLE_DETAILS_COLUMN.insertAdjacentElement('beforeend', CCX_CARD_TABLE_CLOSE_CONTAINER);
+    
+    const CONTROL_CLOSE_BUTTON = document.querySelector('.cart-table__details-col > div:first-child a');
+    CONTROL_CLOSE_BUTTON.setAttribute("style", "display: none !important;");
+
+    CCX_CARD_TABLE_CLOSE_CONTAINER.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (CONTROL_CLOSE_BUTTON) {
+            CONTROL_CLOSE_BUTTON.click();
+        }
+    })
+
+}
+
+function saveControlSubscriptionURLs() {
+  const results = [];
+
+  const subscriptionCards = document.querySelectorAll(
+    '#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=subscription-tab-pane] [data-test="card-variant-subscription"]'
+  );
+
+  if (subscriptionCards.length === 0) return;
+
+  subscriptionCards.forEach((card) => {
+    const priceElement = card.querySelector('[data-test=price]');
+    const addToCartEl = card.querySelector('[id*=add-to-cart-href]');
+
+    const price = priceElement?.textContent.trim() || null;
+    const onclickAttr = addToCartEl?.getAttribute('onclick') || '';
+
+    const match = onclickAttr.match(/handleClick\(.*?,\s*'[^']*',\s*'([^']*)'\)/);
+    const cartUrl = match ? match[1] : null;
+
+    results.push({ price, cartUrl });
+  });
+
+  // ✅ Save results to sessionStorage
+  sessionStorage.setItem('ccx-subscriptionCartURLs', JSON.stringify(results));
+
+  return results;
+}
+
+function attachUpsellButtonListener() {
+  // 1️⃣ Get the saved subscription URLs from sessionStorage
+  const saved = JSON.parse(sessionStorage.getItem('ccx-subscriptionCartURLs'));
+  if (!saved || !Array.isArray(saved)) {
+    console.warn('No saved subscription URLs found in sessionStorage.');
+    return;
+  }
+
+  // 2️⃣ Get the current cart price from the DOM
+  const CONTROL_CARD_PRICE_ELEMENT = document.querySelector('.cart-table [data-promo-price]');
+  if (!CONTROL_CARD_PRICE_ELEMENT) {
+    console.warn('No card price element found on this page.');
+    return;
+  }
+
+  // Clean and normalize price: replace commas, remove symbols, then parse as float
+  const rawPrice = CONTROL_CARD_PRICE_ELEMENT.textContent.trim();
+  const numericCartPrice = parseFloat(rawPrice.replace(',', '.').replace(/[^\d.]/g, ''));
+
+  if (isNaN(numericCartPrice)) {
+    console.warn('Could not parse cart price:', rawPrice);
+    return;
+  }
+
+  // 3️⃣ Find the matching saved subscription by comparing numeric values
+  const matched = saved.find(item => {
+    const normalizedSavedPrice = parseFloat(item.price.replace(',', '.').replace(/[^\d.]/g, ''));
+    return normalizedSavedPrice === numericCartPrice;
+  });
+
+  if (!matched) {
+    console.warn('No matching subscription URL found for price: ' + numericCartPrice);
+    return;
+  }
+
+  // 4️⃣ Find the upsell button
+  const upsellButton = document.querySelector('.ccx-card-upsell__button');
+  if (!upsellButton) {
+    console.warn('Upsell button not found.');
+    return;
+  }
+
+  // 5️⃣ Attach event listener
+  upsellButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = matched.cartUrl;
+  });
+
 }
 
 function init() {
@@ -510,8 +632,6 @@ function init() {
                     { selector: '#begin-checkout [data-promo-price]', count: 1 },
                 ],
                 function (results) {
-                    console.log('[waitForElements] Elements found', results);
-
                     const CONTROL_CART_PAGE_DETAILS_CONTAINER = results[0].elements;
                     // customLog(CONTROL_CART_PAGE_DETAILS_CONTAINER);
 
@@ -522,18 +642,18 @@ function init() {
                     const match = rawText.match(/\d+/); // grabs first number sequence
                     const promoValue = match ? parseInt(match[0], 10) : null;
 
-                    customLog('Extracted promo value:', promoValue);
-
                     // Find matching subscription in plansData
                     const matchingSubscription = plansData.subscriptions.find(
                         plan => parseInt(plan.price, 10) === promoValue
                     );
 
-                    customLog('Matching subscription:', matchingSubscription);
-
                     const upsellCard = createUpsellCard('cart', matchingSubscription);
                     // insert upsell card after the cart page details container
                     CONTROL_CART_PAGE_DETAILS_CONTAINER[0].parentNode.insertBefore(upsellCard, CONTROL_CART_PAGE_DETAILS_CONTAINER[0].nextSibling);
+
+                    updateControlComponents(matchingSubscription);
+
+                    attachUpsellButtonListener();
 
                     // Add custom styles
                     addStyles(styles);
@@ -551,21 +671,16 @@ function init() {
                     { selector: '#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button', count: 3 },
                 ],
                 function (results) {
-                    console.log('[waitForElements] Elements found', results);
-
-                    const controlPAYGButtons = results[0].elements;
-                    const controlPAYGContainer = results[1].elements[0];
-                    const controlSUBSButtons = results[2].elements;
-
                     // Add custom styles
                     addStyles(styles);
 
                     removeEmojis();
+
+                    saveControlSubscriptionURLs();
                 }
             );
         }
 
-        awaitElementsDependingOnCurrentPage();
     } catch (error) {
         customLog(error.message);
     }
