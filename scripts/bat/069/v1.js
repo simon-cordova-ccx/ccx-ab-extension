@@ -1,3 +1,11 @@
+console.log('BAT 069');
+// adobeQA=069
+
+// IMPORTANT
+// STAGING SITE TO USE IS: https://stage5-velo-cx.secure-update.co.uk/gb/en
+// The test should not target users that have already subscribed to subscriptions, or have more than 30 cans in the last order.
+// The test should target only users that have at least 5 subscription eligible cans in the last order.
+
 const STYLES = `
 .promo-modal-overlay {
   position: fixed;
@@ -181,6 +189,16 @@ function getFirstName() {
  * @returns {Object} Object containing the total cans, tier, full retail total, subscriber total, savings, and message
  */
 function calculateSubscriptionSavings(orderData) {
+  // 1. The last order must consider the total sum amount of mini and slim cans that are available for subscription (is_subscription_product: "1").
+  // 2. This total amount will dictate which tier we are in: https://stage5-velo-cx.secure-update.co.uk/gb/en/subscriptions
+  // 3. We then need to get the amount of mini cans, and multiply it by its saving multiplier.
+  // 4. We then need to get the amount of slim cans, and multiply it by its saving multiplier.
+  // Example:
+  // Let's say there are 30 cans (10 slim and 20 mini) in total eligible for subscription (this qualifies us for the select tier, for example).
+  // 10 slim cans * 2.60 (select tier) = 26.00
+  // 20 mini cans * 1.50 (select tier) = 30.00
+  // Total savings: 26.00 + 30.00 = 56.00 <-- This is what the modal should show.
+
   const PRICING = {
     Mini: {
       Basic: { price: 4.0, save: 1.0 },
@@ -197,20 +215,28 @@ function calculateSubscriptionSavings(orderData) {
   const productCounts = {};
   let totalQty = 0;
 
+  console.log("🔍 Starting subscription savings calculation...");
+
   for (const p of orderData.products) {
     if (p.title.toLowerCase().includes('collection')) {
+      console.log(`Skipping collection product: ${p.title}`);
       continue;
     }
 
     const type = p.colour_title;
     if (!PRICING[type]) {
+      console.log(`❌ No pricing available for type: ${type}`);
       continue;
     }
 
     if (!productCounts[type]) productCounts[type] = [];
     productCounts[type].push(p);
     totalQty += p.quantity;
+
+    console.log(`Added product: ${p.title}, Qty: ${p.quantity}, Type: ${type}`);
   }
+
+  console.log("✅ Total cans ordered:", totalQty);
 
   let tier = '';
   let isEligible = totalQty >= 5;
@@ -220,12 +246,16 @@ function calculateSubscriptionSavings(orderData) {
   else if (totalQty >= 15 && totalQty <= 30) tier = 'Select';
   else tier = 'Basic';
 
+  console.log(`Eligibility: ${isEligible}, Tier: ${tier}`);
+
   let fullRetailTotal = 0;
   let subscriberTotal = 0;
 
   for (const [type, products] of Object.entries(productCounts)) {
     const typeQty = products.reduce((sum, p) => sum + p.quantity, 0);
     const simulatedQty = isEligible ? typeQty : Math.round((typeQty / totalQty) * 5);
+
+    console.log(`📦 Type: ${type}, Qty: ${typeQty}, SimulatedQty: ${simulatedQty}`);
 
     for (const product of products) {
       const quantity = isEligible ? product.quantity : simulatedQty;
@@ -235,12 +265,20 @@ function calculateSubscriptionSavings(orderData) {
       const fullCost = quantity * fullPrice;
       const subCost = quantity * subPrice;
 
+      console.log(
+        `   ➡️ ${product.title}: Qty=${quantity}, FullPrice=${fullPrice}, SubPrice=${subPrice}, FullCost=${fullCost}, SubCost=${subCost}`
+      );
+
       fullRetailTotal += fullCost;
       subscriberTotal += subCost;
     }
   }
 
   const savings = fullRetailTotal - subscriberTotal;
+
+  console.log("💰 Full Retail Total:", fullRetailTotal.toFixed(2));
+  console.log("💰 Subscriber Total:", subscriberTotal.toFixed(2));
+  console.log("💰 Savings:", savings.toFixed(2));
 
   return {
     totalCans: totalQty,
@@ -254,21 +292,17 @@ function calculateSubscriptionSavings(orderData) {
   };
 }
 
-/**
- * Retrieves the last order from sessionStorage and returns the estimated savings
- * amount that would have been achieved if the order was made as a subscription.
- *
- * @return {Object|null} The estimated savings amount, or null if the last order
- *   is not available.
- */
 function savingAmount() {
   const lastOrderStr = sessionStorage.getItem('ccx_lastOrder');
   if (!lastOrderStr) {
+    console.log("⚠️ No last order found in sessionStorage");
     return null;
   }
   const orderData = JSON.parse(lastOrderStr);
+  console.log("📝 Last order data loaded:", orderData);
   return calculateSubscriptionSavings(orderData);
 }
+
 
 /**
  * Reorders the last order that was placed by the user.
@@ -313,7 +347,7 @@ async function reorderLastOrder() {
 
     if (response.ok) {
       const responseData = await response.json();
-      console.log('Successfully reordered last order.', responseData);
+      console.log('Successfully reordered last order and added items to the cart.', responseData);
       return {
         success: true,
         results: responseData,
@@ -508,12 +542,12 @@ function modal() {
         if (updateResult?.success) {
           console.log('Basket updated with subscriptions:', updateResult.results);
 
-          if (window.location.href.includes('stage5')) {
-            // window.location.href = 'https://stage5-velo-cx.secure-update.co.uk/gb/en/basket';
-            document.querySelector('.popup-overlay-background')?.classList.add('mini-basket-active');
-            document.querySelector('#mini-basket-popup')?.classList.add('mini-basket-active');
+          if (window.location.href.includes('stage6')) {
+            window.location.href = 'https://stage6-velo-cx.secure-update.co.uk/gb/en/basket';
+            // document.querySelector('.popup-overlay-background')?.classList.add('mini-basket-active');
+            // document.querySelector('#mini-basket-popup')?.classList.add('mini-basket-active');
           } else {
-            // window.location.href = 'https://www.velo.com/gb/en/basket';
+            window.location.href = 'https://www.velo.com/gb/en/basket';
           }
 
         } else {
@@ -570,7 +604,7 @@ function startExperiment() {
     body.classList.add(className || expVariantName);
   };
 
-  addStyles(STYLES);
+  // addStyles(STYLES);
 
   /**
    * Initializes all components of the experiment.
