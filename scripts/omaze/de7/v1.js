@@ -38,7 +38,8 @@ const styles = `
         display: none !important;
     }
     #begin-checkout [issubscriptionpurchase] > div:nth-child(2) {
-        padding-top: 0 !important;
+        padding-top: 1rem !important;
+        padding-bottom: 0 !important;
     }
     .ccx-modal.ccx-modal--overlay {
         background: #081F28B2;
@@ -47,7 +48,6 @@ const styles = `
     .ccx-modal__content {
         box-shadow: 0px 12px 40px 0px #00000066;
         border: 1px solid #E6E9EB;
-        max-width: 560px;
         background: white;
         border-radius: 12px;
         border-width: 1px;
@@ -66,7 +66,7 @@ const styles = `
         color: #081F28;
         font-weight: 700;
         font-size: 18px;
-        line-height: 21px;
+        line-height: 1.2;
         letter-spacing: 0;
         text-align: center;
         width: 354px;
@@ -212,6 +212,12 @@ const styles = `
         color: #6B7280;
     }
 
+    @media screen and (min-width: 768px) {
+        .ccx-button-unified {
+            font-size: 16px;
+        }
+    }
+
     @media screen and (min-width: 991px) {
         .ccx-modal__content {
             max-width: 560px;
@@ -221,6 +227,9 @@ const styles = `
         .ccx-modal__button-container {
             display: flex;
             gap: 0.5rem;
+        }
+        .ccx-button-unified {
+            font-size: 18px;
         }
     }
 
@@ -368,7 +377,6 @@ const addUnifiedLoginButton = (CONTROL_ELEMENT_LOGIN) => {
         'ccx-button-unified',
         'bg-[#FFDD00]',
         'font-bold',
-        'text-[18px]',
         'text-[#081F28]',
         'rounded-full',
         'px-8',
@@ -515,10 +523,7 @@ const createLoginModal = () => {
 
     buttonInfo.forEach((button, i) => {
         const btn = document.createElement('button');
-        btn.classList.add(
-            'ccx-modal__button',
-            `ccx-modal__button--icon-${i + 1}`,
-        );
+        btn.classList.add('ccx-modal__button', 'ccx-modal__button--icon-' + (i + 1));
 
         const iconContainer = document.createElement('span');
         iconContainer.classList.add('ccx-modal__icon');
@@ -568,6 +573,7 @@ const attachModalCloseListener = () => {
 
         if (e.target.classList.contains('ccx-modal--overlay')) {
             modalOverlay.classList.add('ccx-hide');
+            document.body.classList.remove('body-no-scroll');
         }
     })
 
