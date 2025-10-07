@@ -1,4 +1,4 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-6 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 2";
@@ -788,6 +788,10 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
           upsellCard.insertAdjacentElement('afterend', skipContainer);
 
           bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYGButton, skipButton);
+
+          const upsellCardTop = upsellCard.getBoundingClientRect().top + window.pageYOffset;
+          const offsetTop = upsellCardTop - 100;
+          window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
           customLog('[createUpsellCard] Inserted upsell card and skip container');
         } else {
