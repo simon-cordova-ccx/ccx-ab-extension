@@ -647,16 +647,22 @@ function init() {
                         plan => parseInt(plan.price, 10) === promoValue
                     );
 
-                    const upsellCard = createUpsellCard('cart', matchingSubscription);
-                    // insert upsell card after the cart page details container
-                    CONTROL_CART_PAGE_DETAILS_CONTAINER[0].parentNode.insertBefore(upsellCard, CONTROL_CART_PAGE_DETAILS_CONTAINER[0].nextSibling);
+                    const abonnementsElement = document.querySelector('#cart-item-updated > h5');
+                    const containsAbonnements = abonnementsElement && abonnementsElement.textContent.includes('Abonnements');
 
-                    updateControlComponents(matchingSubscription);
+                    if (!containsAbonnements) {
+                        const upsellCard = createUpsellCard('cart', matchingSubscription);
+                        // insert upsell card after the cart page details container
+                        CONTROL_CART_PAGE_DETAILS_CONTAINER[0].parentNode.insertBefore(upsellCard, CONTROL_CART_PAGE_DETAILS_CONTAINER[0].nextSibling);
+    
+                        updateControlComponents(matchingSubscription);
+    
+                        attachUpsellButtonListener();
+    
+                        // Add custom styles
+                        addStyles(styles);                        
+                    }
 
-                    attachUpsellButtonListener();
-
-                    // Add custom styles
-                    addStyles(styles);
                 }
             );
         }
