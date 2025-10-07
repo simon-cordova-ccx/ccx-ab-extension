@@ -616,36 +616,73 @@ function createUpsellCard(planIndex, planPrice, entriesAmount) {
   return card;
 }
 
-function bindUpsellElements(upsellCard, matchingControlButton, skipButton) {
+function bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYGButton, skipButton) {
   customLog('[bindUpsellElements] Binding upsell elements...');
 
-  customLog('matchingControlButton:', matchingControlButton);
+  customLog('matchingSubscriptionButton:', matchingSubscriptionButton);
+  customLog('matchingPAYGButton:', matchingPAYGButton);
 
   const upsellButton = upsellCard.querySelector('.ccx-card-upsell__button');
   const upsellNoThanks = upsellCard.querySelector('.ccx-card-upsell__no_thanks');
 
   if (upsellButton) {
     upsellButton.addEventListener('click', () => {
-      customLog('[bindUpsellElements] Upsell button clicked');
-      console.log(matchingControlButton);
-      matchingControlButton.click();
+      customLog('[bindUpsellElements] Upsell button clicked - going to subscription');
+      console.log(matchingSubscriptionButton);
+      matchingSubscriptionButton.click();
     });
   }
 
   if (upsellNoThanks) {
     upsellNoThanks.addEventListener('click', (e) => {
       e.preventDefault();
-      customLog('[bindUpsellElements] No thanks clicked');
-      matchingControlButton.click();
+      customLog('[bindUpsellElements] No thanks clicked - going to PAYG');
+      matchingPAYGButton.click();
     });
   }
 
   if (skipButton) {
     skipButton.addEventListener('click', () => {
-      customLog('[bindUpsellElements] Skip button clicked');
-      matchingControlButton.click();
+      customLog('[bindUpsellElements] Skip button clicked - going to PAYG');
+      matchingPAYGButton.click();
     });
   }
+}
+
+function getMatchingSubscriptionButton(planPrice) {
+  customLog('[getMatchingSubscriptionButton] Looking for subscription button with price:', planPrice);
+  
+  const subscriptionCards = document.querySelectorAll(
+    '#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=subscription-tab-pane] [data-test="card-variant-subscription"]'
+  );
+
+  if (subscriptionCards.length === 0) {
+    customLog('[getMatchingSubscriptionButton] No subscription cards found');
+    return null;
+  }
+
+  for (const card of subscriptionCards) {
+    const priceElement = card.querySelector('[data-test=price]');
+    const addToCartButton = card.querySelector('[id*=add-to-cart-href]');
+    
+    if (!priceElement || !addToCartButton) continue;
+    
+    const cardPrice = priceElement.textContent.trim().replace(/[€\s]/g, '');
+    
+    customLog('[getMatchingSubscriptionButton] Comparing:', {
+      cardPrice,
+      planPrice,
+      matches: cardPrice === planPrice
+    });
+    
+    if (cardPrice === planPrice) {
+      customLog('[getMatchingSubscriptionButton] Found matching subscription button');
+      return addToCartButton;
+    }
+  }
+  
+  customLog('[getMatchingSubscriptionButton] No matching subscription button found');
+  return null;
 }
 
 function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons) {
@@ -692,17 +729,20 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
       // Log the clicked button, price, and entriesAmount
       customLog('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
 
-      // Find the matching control button
-      const matchingControlButton = Array.from(controlPAYGButtons).find(button => {
+      // Find the matching PAYG control button
+      const matchingPAYGButton = Array.from(controlPAYGButtons).find(button => {
         const controlEntriesAmount = extractNumberFromEntries(button);
-        // Log comparison for each control button
         customLog('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
         return controlEntriesAmount === entriesAmount;
       });
 
+      // Find the matching subscription button for the upsell
+      const matchingSubscriptionButton = getMatchingSubscriptionButton(price);
+
       // Programmatically click the matching control button
-      if (matchingControlButton) {
-        customLog('Found matching control button:', matchingControlButton.outerHTML);
+      if (matchingPAYGButton && matchingSubscriptionButton) {
+        customLog('Found matching PAYG button:', matchingPAYGButton.outerHTML);
+        customLog('Found matching subscription button:', matchingSubscriptionButton.outerHTML);
 
         customLog('Plan index:', planIndex);
 
@@ -747,7 +787,7 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
           // Insert skip container after the upsell card
           upsellCard.insertAdjacentElement('afterend', skipContainer);
 
-          bindUpsellElements(upsellCard, matchingControlButton, skipButton);
+          bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYGButton, skipButton);
 
           customLog('[createUpsellCard] Inserted upsell card and skip container');
         } else {
@@ -756,7 +796,7 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
         // }
 
       } else {
-        console.error('No control button found for price: ' + price + ', entriesAmount: ' + entriesAmount);
+        console.error('No control buttons found - PAYG:', price, 'entriesAmount:', entriesAmount, 'or Subscription:', price);
       }
 
     });
