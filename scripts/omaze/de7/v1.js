@@ -53,13 +53,17 @@ const styles = `
         border-width: 1px;
         opacity: 1;
         padding-top: 48px;
-        padding-right: 40px;
+        padding-right: 0;
         padding-bottom: 48px;
-        padding-left: 40px;
+        padding-left: 0;
         max-width: 90%;
         max-height: 90vh;      /* limits height to viewport */
         overflow-y: auto;      /* enable vertical scroll */
         -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+    }
+    .ccx-modal__top-container {
+        padding-right: 40px;
+        padding-left: 40px;
     }
     .ccx-button-unified {
         background: #FFDD00;
@@ -85,6 +89,7 @@ const styles = `
         font-weight: 700;
         font-size: 30px;
         line-height: 100%;
+        text-transform: none;
         letter-spacing: 0px;
         text-align: center;
         vertical-align: middle;
@@ -119,6 +124,9 @@ const styles = `
         letter-spacing: 0px;
         text-align: center;
         vertical-align: middle;
+        max-width: 251px;
+        margin: 0 auto;
+        margin-bottom: 1rem;
     }
     .ccx-modal__or-text {
         font-family: Gellix;
@@ -158,6 +166,7 @@ const styles = `
         padding-left: 17px;
         gap: 10px;
         margin-bottom: 1rem;
+        border: 1px solid #0090B1;
     }
     .ccx-modal__login-text {
         font-family: Gellix;
@@ -172,6 +181,10 @@ const styles = `
         justify-content: center;
         align-items: center;
         margin-bottom: 2rem;
+    }
+    .ccx-modal__bottom-container {
+        padding-right: 1rem;
+        padding-left: 1rem;
     }
     .ccx-modal__button-container {
         text-align: center;
@@ -208,8 +221,10 @@ const styles = `
         line-height: initial;
         letter-spacing: 0px;
         text-align: center;
-        vertical-align: middle;
+        vertical-align: bottom;
         color: #6B7280;
+        max-width: 304px;
+        margin: 0 auto;
     }
 
     @media screen and (min-width: 768px) {
@@ -399,8 +414,172 @@ const addUnifiedLoginButton = (CONTROL_ELEMENT_LOGIN) => {
     })
 }
 
+// const createLoginModal = () => {
+//     // Overlay
+//     const modal = document.createElement('div');
+//     modal.classList.add(
+//         'ccx-modal',
+//         'ccx-modal--overlay',
+//         'fixed',
+//         'inset-0',
+//         'flex',
+//         'items-center',
+//         'justify-center',
+//         'ccx-hide'
+//     );
+
+//     // Modal content container
+//     const modalContent = document.createElement('div');
+//     modalContent.classList.add(
+//         'ccx-modal__content'
+//     );
+
+//     // Title
+//     const title = document.createElement('h2');
+//     title.classList.add('ccx-modal__title');
+//     title.textContent = 'Jetzt mitmachen — Dein Schnellstart zum Alpen-Haus';
+//     modalContent.appendChild(title);
+
+//     // Description
+//     const description = document.createElement('p');
+//     description.classList.add('ccx-modal__description');
+//     description.textContent = 'Starte deine Teilnahme in Sekunden. Einfacher Checkout, große Träume — du bist bei jedem Schritt abgesichert.';
+//     modalContent.appendChild(description);
+
+//     // Paypal button
+//     const paypalBtn = document.createElement('button');
+//     paypalBtn.classList.add(
+//         'ccx-modal__button',
+//         'ccx-modal__button--paypal',
+//         'flex',
+//         'items-center',
+//         'justify-center',
+//         'rounded-full',
+//         'w-full',
+//         'py-3',
+//         'px-6'
+//     );
+
+//     // Apply requested styles directly
+//     // paypalBtn.style.fontFamily = 'Gellix, sans-serif';
+//     // paypalBtn.style.fontSize = '16px';
+//     // paypalBtn.style.letterSpacing = '0';
+//     // paypalBtn.style.textAlign = 'center';
+//     // paypalBtn.style.verticalAlign = 'middle';
+//     // paypalBtn.style.background = '#0070BA';
+//     // paypalBtn.style.color = 'white';
+
+//     // Paypal image
+//     const paypalImg = document.createElement('img');
+//     paypalImg.src = '//omaze.de/cdn/shop/t/133/assets/paypal-sso_44x.png?v=5786271219429686701759325932';
+//     paypalImg.style.marginRight = '.5rem';
+//     paypalImg.style.opacity = '1';
+//     paypalImg.style.transition = 'opacity .5s';
+//     paypalImg.style.width = '22px';
+//     paypalImg.style.height = '22px';
+
+//     // Paypal text
+//     const paypalText = document.createElement('span');
+//     paypalText.textContent = 'Mit PayPal Anmelden';
+
+//     // Append image and text to button
+//     paypalBtn.appendChild(paypalImg);
+//     paypalBtn.appendChild(paypalText);
+
+//     modalContent.appendChild(paypalBtn);
+
+//     // Subtext under Paypal
+//     const paypalSubtext = document.createElement('p');
+//     paypalSubtext.classList.add('ccx-modal__subtext');
+//     paypalSubtext.textContent = 'Keine Passwörter nötig. Du bist durch den Käuferschutz abgesichert.';
+//     modalContent.appendChild(paypalSubtext);
+
+//     // OR text
+//     const orText = document.createElement('p');
+//     orText.classList.add('ccx-modal__or-text');
+//     orText.textContent = 'ODER';
+//     modalContent.appendChild(orText);
+
+//     // Email login button
+//     const emailBtn = document.createElement('button');
+//     emailBtn.classList.add(
+//         'ccx-modal__button',
+//         'ccx-modal__button--email',
+//     );
+
+//     // Insert SVG icon before text
+//     emailBtn.innerHTML = emailIconSVG + '<span>Mit E-Mail registrieren</span>';
+
+
+//     modalContent.appendChild(emailBtn);
+
+//     // Login link text
+//     const loginText = document.createElement('p');
+//     loginText.classList.add('ccx-modal__login-text');
+//     loginText.innerHTML = 'Hast du schon ein Konto? &nbsp <a href="#" class="ccx-modal__login-link text-blue-600 underline">Einloggen</a>';
+//     modalContent.appendChild(loginText);
+
+//     loginText.querySelector('.ccx-modal__login-link').addEventListener('click', (e) => {
+//         e.preventDefault();
+//         console.log('Login link clicked');
+//     });
+
+//     // Container for three buttons with icons
+//     const buttonContainer = document.createElement('div');
+//     buttonContainer.classList.add(
+//         'ccx-modal__button-container'
+//     );
+
+//     const buttonInfo = [
+//         { text: 'Sicher & geschützt', icon: secureIconSVG },
+//         { text: 'Bonus-Verlosungen inklusive', icon: bonusDrawsIconSVG },
+//         { text: 'Schneller Checkout', icon: quickCheckoutIconSVG }
+//     ];
+
+//     buttonInfo.forEach((button, i) => {
+//         const btn = document.createElement('button');
+//         btn.classList.add('ccx-modal__button', 'ccx-modal__button--icon-' + (i + 1));
+
+//         const iconContainer = document.createElement('span');
+//         iconContainer.classList.add('ccx-modal__icon');
+//         iconContainer.innerHTML = button.icon;
+
+//         const btnText = document.createElement('span');
+//         btnText.classList.add('ccx-modal__button-text');
+//         btnText.textContent = button.text;
+
+//         btn.appendChild(iconContainer);
+//         btn.appendChild(btnText);
+//         buttonContainer.appendChild(btn);
+//     });
+
+
+//     modalContent.appendChild(buttonContainer);
+
+//     // Terms text with links
+//     const termsText = document.createElement('p');
+//     termsText.classList.add('ccx-modal__terms');
+
+//     // Set innerHTML to include the links
+//     termsText.innerHTML = `
+//   Mit deiner Anmeldung akzeptierst du unsere 
+//   <a href="https://omaze.de/pages/agb">Nutzungsbedingungen</a> 
+//   und 
+//   <a href="https://omaze.de/pages/datenschutz">Datenschutzrichtlinie</a>.
+// `;
+
+//     modalContent.appendChild(termsText);
+
+//     // // Append content to overlay
+//     modal.appendChild(modalContent);
+
+//     // Append modal to body
+//     document.body.appendChild(modal);
+
+//     return modal;
+// }
+
 const createLoginModal = () => {
-    // Overlay
     const modal = document.createElement('div');
     modal.classList.add(
         'ccx-modal',
@@ -413,25 +592,27 @@ const createLoginModal = () => {
         'ccx-hide'
     );
 
-    // Modal content container
     const modalContent = document.createElement('div');
-    modalContent.classList.add(
-        'ccx-modal__content'
-    );
+    modalContent.classList.add('ccx-modal__content');
 
-    // Title
+    // Create two main wrappers
+    const topContainer = document.createElement('div');
+    topContainer.classList.add('ccx-modal__top-container');
+
+    const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('ccx-modal__bottom-container');
+
+    // === TOP CONTAINER ELEMENTS ===
     const title = document.createElement('h2');
     title.classList.add('ccx-modal__title');
     title.textContent = 'Jetzt mitmachen — Dein Schnellstart zum Alpen-Haus';
-    modalContent.appendChild(title);
+    topContainer.appendChild(title);
 
-    // Description
     const description = document.createElement('p');
     description.classList.add('ccx-modal__description');
     description.textContent = 'Starte deine Teilnahme in Sekunden. Einfacher Checkout, große Träume — du bist bei jedem Schritt abgesichert.';
-    modalContent.appendChild(description);
+    topContainer.appendChild(description);
 
-    // Paypal button
     const paypalBtn = document.createElement('button');
     paypalBtn.classList.add(
         'ccx-modal__button',
@@ -445,75 +626,47 @@ const createLoginModal = () => {
         'px-6'
     );
 
-    // Apply requested styles directly
-    // paypalBtn.style.fontFamily = 'Gellix, sans-serif';
-    // paypalBtn.style.fontSize = '16px';
-    // paypalBtn.style.letterSpacing = '0';
-    // paypalBtn.style.textAlign = 'center';
-    // paypalBtn.style.verticalAlign = 'middle';
-    // paypalBtn.style.background = '#0070BA';
-    // paypalBtn.style.color = 'white';
-
-    // Paypal image
     const paypalImg = document.createElement('img');
     paypalImg.src = '//omaze.de/cdn/shop/t/133/assets/paypal-sso_44x.png?v=5786271219429686701759325932';
     paypalImg.style.marginRight = '.5rem';
-    paypalImg.style.opacity = '1';
-    paypalImg.style.transition = 'opacity .5s';
     paypalImg.style.width = '22px';
     paypalImg.style.height = '22px';
 
-    // Paypal text
     const paypalText = document.createElement('span');
     paypalText.textContent = 'Mit PayPal Anmelden';
 
-    // Append image and text to button
     paypalBtn.appendChild(paypalImg);
     paypalBtn.appendChild(paypalText);
+    topContainer.appendChild(paypalBtn);
 
-    modalContent.appendChild(paypalBtn);
-
-    // Subtext under Paypal
     const paypalSubtext = document.createElement('p');
     paypalSubtext.classList.add('ccx-modal__subtext');
     paypalSubtext.textContent = 'Keine Passwörter nötig. Du bist durch den Käuferschutz abgesichert.';
-    modalContent.appendChild(paypalSubtext);
+    topContainer.appendChild(paypalSubtext);
 
-    // OR text
     const orText = document.createElement('p');
     orText.classList.add('ccx-modal__or-text');
     orText.textContent = 'ODER';
-    modalContent.appendChild(orText);
+    topContainer.appendChild(orText);
 
-    // Email login button
     const emailBtn = document.createElement('button');
-    emailBtn.classList.add(
-        'ccx-modal__button',
-        'ccx-modal__button--email',
-    );
-
-    // Insert SVG icon before text
+    emailBtn.classList.add('ccx-modal__button', 'ccx-modal__button--email');
     emailBtn.innerHTML = emailIconSVG + '<span>Mit E-Mail registrieren</span>';
+    topContainer.appendChild(emailBtn);
 
-
-    modalContent.appendChild(emailBtn);
-
-    // Login link text
     const loginText = document.createElement('p');
     loginText.classList.add('ccx-modal__login-text');
     loginText.innerHTML = 'Hast du schon ein Konto? &nbsp <a href="#" class="ccx-modal__login-link text-blue-600 underline">Einloggen</a>';
-    modalContent.appendChild(loginText);
+    topContainer.appendChild(loginText);
 
     loginText.querySelector('.ccx-modal__login-link').addEventListener('click', (e) => {
         e.preventDefault();
         console.log('Login link clicked');
     });
 
-    // Container for three buttons with icons
+    // === BOTTOM CONTAINER ELEMENTS ===
     const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add(
-        'ccx-modal__button-container'
-    );
+    buttonContainer.classList.add('ccx-modal__button-container');
 
     const buttonInfo = [
         { text: 'Sicher & geschützt', icon: secureIconSVG },
@@ -538,31 +691,28 @@ const createLoginModal = () => {
         buttonContainer.appendChild(btn);
     });
 
+    bottomContainer.appendChild(buttonContainer);
 
-    modalContent.appendChild(buttonContainer);
-
-    // Terms text with links
     const termsText = document.createElement('p');
     termsText.classList.add('ccx-modal__terms');
-
-    // Set innerHTML to include the links
     termsText.innerHTML = `
-  Mit deiner Anmeldung akzeptierst du unsere 
-  <a href="https://omaze.de/pages/agb">Nutzungsbedingungen</a> 
-  und 
-  <a href="https://omaze.de/pages/datenschutz">Datenschutzrichtlinie</a>.
-`;
+        Mit deiner Anmeldung akzeptierst du unsere 
+        <a href="https://omaze.de/pages/agb">Nutzungsbedingungen</a> 
+        und 
+        <a href="https://omaze.de/pages/datenschutz">Datenschutzrichtlinie</a>.
+    `;
+    bottomContainer.appendChild(termsText);
 
-    modalContent.appendChild(termsText);
+    // Append both containers to modal content
+    modalContent.appendChild(topContainer);
+    modalContent.appendChild(bottomContainer);
 
-    // // Append content to overlay
     modal.appendChild(modalContent);
-
-    // Append modal to body
     document.body.appendChild(modal);
 
     return modal;
-}
+};
+
 
 const attachModalCloseListener = () => {
     const modalOverlay = document.querySelector('.ccx-modal.ccx-modal--overlay')
@@ -620,19 +770,22 @@ const init = () => {
                 [
                     { selector: '#begin-checkout a[href*="/account/login"]', count: 1 },
                     { selector: '#begin-checkout img[src*="paypal"]', count: 1 },
+                    { selector: '#begin-checkout a[href*="/account/register"]', count: 1 },
                 ],
                 function (results) {
                     console.log(results);
                     addStyles(styles);
 
-                    const CONTROL_ELEMENT_LOGIN = document.querySelector('#begin-checkout a[href*="/account/login"]');
+                    // const CONTROL_ELEMENT_LOGIN = document.querySelector('#begin-checkout a[href*="/account/login"]');
+                    const CONTROL_ELEMENT_LOGIN = results[0].elements[0];
                     if (!CONTROL_ELEMENT_LOGIN) {
                         customLog('[init] Login element not found');
                         return;
                     }
                     CONTROL_ELEMENT_LOGIN.classList.add('ccx-hide');
 
-                    const CONTROL_ELEMENT_PAYPAL = document.querySelector('#begin-checkout img[src*="paypal"]').parentNode;
+                    // const CONTROL_ELEMENT_PAYPAL = document.querySelector('#begin-checkout img[src*="paypal"]').parentNode;
+                    const CONTROL_ELEMENT_PAYPAL = results[1].elements[0].parentNode;
                     if (!CONTROL_ELEMENT_PAYPAL) {
                         customLog('[init] Paypal element not found');
                         return;
@@ -640,7 +793,8 @@ const init = () => {
                     CONTROL_ELEMENT_PAYPAL.classList.add('ccx-hide');
                     CONTROL_ELEMENT_PAYPAL.nextElementSibling.classList.add('ccx-hide');
 
-                    const CONTROL_ELEMENT_REGISTER = document.querySelector('#begin-checkout a[href*="/account/register"]');
+                    // const CONTROL_ELEMENT_REGISTER = document.querySelector('#begin-checkout a[href*="/account/register"]');
+                    const CONTROL_ELEMENT_REGISTER = results[2].elements[0];
 
                     addUnifiedLoginButton(CONTROL_ELEMENT_LOGIN);
 
