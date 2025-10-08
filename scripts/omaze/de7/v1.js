@@ -561,7 +561,6 @@ const createLoginModal = () => {
     return modal;
 };
 
-
 const attachModalCloseListener = () => {
     const modalOverlay = document.querySelector('.ccx-modal.ccx-modal--overlay')
     if (!modalOverlay) return;
