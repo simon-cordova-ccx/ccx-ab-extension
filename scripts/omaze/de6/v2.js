@@ -780,7 +780,7 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
           skipContainer.className = 'ccx-skip';
 
           const skipButton = document.createElement('button');
-          skipButton.textContent = 'Skip'; // Change text if needed
+          skipButton.textContent = 'Überspringen'; // Change text if needed
 
           skipContainer.appendChild(skipButton);
 
