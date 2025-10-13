@@ -481,7 +481,7 @@ const createLoginModal = () => {
     paypalImg.style.height = '22px';
 
     const paypalText = document.createElement('span');
-    paypalText.textContent = 'Mit PayPal Anmelden Mit PayPal Anmelden';
+    paypalText.textContent = 'Mit PayPal Anmelden';
 
     paypalBtn.appendChild(paypalImg);
     paypalBtn.appendChild(paypalText);
