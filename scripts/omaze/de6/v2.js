@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZDE-6 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 2";
@@ -564,11 +564,28 @@ function createUpsellCard(planIndex, planPrice, entriesAmount) {
 
   const pill1 = document.createElement('div');
   pill1.className = 'ccx-card-upsell__pill';
-  pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+  if (planPrice === '10') {
+    pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+  }
+  if (planPrice === '25') {
+    pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+  }
+  if (planPrice === '35') {
+    pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+  }
 
   const pill2 = document.createElement('div');
   pill2.className = 'ccx-card-upsell__pill';
-  pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+  if (planPrice === '10') {
+    pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+  }
+  if (planPrice === '25') {
+    pill2.innerHTML = '+4 Gratis Los <span>jeden Monat</span>';
+  }
+  if (planPrice === '35') {
+    pill2.innerHTML = '+6 Gratis Los <span>jeden Monat</span>';
+  }
+
 
   pills.appendChild(pill1);
   pills.appendChild(pill2);
@@ -628,7 +645,6 @@ function bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYG
   if (upsellButton) {
     upsellButton.addEventListener('click', () => {
       customLog('[bindUpsellElements] Upsell button clicked - going to subscription');
-      console.log(matchingSubscriptionButton);
       matchingSubscriptionButton.click();
     });
   }
@@ -651,7 +667,7 @@ function bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYG
 
 function getMatchingSubscriptionButton(planPrice) {
   customLog('[getMatchingSubscriptionButton] Looking for subscription button with price:', planPrice);
-  
+
   const subscriptionCards = document.querySelectorAll(
     '#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=subscription-tab-pane] [data-test="card-variant-subscription"]'
   );
@@ -664,23 +680,23 @@ function getMatchingSubscriptionButton(planPrice) {
   for (const card of subscriptionCards) {
     const priceElement = card.querySelector('[data-test=price]');
     const addToCartButton = card.querySelector('[id*=add-to-cart-href]');
-    
+
     if (!priceElement || !addToCartButton) continue;
-    
+
     const cardPrice = priceElement.textContent.trim().replace(/[€\s]/g, '');
-    
+
     customLog('[getMatchingSubscriptionButton] Comparing:', {
       cardPrice,
       planPrice,
       matches: cardPrice === planPrice
     });
-    
+
     if (cardPrice === planPrice) {
       customLog('[getMatchingSubscriptionButton] Found matching subscription button');
       return addToCartButton;
     }
   }
-  
+
   customLog('[getMatchingSubscriptionButton] No matching subscription button found');
   return null;
 }
@@ -856,8 +872,6 @@ function init() {
         { selector: '#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button', count: 3 },
       ],
       function (results) {
-        console.log('[waitForElements] Elements found', results);
-
         const controlPAYGButtons = results[0].elements;
         const controlPAYGContainer = results[1].elements[0];
         const controlSUBSButtons = results[2].elements;

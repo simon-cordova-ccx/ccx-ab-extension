@@ -411,11 +411,27 @@ function createUpsellCard(pageType, matchingSubscription) {
 
     const pill1 = document.createElement('div');
     pill1.className = 'ccx-card-upsell__pill';
-    pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+    if (matchingSubscription && matchingSubscription.price === '10') {
+        pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+    }
+    if (matchingSubscription && matchingSubscription.price === '25') {
+        pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+    }
+    if (matchingSubscription && matchingSubscription.price === '35') {
+        pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+    }
 
     const pill2 = document.createElement('div');
     pill2.className = 'ccx-card-upsell__pill';
-    pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+    if (matchingSubscription && matchingSubscription.price === '10') {
+        pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+    }
+    if (matchingSubscription && matchingSubscription.price === '25') {
+        pill2.innerHTML = '+4 Gratis Los <span>jeden Monat</span>';
+    }
+    if (matchingSubscription && matchingSubscription.price === '35') {
+        pill2.innerHTML = '+6 Gratis Los <span>jeden Monat</span>';
+    }
 
     pills.appendChild(pill1);
     pills.appendChild(pill2);
