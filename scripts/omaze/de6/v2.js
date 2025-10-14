@@ -1,4 +1,4 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-6 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 2";
@@ -15,9 +15,9 @@ const plansData = {
     { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
   ],
   subscriptions: [
-    { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
-    { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
-    { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
+    { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis-Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
+    { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis-Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
+    { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis-Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
   ],
 };
 
@@ -532,30 +532,37 @@ function createMobileCard(planData, type = 'subscription') {
   return card;
 }
 
-function createUpsellCard(planIndex, planPrice, entriesAmount) {
-  customLog('[createUpsellCard] Creating upsell card...');
+function createUpsellCard(subscriptionPlan) {
+  customLog('[createUpsellCard] Creating upsell card...', subscriptionPlan);
+
+  if (!subscriptionPlan) {
+    console.error('[createUpsellCard] No subscriptionPlan provided');
+    return null;
+  }
+
+  const planPrice = String(subscriptionPlan.price); // normalize for comparisons
+  const entriesAmount = subscriptionPlan.entriesAmount;
 
   // Root card
   const card = document.createElement('div');
   card.className = 'ccx-card-upsell ccx-card-upsell--root flex flex-col';
 
-  // Top section (image container)
+  // --- Top Section ---
   const top = document.createElement('div');
   top.className = 'ccx-card-upsell__top';
+
   const img = document.createElement('img');
   img.src = upsellImageURL;
   img.alt = 'Upsell image';
   top.appendChild(img);
 
-  // Middle section
+  // --- Middle Section ---
   const middle = document.createElement('div');
   middle.className = 'ccx-card-upsell__middle';
 
-  // Headline
   const headline = document.createElement('p');
   headline.className = 'ccx-card-upsell__headline';
-  headline.innerHTML =
-    'Wechsle zum Abo und dir entgeht keine Ziehung mehr';
+  headline.innerHTML = 'Wechsle zum Abo und dir entgeht keine Ziehung mehr';
   middle.appendChild(headline);
 
   // Info pills
@@ -564,52 +571,65 @@ function createUpsellCard(planIndex, planPrice, entriesAmount) {
 
   const pill1 = document.createElement('div');
   pill1.className = 'ccx-card-upsell__pill';
-  if (planPrice === '10') {
-    pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
-  }
-  if (planPrice === '25') {
-    pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
-  }
-  if (planPrice === '35') {
-    pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
-  }
-
   const pill2 = document.createElement('div');
   pill2.className = 'ccx-card-upsell__pill';
-  if (planPrice === '10') {
-    pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
-  }
-  if (planPrice === '25') {
-    pill2.innerHTML = '+4 Gratis Los <span>jeden Monat</span>';
-  }
-  if (planPrice === '35') {
-    pill2.innerHTML = '+6 Gratis Los <span>jeden Monat</span>';
-  }
 
+  // Define logic per plan
+  switch (planPrice) {
+    case '10':
+      pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+      pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+      break;
+    case '25':
+      pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+      pill2.innerHTML = '+4 Gratis Lose <span>jeden Monat</span>';
+      break;
+    case '35':
+      pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+      pill2.innerHTML = '+6 Gratis Lose <span>jeden Monat</span>';
+      break;
+    default:
+      pill1.innerHTML = 'Bonus Verlosung <span>inklusive</span>';
+      pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+  }
 
   pills.appendChild(pill1);
   pills.appendChild(pill2);
   middle.appendChild(pills);
 
-  // Price info
+  // --- Price Info ---
   const priceContainer = document.createElement('div');
   priceContainer.className = 'ccx-card-upsell__price-container';
 
-  const price = document.createElement('div');
-  price.className = 'ccx-card-upsell__price';
+  const priceEl = document.createElement('div');
+  priceEl.className = 'ccx-card-upsell__price';
+  priceEl.innerHTML = planPrice + '€<span>/Monat</span>';
 
-  //write without template literal
-  price.innerHTML = planPrice + '€<span>/Monat</span>';
+  const entriesEl = document.createElement('div');
+  entriesEl.className = 'ccx-card-upsell__entries';
 
-  const entries = document.createElement('div');
-  entries.className = 'ccx-card-upsell__entries';
-  entries.textContent = entriesAmount + ' + 1 Gratis Los';
+  // Define correct entries + bonus text
+  let entriesText = '';
+  switch (planPrice) {
+    case '10':
+      entriesText = subscriptionPlan.highlight;
+      break;
+    case '25':
+      entriesText = subscriptionPlan.highlight;
+      break;
+    case '35':
+      entriesText = subscriptionPlan.highlight;
+      break;
+    default:
+      entriesText = entriesAmount + ' + 1 Gratis Los';
+  }
+  entriesEl.textContent = entriesText;
 
-  priceContainer.appendChild(price);
-  priceContainer.appendChild(entries);
+  priceContainer.appendChild(priceEl);
+  priceContainer.appendChild(entriesEl);
   middle.appendChild(priceContainer);
 
-  // Bottom section
+  // --- Bottom Section ---
   const bottom = document.createElement('div');
   bottom.className = 'ccx-card-upsell__bottom';
 
@@ -625,7 +645,7 @@ function createUpsellCard(planIndex, planPrice, entriesAmount) {
   bottom.appendChild(button);
   bottom.appendChild(link);
 
-  // Assemble
+  // Assemble everything
   card.appendChild(top);
   card.appendChild(middle);
   card.appendChild(bottom);
@@ -663,6 +683,17 @@ function bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYG
       matchingPAYGButton.click();
     });
   }
+}
+
+function getMatchingSubscription(planPrice) {
+  customLog('[getMatchingSubscription] Looking for subscription plan with price:', planPrice);
+  const matching = plansData.subscriptions.find(sub => sub.price === planPrice);
+  if (matching) {
+    customLog('[getMatchingSubscription] Found matching subscription:', matching);
+  } else {
+    customLog('[getMatchingSubscription] No matching subscription found for price:', planPrice);
+  }
+  return matching;
 }
 
 function getMatchingSubscriptionButton(planPrice) {
@@ -712,7 +743,6 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
     controlSUBSButtons
   });
 
-
   // Log the number of new PAYG buttons found
   customLog('New PAYG buttons found:', ccxNewPAYGButtons.length, 'Buttons:', Array.from(ccxNewPAYGButtons).map(btn => btn.outerHTML));
 
@@ -753,6 +783,7 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
       });
 
       // Find the matching subscription button for the upsell
+      const matchingSubscription = getMatchingSubscription(price);
       const matchingSubscriptionButton = getMatchingSubscriptionButton(price);
 
       // Programmatically click the matching control button
@@ -786,7 +817,7 @@ function setupPAYGButtonClicks(plansData, controlPAYGButtons, controlSUBSButtons
         if (singlePurchaseTabPane) {
           singlePurchaseTabPane.setAttribute("style", "display: none !important;");
 
-          const upsellCard = createUpsellCard(planIndex, price, entriesAmount);
+          const upsellCard = createUpsellCard(matchingSubscription);
 
           // Insert upsell card after singlePurchaseTabPane
           singlePurchaseTabPane.insertAdjacentElement('afterend', upsellCard);
@@ -855,7 +886,6 @@ function waitForElements(configs, callback) {
       customLog('[waitForElements] Some selectors not found within timeout.', error);
     });
 }
-
 
 function init() {
   try {

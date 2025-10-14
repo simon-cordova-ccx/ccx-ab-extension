@@ -15,9 +15,9 @@ const plansData = {
         { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
     ],
     subscriptions: [
-        { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
-        { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
-        { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
+        { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis-Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
+        { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis-Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
+        { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis-Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
     ],
 };
 
@@ -163,7 +163,8 @@ entries-tab-nav[data-tab-container] {
 
 .ccx-card-upsell__button {
     letter-spacing: 0.3px;
-    width: 316px;
+    width: 90%;
+    max-width: 316px;
     height: 56px;
     opacity: 1;
     border-width: 2px;
