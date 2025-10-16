@@ -1,4 +1,5 @@
-const LOG_ENABLED = false;
+(function() {
+const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-6 | Remove discount";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 1";
@@ -234,10 +235,6 @@ entries-tab-nav[data-tab-container] {
     color: #090F15;
     margin-bottom: 40px;
 }
-
-
-
-
 
 
 `;
@@ -490,8 +487,11 @@ function removeEmojis() {
 
     mobileCards.forEach(card => {
         const emojiContainer = card.querySelector('.flex > .mx-auto');
-        if (emojiContainer.firstChild.nodeType === Node.TEXT_NODE && emojiContainer.firstChild.textContent.includes('🎉')) {
-            emojiContainer.firstChild.remove();
+        if (emojiContainer?.firstChild?.nodeType === Node.ELEMENT_NODE && emojiContainer?.firstChild?.textContent?.includes('🎉')) {
+            const element = emojiContainer.firstChild;
+            if (element.nodeType === Node.ELEMENT_NODE) {
+                element.remove();
+            }
         }
     });
 }
@@ -571,17 +571,17 @@ function saveControlSubscriptionURLs() {
     results.push({ price, cartUrl });
   });
 
-  // ✅ Save results to sessionStorage
-  sessionStorage.setItem('ccx-subscriptionCartURLs', JSON.stringify(results));
+  // ✅ Save results to localStorage
+  localStorage.setItem('ccx-subscriptionCartURLs', JSON.stringify(results));
 
   return results;
 }
 
 function attachUpsellButtonListener() {
-  // 1️⃣ Get the saved subscription URLs from sessionStorage
-  const saved = JSON.parse(sessionStorage.getItem('ccx-subscriptionCartURLs'));
+  // 1️⃣ Get the saved subscription URLs from localStorage
+  const saved = JSON.parse(localStorage.getItem('ccx-subscriptionCartURLs'));
   if (!saved || !Array.isArray(saved)) {
-    console.warn('No saved subscription URLs found in sessionStorage.');
+    console.warn('No saved subscription URLs found in localStorage.');
     return;
   }
 
@@ -665,8 +665,10 @@ function init() {
 
                     const abonnementsElement = document.querySelector('#cart-item-updated > h5');
                     const containsAbonnements = abonnementsElement && abonnementsElement.textContent.includes('Abonnements');
+                    const abonnementsElementNew = document.querySelector('.cart-table__details-col h5');
+                    const containsAbonnementsNew = abonnementsElementNew && abonnementsElementNew.textContent.includes('Abonnements');
 
-                    if (!containsAbonnements) {
+                    if (!containsAbonnements && !containsAbonnementsNew) {
                         const upsellCard = createUpsellCard('cart', matchingSubscription);
                         // insert upsell card after the cart page details container
                         CONTROL_CART_PAGE_DETAILS_CONTAINER[0].parentNode.insertBefore(upsellCard, CONTROL_CART_PAGE_DETAILS_CONTAINER[0].nextSibling);
@@ -676,7 +678,7 @@ function init() {
                         attachUpsellButtonListener();
     
                         // Add custom styles
-                        addStyles(styles);                        
+                        addStyles(styles);
                     }
 
                 }
@@ -709,3 +711,6 @@ function init() {
 }
 
 init();
+
+})();
+

@@ -1,12 +1,13 @@
-const LOG_ENABLED = true;
-const TEST_NAME = "OZDE-5 | Entry Tab Removal";
-const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 2";
-const CURRENT_URL = window.location.href;
-const IS_STAGING_ENV = CURRENT_URL.includes('staging');
-const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
+(function () {
+  const LOG_ENABLED = true;
+  const TEST_NAME = "OZDE-5 | Entry Tab Removal";
+  const SOURCE_TYPE = "SOURCE = NO SOURCE";
+  const VARIATION = "VARIATION 2";
+  const CURRENT_URL = window.location.href;
+  const IS_STAGING_ENV = CURRENT_URL.includes('staging');
+  const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
-const ticketIconSVG = `<svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+  const ticketIconSVG = `<svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_6145_386)">
 <path d="M38.335 19C38.335 8.50659 29.8284 0 19.335 0C8.84155 0 0.334961 8.50659 0.334961 19C0.334961 29.4934 8.84155 38 19.335 38C29.8284 38 38.335 29.4934 38.335 19Z" fill="#FFDD00"/>
 <path d="M32.6352 17.9179L30.7599 15.9588C30.6703 15.8695 30.5544 15.814 30.4383 15.814C30.3224 15.814 30.2039 15.843 30.117 15.9298C29.6771 16.3689 29.0924 16.574 28.5051 16.574C27.9177 16.574 27.333 16.311 26.8931 15.8719C26.4533 15.4328 26.2479 14.8489 26.2479 14.2626C26.2479 13.6763 26.5112 13.0925 26.9511 12.6533C27.3909 12.2142 27.096 12.4482 27.096 12.3324C27.096 12.2166 27.067 12.0984 26.9801 12.0116L26.2768 11.3095L26.9801 9.64226C27.0696 9.40822 26.9801 9.17419 26.7457 9.05839L24.2274 7.97508C23.993 7.8858 23.7586 7.97508 23.6426 8.20911C23.1157 9.40822 21.7962 9.93419 20.6265 9.43718C19.423 8.91121 18.8961 7.62522 19.365 6.4261C19.481 6.22102 19.394 5.98699 19.1595 5.90013L16.4649 4.76132C16.3489 4.70342 16.2305 4.70342 16.1145 4.76132C15.9985 4.81922 15.909 4.87713 15.8801 4.99536L7.8251 24.4685C7.73568 24.7024 7.8251 24.9366 8.05953 25.0522L9.67147 25.7255L11.194 27.3035C11.2834 27.3926 11.3994 27.4481 11.5154 27.4481C11.6314 27.4481 11.7499 27.4192 11.8369 27.3322C12.2767 26.8933 12.8325 26.6881 13.4488 26.6881C14.0651 26.6881 14.6209 26.951 15.0608 27.3902C15.9405 28.2974 15.9115 29.7595 15.0028 30.6064C14.9134 30.6957 14.8578 30.8116 14.8578 30.9273C14.8578 31.0432 14.8868 31.1614 14.9738 31.2481L16.8781 33.2073C16.9676 33.2966 17.0836 33.3521 17.1996 33.3521C17.3156 33.3521 17.434 33.2942 17.492 33.2362L32.6376 18.5838C32.814 18.3787 32.814 18.0868 32.6376 17.9107L32.6352 17.9179Z" fill="#081F28"/>
@@ -24,20 +25,20 @@ const ticketIconSVG = `<svg width="39" height="38" viewBox="0 0 39 38" fill="non
 </svg>
 `;
 
-const plansData = {
-  payAsYouGo: [
-    { icon: '★', bonusCount: '1', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
-    { icon: '★', bonusCount: '1', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
-    { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
-  ],
-  subscriptions: [
-    { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
-    { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
-    { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
-  ],
-}
+  const plansData = {
+    payAsYouGo: [
+      { icon: '★', bonusCount: '1', price: '10', highlight: '20 Lose', name: 'Subscription 10€', order: 1, entriesAmount: '20' },
+      { icon: '★', bonusCount: '1', price: '25', highlight: '50 Lose', name: 'Subscription 25€', order: 3, entriesAmount: '50' },
+      { icon: '★', bonusCount: '1', price: '35', highlight: '70 Lose', name: 'Subscription 35€', order: 5, entriesAmount: '70' },
+    ],
+    subscriptions: [
+      { icon: '★', bonusCount: '2', price: '10', highlight: '20 + 1 Gratis Los', name: 'Subscription 10€', order: 2, entriesAmount: '10' },
+      { icon: '★', bonusCount: '4', price: '25', highlight: '50 + 4 Gratis Los', name: 'Subscription 25€', order: 4, entriesAmount: '10' },
+      { icon: '★', bonusCount: '4', price: '35', highlight: '70 + 6 Gratis Los', name: 'Subscription 35€', order: 6, entriesAmount: '10' },
+    ],
+  }
 
-const styles = `
+  const styles = `
 #enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] {
   background: #F5F5F5;
 }
@@ -445,429 +446,441 @@ span.ccx-mobile-card__footer-regular {
 }
 `;
 
-const customLog = (...messages) => {
-  if (!LOG_ENABLED) return;
+  const customLog = (...messages) => {
+    if (!LOG_ENABLED) return;
 
-  const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
-  const parts = [];
-  const values = [];
+    const style = "background: #000; color: white; padding: 4px 8px; border-radius: 4px;";
+    const parts = [];
+    const values = [];
 
-  messages.forEach(msg => {
-    if (msg instanceof Element) {
-      parts.push("%o");
-      values.push(msg);
+    messages.forEach(msg => {
+      if (msg instanceof Element) {
+        parts.push("%o");
+        values.push(msg);
+      } else {
+        // Wrap each text message with %c to apply the style
+        parts.push("%c" + String(msg).toUpperCase());
+        values.push(style);
+      }
+    });
+
+    // Join parts with spaces so the log is more readable
+    console.log(parts.join(" "), ...values);
+  };
+
+  const addStyles = (css) => {
+    customLog('[addStyles] Starting the addStyles function...');
+
+    if (!css) return;
+
+    if (!css) {
+      customLog('[addStyles] No CSS provided');
+      return;
+    }
+
+    // Check if the style tag already exists
+    if (document.querySelector('.ccx-styles-de1-v2')) {
+      customLog('[addStyles] Custom styles already exist.');
+      return;
+    }
+
+    // Create a new <style> element
+    const style = document.createElement('style');
+    style.classList.add('ccx-styles-de1-v2');
+    style.appendChild(document.createTextNode(css));
+
+    // Append the style tag to the document head
+    document.head.appendChild(style);
+    customLog('Custom styles added.');
+  };
+
+  function createMobileCard(planData, type = 'subscription') {
+    const card = document.createElement('div');
+    card.className = 'ccx-mobile-card ' + (type === 'subscription' ? 'ccx-mobile-card--subscription' : 'ccx-mobile-card--payg') + ' basis-1/5 flex-1';
+    card.style.order = planData.order;
+    card.setAttribute('data-test', "mobile-card-variant-payg");
+
+    const top = document.createElement('div');
+    top.className = 'ccx-mobile-card__top';
+
+    const bonus = document.createElement('div');
+    bonus.className = 'ccx-mobile-card__bonus';
+
+    const icon = document.createElement('span');
+    icon.className = 'ccx-mobile-card__icon';
+    icon.textContent = planData.icon || '';
+
+    const bold = document.createElement('strong');
+    bold.className = 'ccx-mobile-card__bonus-text';
+    bold.textContent = planData.bonusCount
+      ? planData.bonusCount + ' Bonus Verlosung'
+      : 'Bonus Verlosung';
+
+    const span = document.createElement('span');
+    span.className = 'ccx-mobile-card__bonus-subtext';
+    span.textContent = ' inklusive';
+
+    const bottom = document.createElement('div');
+    bottom.className = 'ccx-mobile-card__bottom';
+
+    const left = document.createElement('div');
+    left.className = 'ccx-mobile-card__left';
+
+    const priceContainer = document.createElement('div');
+    priceContainer.className = 'ccx-mobile-card__price-container';
+
+    const price = document.createElement('span');
+    price.className = 'ccx-mobile-card__price';
+    price.textContent = planData.price + '€' || '';
+
+    if (type === 'subscription') {
+      const priceSpan = document.createElement('span');
+      priceSpan.className = 'ccx-mobile-card__price-unit';
+      priceSpan.textContent = '/Monat';
+      priceContainer.append(price, priceSpan);
     } else {
-      // Wrap each text message with %c to apply the style
-      parts.push("%c" + String(msg).toUpperCase());
-      values.push(style);
+      priceContainer.append(price);
     }
-  });
 
-  // Join parts with spaces so the log is more readable
-  console.log(parts.join(" "), ...values);
-};
+    const highlight = document.createElement('div');
+    highlight.className = 'ccx-mobile-card__highlight';
+    highlight.textContent = planData.highlight || '';
 
-const addStyles = (css) => {
-  customLog('[addStyles] Starting the addStyles function...');
+    const right = document.createElement('div');
+    right.className = 'ccx-mobile-card__right';
 
-  if (!css) return;
+    const button = document.createElement('button');
+    button.className = 'ccx-mobile-card__button';
+    button.textContent = 'Mitmachen';
 
-  if (!css) {
-    customLog('[addStyles] No CSS provided');
-    return;
-  }
+    // Footer for subscription plans with price 25 or 35
+    let footer = null;
+    console.log('Type:', type, 'Price:', planData.price);
+    if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+      footer = document.createElement('div');
+      footer.className = 'ccx-mobile-card__footer';
 
-  // Check if the style tag already exists
-  if (document.querySelector('.ccx-styles-de1-v2')) {
-    customLog('[addStyles] Custom styles already exist.');
-    return;
-  }
+      const footerImageDiv = document.createElement('div');
+      footerImageDiv.className = 'ccx-mobile-card__footer-image';
+      footerImageDiv.innerHTML = ticketIconSVG;
 
-  // Create a new <style> element
-  const style = document.createElement('style');
-  style.classList.add('ccx-styles-de1-v2');
-  style.appendChild(document.createTextNode(css));
+      const footerTextDiv = document.createElement('div');
+      footerTextDiv.className = 'ccx-mobile-card__footer-text';
 
-  // Append the style tag to the document head
-  document.head.appendChild(style);
-  customLog('Custom styles added.');
-};
+      const footerBoldSpan = document.createElement('span');
+      footerBoldSpan.className = 'ccx-mobile-card__footer-bold';
+      footerBoldSpan.textContent = '+ 1 Los/Monat';
 
-function createMobileCard(planData, type = 'subscription') {
-  const card = document.createElement('div');
-  card.className = 'ccx-mobile-card ' + (type === 'subscription' ? 'ccx-mobile-card--subscription' : 'ccx-mobile-card--payg') + ' basis-1/5 flex-1';
-  card.style.order = planData.order;
-  card.setAttribute('data-test', "mobile-card-variant-payg");
+      const footerRegularSpan = document.createElement('span');
+      footerRegularSpan.className = 'ccx-mobile-card__footer-regular';
+      footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
 
-  const top = document.createElement('div');
-  top.className = 'ccx-mobile-card__top';
-
-  const bonus = document.createElement('div');
-  bonus.className = 'ccx-mobile-card__bonus';
-
-  const icon = document.createElement('span');
-  icon.className = 'ccx-mobile-card__icon';
-  icon.textContent = planData.icon || '';
-
-  const bold = document.createElement('strong');
-  bold.className = 'ccx-mobile-card__bonus-text';
-  bold.textContent = planData.bonusCount
-    ? planData.bonusCount + ' Bonus Verlosung'
-    : 'Bonus Verlosung';
-
-  const span = document.createElement('span');
-  span.className = 'ccx-mobile-card__bonus-subtext';
-  span.textContent = ' inklusive';
-
-  const bottom = document.createElement('div');
-  bottom.className = 'ccx-mobile-card__bottom';
-
-  const left = document.createElement('div');
-  left.className = 'ccx-mobile-card__left';
-
-  const priceContainer = document.createElement('div');
-  priceContainer.className = 'ccx-mobile-card__price-container';
-
-  const price = document.createElement('span');
-  price.className = 'ccx-mobile-card__price';
-  price.textContent = planData.price + '€' || '';
-
-  if (type === 'subscription') {
-    const priceSpan = document.createElement('span');
-    priceSpan.className = 'ccx-mobile-card__price-unit';
-    priceSpan.textContent = '/Monat';
-    priceContainer.append(price, priceSpan);
-  } else {
-    priceContainer.append(price);
-  }
-
-  const highlight = document.createElement('div');
-  highlight.className = 'ccx-mobile-card__highlight';
-  highlight.textContent = planData.highlight || '';
-
-  const right = document.createElement('div');
-  right.className = 'ccx-mobile-card__right';
-
-  const button = document.createElement('button');
-  button.className = 'ccx-mobile-card__button';
-  button.textContent = 'Mitmachen';
-
-  // Footer for subscription plans with price 25 or 35
-  let footer = null;
-  console.log('Type:', type, 'Price:', planData.price);
-  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
-    footer = document.createElement('div');
-    footer.className = 'ccx-mobile-card__footer';
-
-    const footerImageDiv = document.createElement('div');
-    footerImageDiv.className = 'ccx-mobile-card__footer-image';
-    footerImageDiv.innerHTML = ticketIconSVG;
-
-    const footerTextDiv = document.createElement('div');
-    footerTextDiv.className = 'ccx-mobile-card__footer-text';
-
-    const footerBoldSpan = document.createElement('span');
-    footerBoldSpan.className = 'ccx-mobile-card__footer-bold';
-    footerBoldSpan.textContent = '+ 1 Los/Monat';
-
-    const footerRegularSpan = document.createElement('span');
-    footerRegularSpan.className = 'ccx-mobile-card__footer-regular';
-    footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
-
-    footerTextDiv.append(footerBoldSpan, footerRegularSpan);
-    footer.append(footerImageDiv, footerTextDiv);
-  }
-
-  bonus.append(icon, bold, span);
-  left.append(priceContainer, highlight);
-  right.append(button);
-  top.append(bonus);
-  bottom.append(left, right);
-  card.append(top, bottom);
-
-  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
-    card.append(footer);
-  }
-
-  return card;
-}
-
-function createDesktopCard(planData, type = 'subscription') {
-  const card = document.createElement('div');
-  card.className = 'ccx-desktop-card ' + (type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg') + ' flex-1 max-w-[380px] basis-1/5';
-  card.style.order = planData.order;
-
-  const inner = document.createElement('div');
-  inner.className = 'ccx-desktop-card__inner-container';
-
-  const top = document.createElement('div');
-  top.className = 'ccx-desktop-card__top';
-
-  // Highlight
-  const highlight = document.createElement('div');
-  highlight.className = 'ccx-desktop-card__highlight';
-  highlight.textContent = planData.highlight || '';
-
-  // Bonus
-  const bonus = document.createElement('div');
-  bonus.className = 'ccx-desktop-card__bonus';
-  if (planData.bonusCount) {
-    bonus.textContent = planData.bonusCount + ' Bonus Verlosung ';
-  } else {
-    bonus.textContent = 'Bonus Verlosung ';
-  }
-  const inklusive = document.createElement('p');
-  inklusive.textContent = 'inklusive';
-  bonus.appendChild(inklusive);
-
-  // Bottom
-  const bottom = document.createElement('div');
-  bottom.className = 'ccx-desktop-card__bottom';
-
-  const price = document.createElement('div');
-  price.className = 'ccx-desktop-card__price';
-
-  const priceValue = document.createElement('span');
-  priceValue.className = 'ccx-desktop-card__price-value';
-  priceValue.textContent = planData.price + '€' || '';
-
-  price.appendChild(priceValue);
-
-  // Only add /Monat for subscription cards
-  if (type === 'subscription') {
-    const priceSpan = document.createElement('span');
-    priceSpan.className = 'ccx-desktop-card__price-span';
-    priceSpan.textContent = '/Monat';
-    price.appendChild(priceSpan);
-  }
-
-  const button = document.createElement('button');
-  button.className = 'ccx-desktop-card__button';
-  button.textContent = 'Mitmachen';
-
-  // Footer for subscription plans with price 25 or 35
-  let footer = null;
-  if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
-    footer = document.createElement('div');
-    footer.className = 'ccx-desktop-card__footer';
-
-    const footerImageDiv = document.createElement('div');
-    footerImageDiv.className = 'ccx-desktop-card__footer-image';
-    footerImageDiv.innerHTML = ticketIconSVG;
-
-    const footerTextDiv = document.createElement('div');
-    footerTextDiv.className = 'ccx-desktop-card__footer-text';
-
-    const footerBoldSpan = document.createElement('span');
-    footerBoldSpan.className = 'ccx-desktop-card__footer-bold';
-    footerBoldSpan.textContent = '+ 1 Los/Monat';
-
-    const footerRegularSpan = document.createElement('span');
-    footerRegularSpan.className = 'ccx-desktop-card__footer-regular';
-    footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
-
-    footerTextDiv.append(footerBoldSpan, footerRegularSpan);
-    footer.append(footerImageDiv, footerTextDiv);
-  }
-
-  // Assemble
-  bottom.append(price, button);
-  top.append(highlight, bonus, bottom);
-  inner.append(top);
-  if (footer) {
-    inner.append(footer);
-  }
-  card.append(inner);
-
-  return card;
-}
-
-function setupPaygButtonClicks(plansData, controlPaygButtons) {
-  // Select all new PAYG buttons (mobile and desktop)
-  const newPaygButtons = document.querySelectorAll('.ccx-mobile-card--payg .ccx-mobile-card__button, .ccx-desktop-card--payg .ccx-desktop-card__button');
-
-  // Log the number of new PAYG buttons found
-  customLog('New PAYG buttons found:', newPaygButtons.length, 'Buttons:', Array.from(newPaygButtons).map(btn => btn.outerHTML));
-
-  // Log the number of control PAYG buttons and their data-entries-amount values
-  customLog('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
-    html: btn.outerHTML,
-    entriesAmount: btn.getAttribute('data-entries-amount')
-  })));
-
-  // Function to extract number from data-entries-amount (e.g., "20" from "20 Lose")
-  function extractNumberFromEntries(element) {
-    const value = element.getAttribute('data-entries-amount');
-    if (value) {
-      const match = value.match(/^\d+/);
-      return match ? match[0] : null;
+      footerTextDiv.append(footerBoldSpan, footerRegularSpan);
+      footer.append(footerImageDiv, footerTextDiv);
     }
-    return null;
+
+    bonus.append(icon, bold, span);
+    left.append(priceContainer, highlight);
+    right.append(button);
+    top.append(bonus);
+    bottom.append(left, right);
+    card.append(top, bottom);
+
+    if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+      card.append(footer);
+    }
+
+    return card;
   }
 
-  // Add click event listeners to new PAYG buttons
-  newPaygButtons.forEach((newButton, index) => {
-    newButton.addEventListener('click', () => {
-      // Calculate the correct plansData index (handles both mobile and desktop)
-      const planIndex = index % plansData.payAsYouGo.length;
+  function createDesktopCard(planData, type = 'subscription') {
+    const card = document.createElement('div');
+    card.className = 'ccx-desktop-card ' + (type === 'subscription' ? 'ccx-desktop-card--subscription' : 'ccx-desktop-card--payg') + ' flex-1 max-w-[380px] basis-1/5';
+    card.style.order = planData.order;
 
-      // Get the price and entriesAmount from plansData for this button
-      const price = plansData.payAsYouGo[planIndex].price;
-      const entriesAmount = plansData.payAsYouGo[planIndex].entriesAmount;
+    const inner = document.createElement('div');
+    inner.className = 'ccx-desktop-card__inner-container';
 
-      // Log the clicked button, price, and entriesAmount
-      customLog('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
+    const top = document.createElement('div');
+    top.className = 'ccx-desktop-card__top';
 
-      // Find the matching control button
-      const matchingControlButton = Array.from(controlPaygButtons).find(button => {
-        const controlEntriesAmount = extractNumberFromEntries(button);
-        // Log comparison for each control button
-        customLog('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
-        return controlEntriesAmount === entriesAmount;
-      });
+    // Highlight
+    const highlight = document.createElement('div');
+    highlight.className = 'ccx-desktop-card__highlight';
+    highlight.textContent = planData.highlight || '';
 
-      // Programmatically click the matching control button
-      if (matchingControlButton) {
-        customLog('Found matching control button:', matchingControlButton.outerHTML);
-        matchingControlButton.click();
-      } else {
-        console.error('No control button found for price: ' + price + ', entriesAmount: ' + entriesAmount);
+    // Bonus
+    const bonus = document.createElement('div');
+    bonus.className = 'ccx-desktop-card__bonus';
+    if (planData.bonusCount) {
+      bonus.textContent = planData.bonusCount + ' Bonus Verlosung ';
+    } else {
+      bonus.textContent = 'Bonus Verlosung ';
+    }
+    const inklusive = document.createElement('p');
+    inklusive.textContent = 'inklusive';
+    bonus.appendChild(inklusive);
+
+    // Bottom
+    const bottom = document.createElement('div');
+    bottom.className = 'ccx-desktop-card__bottom';
+
+    const price = document.createElement('div');
+    price.className = 'ccx-desktop-card__price';
+
+    const priceValue = document.createElement('span');
+    priceValue.className = 'ccx-desktop-card__price-value';
+    priceValue.textContent = planData.price + '€' || '';
+
+    price.appendChild(priceValue);
+
+    // Only add /Monat for subscription cards
+    if (type === 'subscription') {
+      const priceSpan = document.createElement('span');
+      priceSpan.className = 'ccx-desktop-card__price-span';
+      priceSpan.textContent = '/Monat';
+      price.appendChild(priceSpan);
+    }
+
+    const button = document.createElement('button');
+    button.className = 'ccx-desktop-card__button';
+    button.textContent = 'Mitmachen';
+
+    // Footer for subscription plans with price 25 or 35
+    let footer = null;
+    if (type === 'subscription' && (parseInt(planData.price) === 25 || parseInt(planData.price) === 35)) {
+      footer = document.createElement('div');
+      footer.className = 'ccx-desktop-card__footer';
+
+      const footerImageDiv = document.createElement('div');
+      footerImageDiv.className = 'ccx-desktop-card__footer-image';
+      footerImageDiv.innerHTML = ticketIconSVG;
+
+      const footerTextDiv = document.createElement('div');
+      footerTextDiv.className = 'ccx-desktop-card__footer-text';
+
+      const footerBoldSpan = document.createElement('span');
+      footerBoldSpan.className = 'ccx-desktop-card__footer-bold';
+      footerBoldSpan.textContent = '+ 1 Los/Monat';
+
+      const footerRegularSpan = document.createElement('span');
+      footerRegularSpan.className = 'ccx-desktop-card__footer-regular';
+      footerRegularSpan.textContent = 'für die Exklusive-Verlosung von 25.000 € in Bar';
+
+      footerTextDiv.append(footerBoldSpan, footerRegularSpan);
+      footer.append(footerImageDiv, footerTextDiv);
+    }
+
+    // Assemble
+    bottom.append(price, button);
+    top.append(highlight, bonus, bottom);
+    inner.append(top);
+    if (footer) {
+      inner.append(footer);
+    }
+    card.append(inner);
+
+    return card;
+  }
+
+  function setupPaygButtonClicks(plansData, controlPaygButtons) {
+    // Select all new PAYG buttons (mobile and desktop)
+    const newPaygButtons = document.querySelectorAll('.ccx-mobile-card--payg .ccx-mobile-card__button, .ccx-desktop-card--payg .ccx-desktop-card__button');
+
+    // Log the number of new PAYG buttons found
+    customLog('New PAYG buttons found:', newPaygButtons.length, 'Buttons:', Array.from(newPaygButtons).map(btn => btn.outerHTML));
+
+    // Log the number of control PAYG buttons and their data-entries-amount values
+    customLog('Control PAYG buttons found:', controlPaygButtons.length, 'Buttons:', Array.from(controlPaygButtons).map(btn => ({
+      html: btn.outerHTML,
+      entriesAmount: btn.getAttribute('data-entries-amount')
+    })));
+
+    // Function to extract number from data-entries-amount (e.g., "20" from "20 Lose")
+    function extractNumberFromEntries(element) {
+      const value = element.getAttribute('data-entries-amount');
+      if (value) {
+        const match = value.match(/^\d+/);
+        return match ? match[0] : null;
       }
-    });
-  });
-}
+      return null;
+    }
 
-function setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons) {
-  // Select all new subscription buttons (mobile and desktop)
-  const newSubscriptionButtons = document.querySelectorAll('.ccx-mobile-card--subscription .ccx-mobile-card__button, .ccx-desktop-card--subscription .ccx-desktop-card__button');
+    // Add click event listeners to new PAYG buttons
+    newPaygButtons.forEach((newButton, index) => {
+      newButton.addEventListener('click', () => {
+        // Calculate the correct plansData index (handles both mobile and desktop)
+        const planIndex = index % plansData.payAsYouGo.length;
 
-  // Log the number of new subscription buttons found
-  customLog('New subscription buttons found:', newSubscriptionButtons.length, 'Buttons:', Array.from(newSubscriptionButtons).map(btn => btn.outerHTML));
+        // Get the price and entriesAmount from plansData for this button
+        const price = plansData.payAsYouGo[planIndex].price;
+        const entriesAmount = plansData.payAsYouGo[planIndex].entriesAmount;
 
-  // Log the number of control subscription buttons and their price values
-  customLog('Control subscription buttons found:', controlSubscriptionButtons.length, 'Buttons:', Array.from(controlSubscriptionButtons).map(btn => ({
-    html: btn.outerHTML,
-    price: btn.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]')?.textContent.trim()
-  })));
+        // Log the clicked button, price, and entriesAmount
+        customLog('Clicked button:', newButton.outerHTML, 'Price:', price, 'EntriesAmount:', entriesAmount);
 
-  // Function to extract price from control button's parent [data-test="card-variant-subscription"] [data-test="price"]
-  function extractPriceFromControlButton(element) {
-    const priceElement = element.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]');
-    return priceElement ? priceElement.textContent.trim() : null;
-  }
+        // Find the matching control button
+        const matchingControlButton = Array.from(controlPaygButtons).find(button => {
+          const controlEntriesAmount = extractNumberFromEntries(button);
+          // Log comparison for each control button
+          customLog('Comparing control button:', button.getAttribute('data-entries-amount'), 'with entriesAmount:', entriesAmount);
+          return controlEntriesAmount === entriesAmount;
+        });
 
-  // Add click event listeners to new subscription buttons
-  newSubscriptionButtons.forEach((newButton, index) => {
-    newButton.addEventListener('click', () => {
-      // Calculate the correct plansData index (handles both mobile and desktop)
-      const planIndex = index % plansData.subscriptions.length;
-
-      // Get the price from plansData for this button
-      const price = plansData.subscriptions[planIndex].price;
-
-      // Log the clicked button and its price
-      customLog('Clicked button:', newButton.outerHTML, 'Price:', price);
-
-      // Find the matching control button
-      const matchingControlButton = Array.from(controlSubscriptionButtons).find(button => {
-        const controlPrice = extractPriceFromControlButton(button);
-        // Log comparison for each control button
-        customLog('Comparing control button price:', controlPrice, 'with price:', price);
-        return controlPrice === price;
-      });
-
-      // Programmatically click the matching control button
-      if (matchingControlButton) {
-        customLog('Found matching control button:', matchingControlButton.outerHTML);
-        matchingControlButton.click();
-      } else {
-        console.error('No control button found for price: ' + price);
-      }
-    });
-  });
-}
-
-function waitForElements(selectors, numberOfElementsToWaitFor, callback) {
-  customLog('[waitForElements] Starting to wait for elements...');
-
-  if (!selectors || !Array.isArray(selectors) || selectors.length === 0) {
-    customLog('[waitForElements] No selectors provided.');
-    return;
-  }
-
-  if (!window.DYO || !DYO.waitForElementAsync) {
-    customLog('[waitForElements] DYO.waitForElementAsync is not available.');
-    return;
-  }
-
-  // Create promises for each selector
-  const promises = selectors.map(selector =>
-    DYO.waitForElementAsync(selector, numberOfElementsToWaitFor, 100, 150)
-  );
-
-  Promise.all(promises)
-    .then(results => {
-      customLog('[waitForElements] All elements found:', results[0]);
-      if (typeof callback === 'function') callback(results);
-    })
-    .catch(error => {
-      customLog('[waitForElements] Some selectors not found within timeout.', error);
-    });
-}
-
-function init() {
-  try {
-    customLog(TEST_NAME + ' | ' + VARIATION);
-    customLog('[init] Current URL: ' + CURRENT_URL);
-
-    document.body.classList.add('ccx-omaze-de5-v2');
-    customLog('[init] Added class ccx-omaze-de5-v2 to body');
-
-    waitForElements(
-      ['#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button'], 6,
-      function (results) {
-        // console.log('[waitForElements] Elements found', results);
-
-        // const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
-        const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"] .add-to-cart-button');
-        const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
-
-        // Add custom styles
-        addStyles(styles);
-
-        const controlMobileContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
-        const controlDesktopContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
-
-        if (controlMobileContainer && controlDesktopContainer) {
-          plansData.payAsYouGo.forEach(planData => {
-            const card = createMobileCard(planData, 'payg');
-            controlMobileContainer.appendChild(card);
-          });
-          plansData.subscriptions.forEach(planData => {
-            const card = createMobileCard(planData);
-            controlMobileContainer.appendChild(card);
-          });
-
-          plansData.payAsYouGo.forEach(planData => {
-            const card = createDesktopCard(planData, 'payg');
-            controlDesktopContainer.appendChild(card);
-          });
-          plansData.subscriptions.forEach(planData => {
-            const card = createDesktopCard(planData);
-            controlDesktopContainer.appendChild(card);
-          });
-
-          setupPaygButtonClicks(plansData, controlPayAsYouGoButtons);
-
-          setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons);
+        // Programmatically click the matching control button
+        if (matchingControlButton) {
+          customLog('Found matching control button:', matchingControlButton.outerHTML);
+          matchingControlButton.click();
+        } else {
+          console.error('No control button found for price: ' + price + ', entriesAmount: ' + entriesAmount);
         }
+      });
+    });
+  }
 
-      }
+  function setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons) {
+    // Select all new subscription buttons (mobile and desktop)
+    const newSubscriptionButtons = document.querySelectorAll('.ccx-mobile-card--subscription .ccx-mobile-card__button, .ccx-desktop-card--subscription .ccx-desktop-card__button');
+
+    // Log the number of new subscription buttons found
+    customLog('New subscription buttons found:', newSubscriptionButtons.length, 'Buttons:', Array.from(newSubscriptionButtons).map(btn => btn.outerHTML));
+
+    // Log the number of control subscription buttons and their price values
+    customLog('Control subscription buttons found:', controlSubscriptionButtons.length, 'Buttons:', Array.from(controlSubscriptionButtons).map(btn => ({
+      html: btn.outerHTML,
+      price: btn.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]')?.textContent.trim()
+    })));
+
+    // Function to extract price from control button's parent [data-test="card-variant-subscription"] [data-test="price"]
+    function extractPriceFromControlButton(element) {
+      const priceElement = element.closest('[data-test="card-variant-subscription"]')?.querySelector('[data-test="price"]');
+      return priceElement ? priceElement.textContent.trim() : null;
+    }
+
+    // Add click event listeners to new subscription buttons
+    newSubscriptionButtons.forEach((newButton, index) => {
+      newButton.addEventListener('click', () => {
+        // Calculate the correct plansData index (handles both mobile and desktop)
+        const planIndex = index % plansData.subscriptions.length;
+
+        // Get the price from plansData for this button
+        const price = plansData.subscriptions[planIndex].price;
+
+        // Log the clicked button and its price
+        customLog('Clicked button:', newButton.outerHTML, 'Price:', price);
+
+        // Find the matching control button
+        const matchingControlButton = Array.from(controlSubscriptionButtons).find(button => {
+          const controlPrice = extractPriceFromControlButton(button);
+          // Log comparison for each control button
+          customLog('Comparing control button price:', controlPrice, 'with price:', price);
+          return controlPrice === price;
+        });
+
+        // Programmatically click the matching control button
+        if (matchingControlButton) {
+          customLog('Found matching control button:', matchingControlButton.outerHTML);
+          matchingControlButton.click();
+        } else {
+          console.error('No control button found for price: ' + price);
+        }
+      });
+    });
+  }
+
+  function waitForElements(selectors, numberOfElementsToWaitFor, callback) {
+    customLog('[waitForElements] Starting to wait for elements...');
+
+    if (!selectors || !Array.isArray(selectors) || selectors.length === 0) {
+      customLog('[waitForElements] No selectors provided.');
+      return;
+    }
+
+    if (!window.DYO || !DYO.waitForElementAsync) {
+      customLog('[waitForElements] DYO.waitForElementAsync is not available.');
+      return;
+    }
+
+    // Create promises for each selector
+    const promises = selectors.map(selector =>
+      DYO.waitForElementAsync(selector, numberOfElementsToWaitFor, 100, 150)
     );
 
-  } catch (error) {
-    customLog(error.message);
+    Promise.all(promises)
+      .then(results => {
+        customLog('[waitForElements] All elements found:', results[0]);
+        if (typeof callback === 'function') callback(results);
+      })
+      .catch(error => {
+        customLog('[waitForElements] Some selectors not found within timeout.', error);
+      });
   }
-}
 
-init();
+  function init() {
+    try {
+      customLog(TEST_NAME + ' | ' + VARIATION);
+      customLog('[init] Current URL: ' + CURRENT_URL);
+
+      document.body.classList.add('ccx-omaze-de5-v2');
+      customLog('[init] Added class ccx-omaze-de5-v2 to body');
+
+      waitForElements(
+        ['#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] .add-to-cart-button'], 6,
+        function (results) {
+          // console.log('[waitForElements] Elements found', results);
+
+          // const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*="single-purchase-tab-pane"] .md\\:hidden .add-to-cart-button');
+          const controlPayAsYouGoButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=nav-latest] [id*=single-purchase-tab-pane] [data-test="mobile-card-variant-payg"] .add-to-cart-button');
+          const controlSubscriptionButtons = document.querySelectorAll('#enter-now-material-tab-buttons-design [id*=subscription-tab-pane] .add-to-cart-button');
+
+          // Add custom styles
+          addStyles(styles);
+
+          const controlMobileContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
+          const controlDesktopContainer = document.querySelector('#enter-now-material-tab-buttons-design [id*=single-purchase-tab-pane] > div:nth-child(2).mx-auto > div')
+          const de6TestExists = document.querySelector('[class*=ccx-omaze-de6]');
+
+          if (de6TestExists) {
+              // Remove any existing PAYG mobile cards
+              const existingCards = controlPAYGContainer.querySelectorAll('.ccx-mobile-card.ccx-mobile-card--payg');
+              existingCards.forEach(card => card.remove());
+              document.querySelectorAll('.ccx-mobile-card').forEach(card => {
+                card.style.paddingBottom = 0;
+              })
+            }
+
+          if (controlMobileContainer && controlDesktopContainer) {
+            plansData.payAsYouGo.forEach(planData => {
+              const card = createMobileCard(planData, 'payg');
+              controlMobileContainer.appendChild(card);
+            });
+            plansData.subscriptions.forEach(planData => {
+              const card = createMobileCard(planData);
+              controlMobileContainer.appendChild(card);
+            });
+
+            plansData.payAsYouGo.forEach(planData => {
+              const card = createDesktopCard(planData, 'payg');
+              controlDesktopContainer.appendChild(card);
+            });
+            plansData.subscriptions.forEach(planData => {
+              const card = createDesktopCard(planData);
+              controlDesktopContainer.appendChild(card);
+            });
+
+            setupPaygButtonClicks(plansData, controlPayAsYouGoButtons);
+
+            setupSubscriptionButtonClicks(plansData, controlSubscriptionButtons);
+          }
+
+        }
+      );
+
+    } catch (error) {
+      customLog(error.message);
+    }
+  }
+
+  init();
+})();
+
