@@ -1,72 +1,91 @@
 (function waitForButtonsAndModify() {
-    const VARIATION = 'v3';
+  const VARIATION = 'v3';
 
-    const REPLACEMENTS = {
-        v1: { bodyClass: 'ccx-hex-16-3-v1', replacementText: 'Find' },
-        v2: { bodyClass: 'ccx-hex-16-3-v2', replacementText: 'Choose' },
-        v3: { bodyClass: 'ccx-hex-16-3-v3', replacementText: 'Search for' },
-    };
+  const REPLACEMENTS = {
+    v1: { bodyClass: 'ccx-hex-16-3-v1', replacementText: 'Find' },
+    v2: { bodyClass: 'ccx-hex-16-3-v2', replacementText: 'Choose' },
+    v3: { bodyClass: 'ccx-hex-16-3-v3', replacementText: 'Search for' },
+  };
 
-    const config = REPLACEMENTS[VARIATION] || REPLACEMENTS.v1;
+  const config = REPLACEMENTS[VARIATION] || REPLACEMENTS.v1;
 
-    const SELECTOR =
-        'main > .max-w-limit > section button .overflow-hidden.whitespace-nowrap.text-ellipsis.width-full';
-    const POLL_INTERVAL = 300;
-    const MAX_WAIT_MS = 10000;
-    const start = performance.now();
+  const POLL_INTERVAL = 300;
+  const MAX_WAIT_MS = 10000;
+  const start = performance.now();
 
-    console.log('[FindYourTickets:' + VARIATION + '] Waiting for control elements...');
+  console.log('[FindYourTickets:' + VARIATION + '] Waiting for buttons with inner div "Get Your Ticket"...');
 
-    document.body.classList.add(config.bodyClass);
+  document.body.classList.add(config.bodyClass);
 
-    function checkAndRun() {
-        const buttons = [].slice.call(document.querySelectorAll(SELECTOR)).filter(function (el) {
-            return el.textContent.includes('Get Your');
-        });
-
-        if (buttons.length === 0) {
-            const elapsed = Math.round(performance.now() - start);
-            if (elapsed < MAX_WAIT_MS) {
-                console.log('[FindYourTickets:' + VARIATION + '] Still waiting... (' + elapsed + 'ms elapsed)');
-                return setTimeout(checkAndRun, POLL_INTERVAL);
-            } else {
-                console.warn('[FindYourTickets:' + VARIATION + '] Timed out — no matching buttons found.');
-                return;
-            }
+  function findTargetDivs() {
+    const matches = [];
+    const buttons = Array.from(document.querySelectorAll('button'));
+    buttons.forEach(button => {
+      // find any descendant divs
+      const divs = Array.from(button.querySelectorAll('div'));
+      divs.forEach(div => {
+        if (div.textContent && div.textContent.trim() === 'Get Your Ticket') {
+          matches.push(div);
         }
+      });
+    });
+    return matches;
+  }
 
-        console.log('[FindYourTickets:' + VARIATION + '] Found ' + buttons.length + " 'Get Your' button(s).");
-        buttons.forEach(function (el, i) {
-            console.log('[FindYourTickets:' + VARIATION + '] → Button ' + (i + 1) + ': "' + el.textContent.trim() + '"');
-        });
+  function replaceText(divEl) {
+    if (!divEl) return;
+    const currentText = divEl.textContent.trim();
+    // Match exact "Get Your Ticket" (case-insensitive)
+    if (/^Get Your Ticket$/i.test(currentText)) {
+      const newText = currentText.replace(/^Get Your/i, config.replacementText);
+      if (newText !== currentText) {
+        console.log('[FindYourTickets:' + VARIATION + '] Updating text: "' + currentText + '" → "' + newText + '"');
+        divEl.textContent = newText;
+      }
+    }
+  }
 
-        function replaceText(el) {
-            if (!el) return;
-            var currentText = el.textContent.trim();
-            if (/^Get Your/i.test(currentText)) {
-                var newText = currentText.replace(/^Get Your/, config.replacementText);
-                if (newText !== currentText) {
-                    console.log('[FindYourTickets:' + VARIATION + '] Updating text: "' + currentText + '" → "' + newText + '"');
-                    el.textContent = newText;
-                }
-            }
-        }
+  function checkAndRun() {
+    const divs = findTargetDivs();
 
-        console.log('[FindYourTickets:' + VARIATION + '] Performing initial replacements...');
-        buttons.forEach(replaceText);
-
-        var observer = new MutationObserver(function () {
-            console.log('[FindYourTickets:' + VARIATION + '] Detected text change, re-checking...');
-            buttons.forEach(replaceText);
-        });
-
-        buttons.forEach(function (el) {
-            observer.observe(el, { characterData: true, subtree: true, childList: true });
-            console.log('[FindYourTickets:' + VARIATION + '] Observing:', el);
-        });
-
-        console.log('[FindYourTickets:' + VARIATION + '] Observer active and text replacement live.');
+    if (divs.length === 0) {
+      const elapsed = Math.round(performance.now() - start);
+      if (elapsed < MAX_WAIT_MS) {
+        console.log('[FindYourTickets:' + VARIATION + '] Still waiting... (' + elapsed + 'ms elapsed)');
+        return setTimeout(checkAndRun, POLL_INTERVAL);
+      } else {
+        console.warn('[FindYourTickets:' + VARIATION + '] Timed out — no matching divs found inside buttons.');
+        return;
+      }
     }
 
-    checkAndRun();
+    console.log('[FindYourTickets:' + VARIATION + '] Found ' + divs.length + " div(s) with exact text 'Get Your Ticket' inside buttons.");
+    divs.forEach((d, i) => {
+      console.log('[FindYourTickets:' + VARIATION + '] → Match ' + (i + 1) + ': "' + d.textContent.trim() + '"');
+    });
+
+    // Initial replacement
+    divs.forEach(replaceText);
+
+    // Observe each matched div for text changes
+    const observer = new MutationObserver(mutations => {
+      // re-run replacement on the observed div(s) when they change
+      mutations.forEach(m => {
+        const target = m.target.nodeType === Node.TEXT_NODE ? m.target.parentNode : m.target;
+        if (target && target.nodeType === Node.ELEMENT_NODE) {
+          // If it's one of our tracked divs (or a child change), attempt replacement
+          replaceText(target.closest ? target.closest('div') || target : target);
+        }
+      });
+    });
+
+    divs.forEach(divEl => {
+      observer.observe(divEl, { characterData: true, subtree: true, childList: true });
+      console.log('[FindYourTickets:' + VARIATION + '] Observing div:', divEl);
+    });
+
+    console.log('[FindYourTickets:' + VARIATION + '] Initial replacements done and observers attached.');
+  }
+
+  checkAndRun();
 })();
