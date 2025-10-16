@@ -1,4 +1,4 @@
-const LOG_ENABLED = true;
+const LOG_ENABLED = false;
 const TEST_NAME = "OZDE-6 | Remove discount for £10 PAYG";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
 const VARIATION = "VARIATION 2";
@@ -532,6 +532,107 @@ function createMobileCard(planData, type = 'subscription') {
   return card;
 }
 
+// function createUpsellCard(subscriptionPlan) {
+//   customLog('[createUpsellCard] Creating upsell card...');
+
+//   // Root card
+//   const card = document.createElement('div');
+//   card.className = 'ccx-card-upsell ccx-card-upsell--root flex flex-col';
+
+//   // Top section (image container)
+//   const top = document.createElement('div');
+//   top.className = 'ccx-card-upsell__top';
+//   const img = document.createElement('img');
+//   img.src = upsellImageURL;
+//   img.alt = 'Upsell image';
+//   top.appendChild(img);
+
+//   // Middle section
+//   const middle = document.createElement('div');
+//   middle.className = 'ccx-card-upsell__middle';
+
+//   // Headline
+//   const headline = document.createElement('p');
+//   headline.className = 'ccx-card-upsell__headline';
+//   headline.innerHTML =
+//     'Wechsle zum Abo und dir entgeht keine Ziehung mehr';
+//   middle.appendChild(headline);
+
+//   // Info pills
+//   const pills = document.createElement('div');
+//   pills.className = 'ccx-card-upsell__pills';
+
+//   const pill1 = document.createElement('div');
+//   pill1.className = 'ccx-card-upsell__pill';
+//   if (planPrice === '10') {
+//     pill1.innerHTML = '2 Bonus Verlosung <span>inklusive</span>';
+//   }
+//   if (planPrice === '25') {
+//     pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+//   }
+//   if (planPrice === '35') {
+//     pill1.innerHTML = '4 Bonus Verlosung <span>inklusive</span>';
+//   }
+
+//   const pill2 = document.createElement('div');
+//   pill2.className = 'ccx-card-upsell__pill';
+//   if (planPrice === '10') {
+//     pill2.innerHTML = '+1 Gratis Los <span>jeden Monat</span>';
+//   }
+//   if (planPrice === '25') {
+//     pill2.innerHTML = '+4 Gratis Los <span>jeden Monat</span>';
+//   }
+//   if (planPrice === '35') {
+//     pill2.innerHTML = '+6 Gratis Los <span>jeden Monat</span>';
+//   }
+
+
+//   pills.appendChild(pill1);
+//   pills.appendChild(pill2);
+//   middle.appendChild(pills);
+
+//   // Price info
+//   const priceContainer = document.createElement('div');
+//   priceContainer.className = 'ccx-card-upsell__price-container';
+
+//   const price = document.createElement('div');
+//   price.className = 'ccx-card-upsell__price';
+
+//   //write without template literal
+//   price.innerHTML = planPrice + '€<span>/Monat</span>';
+
+//   const entries = document.createElement('div');
+//   entries.className = 'ccx-card-upsell__entries';
+//   entries.textContent = entriesAmount + ' + 1 Gratis Los';
+
+//   priceContainer.appendChild(price);
+//   priceContainer.appendChild(entries);
+//   middle.appendChild(priceContainer);
+
+//   // Bottom section
+//   const bottom = document.createElement('div');
+//   bottom.className = 'ccx-card-upsell__bottom';
+
+//   const button = document.createElement('button');
+//   button.className = 'ccx-card-upsell__button';
+//   button.textContent = 'Abo aktivieren';
+
+//   const link = document.createElement('a');
+//   link.className = 'ccx-card-upsell__no_thanks';
+//   link.href = '#';
+//   link.textContent = 'Nein, danke';
+
+//   bottom.appendChild(button);
+//   bottom.appendChild(link);
+
+//   // Assemble
+//   card.appendChild(top);
+//   card.appendChild(middle);
+//   card.appendChild(bottom);
+
+//   return card;
+// }
+
 function createUpsellCard(subscriptionPlan) {
   customLog('[createUpsellCard] Creating upsell card...', subscriptionPlan);
 
@@ -652,6 +753,7 @@ function createUpsellCard(subscriptionPlan) {
 
   return card;
 }
+
 
 function bindUpsellElements(upsellCard, matchingSubscriptionButton, matchingPAYGButton, skipButton) {
   customLog('[bindUpsellElements] Binding upsell elements...');
