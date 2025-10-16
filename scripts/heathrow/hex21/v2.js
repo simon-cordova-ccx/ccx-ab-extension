@@ -12,7 +12,7 @@ const NEW_PARAGRAPHS = [
 ];
 
 const styles = `
-  main > .max-w-limit section:nth-child(1) > div:last-child > div:last-child ul:not([data-ccx-custom-ul]) {
+  main #main-content > div:last-child ul:not([data-ccx-custom-ul]) {
     display: none !important;
   }
 `;
@@ -103,7 +103,7 @@ const applyBodyClass = className => document.body.classList.add(className);
 
     // Update title and body class
     updateHeroTitle(CONTROL_HERO_TITLE);
-    applyBodyClass('ccx-omaze-hex21-v2');
+    applyBodyClass('ccx-heathrow-hex21-v2');
 
     console.log('Custom UL inserted and original hidden. Title updated.');
   } catch (err) {

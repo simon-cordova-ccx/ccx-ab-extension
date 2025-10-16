@@ -1,9 +1,9 @@
 // --- Config ---
 const SELECTORS = {
-  container: 'main > .max-w-limit section:nth-child(1) > div:last-child > div:last-child'
+  container: 'main #main-content'
 };
 
-const BODY_CLASS = 'ccx-omaze-hex21-v1';
+const BODY_CLASS = 'ccx-heathrow-hex21-v1';
 const WAIT_INTERVAL = 300;
 const MAX_ATTEMPTS = 30;
 
@@ -27,6 +27,7 @@ const waitForElement = (selector, interval = WAIT_INTERVAL, maxAttempts = MAX_AT
 
     // Apply row-reverse layout
     container.style.flexDirection = 'row-reverse';
+    container.style.marginTop = '2rem';
 
     // Add body class
     document.body.classList.add(BODY_CLASS);

@@ -12,12 +12,15 @@ const NEW_PARAGRAPHS = [
 ];
 
 const WAIT_INTERVAL = 300;
-const MAX_ATTEMPTS = 30;
+const MAX_ATTEMPTS = 100;
 const CUSTOM_UL_MARKER = 'data-ccx-custom-ul';
 
 const styles = `
-  main > .max-w-limit section:nth-child(1) > div:last-child > div:last-child ul:not([data-ccx-custom-ul]) {
+  main #main-content > div:last-child ul:not([data-ccx-custom-ul]) {
     display: none !important;
+  }
+  main #main-content {
+    margin-top: 2rem;
   }
 `;
 
@@ -27,8 +30,15 @@ const waitForElement = (selector, interval = WAIT_INTERVAL, maxAttempts = MAX_AT
     let attempt = 0;
     const check = () => {
       const el = document.querySelector(selector);
-      if (el) return resolve(el);
-      if (++attempt >= maxAttempts) return reject(new Error(`Element not found: ${selector}`));
+      if (el) {
+        console.log('[waitForElement] Found element:', selector);
+        return resolve(el);
+      }
+      if (++attempt >= maxAttempts) {
+        console.warn('[waitForElement] Timed out:', selector, 'not found after', attempt, 'attempts');
+        return reject(new Error('Element not found: ' + selector));
+      }
+      console.log('[waitForElement] Attempt', attempt, ':', selector, 'not found yet...');
       setTimeout(check, interval);
     };
     check();
@@ -36,42 +46,53 @@ const waitForElement = (selector, interval = WAIT_INTERVAL, maxAttempts = MAX_AT
 
 const addStyles = (css) => {
   console.log('[addStyles] Starting the addStyles function...');
-
-  if (!css) return;
+  if (!css) {
+    console.log('[addStyles] No CSS provided, skipping.');
+    return;
+  }
 
   if (document.querySelector('.ccx-styles-hex21-v3')) {
-    console.log('[addStyles] Custom styles already exist.');
+    console.log('[addStyles] Custom styles already exist, skipping.');
     return;
   }
 
   const style = document.createElement('style');
   style.classList.add('ccx-styles-hex21-v3');
   style.appendChild(document.createTextNode(css));
-
   document.head.appendChild(style);
-  console.log('Custom styles added.');
+  console.log('[addStyles] Custom styles added to <head>.');
 };
 
 const hideOriginalUl = ul => {
-  if (!ul) return;
-  ul.style.display = 'none'; // Just hide it visually, no visibility:hidden
+  if (!ul) {
+    console.warn('[hideOriginalUl] No UL element provided to hide.');
+    return;
+  }
+  ul.style.display = 'none'; 
   ul.setAttribute('aria-hidden', 'true');
+  console.log('[hideOriginalUl] Original UL hidden.');
 };
 
 const createCustomUl = (originalUl, texts = NEW_PARAGRAPHS) => {
-  if (!originalUl) return null;
+  if (!originalUl) {
+    console.warn('[createCustomUl] No original UL provided, cannot create custom UL.');
+    return null;
+  }
 
-  const existing = document.querySelector(`ul[${CUSTOM_UL_MARKER}]`);
-  if (existing) return existing;
+  const existing = document.querySelector('ul[' + CUSTOM_UL_MARKER + ']');
+  console.log('---', existing);
+  if (existing) {
+    console.log('[createCustomUl] Custom UL already exists, returning existing one.');
+    return existing;
+  }
 
+  console.log('[createCustomUl] Creating new custom UL...');
   const customUl = document.createElement('ul');
   customUl.setAttribute(CUSTOM_UL_MARKER, '1');
 
-  // Copy original class list (but skip inline display:none styles)
   if (originalUl.className) customUl.className = originalUl.className;
-  customUl.removeAttribute('style'); // ensure no inline styles
+  customUl.removeAttribute('style');
 
-  // Clone <li><p> structure with same classes for consistency
   const sampleLi = originalUl.querySelector('li');
   const sampleP = sampleLi ? sampleLi.querySelector('p') : null;
   const liClass = sampleLi ? sampleLi.className : '';
@@ -88,33 +109,44 @@ const createCustomUl = (originalUl, texts = NEW_PARAGRAPHS) => {
   });
 
   originalUl.insertAdjacentElement('afterend', customUl);
+  console.log('[createCustomUl] Custom UL inserted after original UL.');
   return customUl;
 };
 
 const updateHeroTitle = el => {
+  if (!el) {
+    console.warn('[updateHeroTitle] No title element provided.');
+    return;
+  }
   const text = el.textContent.trim();
-  el.innerHTML = `Think speed.<br>${text}`;
+  el.innerHTML = 'Think speed.<br>' + text;
+  console.log('[updateHeroTitle] Hero title updated.');
 };
 
 // --- Main flow ---
 (async () => {
   try {
+    console.log('[Main] Waiting for container...');
     const container = await waitForElement(SELECTORS.container);
+
+    console.log('[Main] Waiting for hero title...');
     const titleEl = await waitForElement(SELECTORS.title);
+
+    console.log('[Main] Waiting for original UL...');
     const originalUl = await waitForElement(SELECTORS.ul);
 
-    // Apply layout + title change
+    console.log('[Main] Applying layout changes...');
     container.style.flexDirection = 'row-reverse';
     updateHeroTitle(titleEl);
     document.body.classList.add('ccx-heathrow-hex21-v3');
-
-    // Hide the original ul and insert our custom one
+    console.log('[Main] Layout and body class updated.');
+    
     hideOriginalUl(originalUl);
     createCustomUl(originalUl, NEW_PARAGRAPHS);
     addStyles(styles);
 
-    console.log('Original UL hidden and custom UL inserted once.');
+    console.log('[Main] Original UL hidden and custom UL inserted. Process complete.');
   } catch (err) {
-    console.warn('Initialization error:', err);
+    console.error('[Main] Initialization error:', err);
   }
 })();
