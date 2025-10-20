@@ -80,7 +80,7 @@ const styles = `
         padding-left: 2rem;
     }
     .ccx-mobile-container ol .ccx-mobile-list-item {
-        font-family: Montserrat;
+        font-family: inherit;
         font-weight: 600;
         font-size: 14px;
         letter-spacing: 0;
@@ -108,7 +108,7 @@ const styles = `
         justify-content: center;
     }
     span.ccx-desktop-list-item__text {
-        font-family: Montserrat;
+        font-family: inherit;
         font-weight: 600;
         font-size: 16px;
         line-height: 24px;
@@ -142,6 +142,7 @@ const styles = `
         }
         .ccx-caveats {
             padding: 0 3rem;
+            margin-bottom: 0;
         }
     }
 `;
@@ -428,14 +429,14 @@ const addStyles = (css) => {
     }
 
     // Check if the style tag already exists
-    if (document.querySelector('.ccx-styles-de7-v1')) {
+    if (document.querySelector('.ccx-styles-hex-22-v2')) {
         customLog('[addStyles] Custom styles already exist.');
         return;
     }
 
     // Create a new <style> element
     const style = document.createElement('style');
-    style.classList.add('ccx-styles-de7-v1');
+    style.classList.add('ccx-styles-hex-22-v2');
     style.appendChild(document.createTextNode(css));
 
     // Append the style tag to the document head
