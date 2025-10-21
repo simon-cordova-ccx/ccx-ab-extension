@@ -139,6 +139,70 @@ const handleCartPageTextChanges = (progressText) => {
     );
 };
 
+function observeProgressAndUpdateText() {
+    // Select the last <li> in the progress navigation
+    const progressNav = document.querySelector('nav[aria-label="Progress"]');
+    if (!progressNav) {
+        console.warn('Progress navigation not found.');
+        return;
+    }
+
+    const lastStep = progressNav.querySelector('li:last-child');
+    if (!lastStep) {
+        console.warn('Last progress step not found.');
+        return;
+    }
+
+    // Function to perform the text replacement
+    const replaceText = () => {
+        const targetElement = document.querySelector('[data-test="grand-prize-card-stepper"] .text-sm.mb-0');
+        if (!targetElement) {
+            console.warn('Target text element not found.');
+            return;
+        }
+
+        // Only modify if the text contains the original phrase
+        if (targetElement.textContent.includes('subscription renews each month')) {
+            const newHTML = targetElement.innerHTML.replace(
+                'subscription renews each month',
+                'entries auto-renew each month'
+            );
+            targetElement.innerHTML = newHTML;
+            console.log('Text updated successfully.');
+            // Optionally: disconnect observer after successful change
+            // observer.disconnect();
+        }
+    };
+
+    // Create a MutationObserver to watch for class changes on the last <li>
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const target = mutation.target;
+                if (target.classList.contains('active')) {
+                    console.log('Last progress step is now active. Updating text...');
+                    replaceText();
+                    // Optional: Stop observing after first activation
+                    // observer.disconnect();
+                }
+            }
+        }
+    });
+
+    // Start observing the last <li> for class attribute changes
+    observer.observe(lastStep, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+
+    // Also check immediately in case it's already active
+    if (lastStep.classList.contains('active')) {
+        replaceText();
+    }
+
+    // Return observer in case you want to disconnect later
+    return observer;
+}
 
 // Main initialization function for OZ28 experiment
 const init = () => {
@@ -156,6 +220,8 @@ const init = () => {
                 [{ selector: SELECTORS.cartProgress, count: 1 }],
                 (results) => {
                     results[0]?.elements.forEach(handleCartPageTextChanges);
+
+                    observeProgressAndUpdateText();
                 }
             );
         }
