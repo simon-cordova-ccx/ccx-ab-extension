@@ -8,6 +8,7 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const images = {
   logo: 'https://cdn-eu.dynamicyield.com/api/9880449/images/55caf913cc71.png',
+  logoFinal: 'https://cdn-eu.dynamicyield.com/api/9880449/images/3713eb6555ad.png',
 }
 
 const styles = `
@@ -59,10 +60,22 @@ const styles = `
 .oz29-hero {
   font-family: Gellix;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 25px;
   line-height: 100%;
+  letter-spacing: 0;
   text-align: center;
-  text-transform: none;
+  color: #081F28;
+}
+.step-4 .oz29-hero {
+  color: white;
+}
+.oz29-hero span {
+  font-family: Gellix;
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
 }
 .oz29-icon-container {
   width:180px; height:180px; margin:32px auto;
@@ -80,23 +93,42 @@ const styles = `
 }
 .oz29-cta {
   border: none;
-  background: #071022;
-  color: #fff;
-  border-radius: 32px;
   padding: 14px 0;
-  width: 250px;
   margin: 0 auto;
   margin-top: 32px;
+  height: 48px;
+  border-radius: 76px;
+  opacity: 1;
+  padding-top: 10px;
+  padding-right: 24px;
+  padding-bottom: 11px;
+  padding-left: 24px;
   font-family: Gellix;
   font-weight: 700;
   font-size: 18px;
   line-height: 150%;
   text-align: center;
+  width: 250px;
+  background: #081F28;
+  color: white;
 }
-.oz29-meta-link {
-  background:none; border:none; color:#fff;
-  margin-top:16px; text-decoration:underline;
-  font-size:14px; cursor:pointer;
+.oz29-card.step-4 .oz29-cta {
+  width: auto;
+  background: #FFDD00;
+  color: #081F28;
+}
+.oz29-step-4-skip-button {
+  background: none;
+  border: none;
+  margin-top: 16px;
+  font-family: Gellix;
+  font-weight: 500;
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
 }
 .oz29-card.step-4 {
   color:#fff;
@@ -271,13 +303,13 @@ const sliderSteps = [
   },
   {
     name: 'Step 4',
-    heroCopy: 'Thank you for being part of the Omãze Community!',
+    heroCopy: 'Thank you for being part of the <span style="color: #F5CD31;">Omaze Community!</span>',
     subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Cornwall House Draw!",
     icon: 'https://example.com/icons/confetti.svg',
     buttonText: 'Yes Please',
     progressColor: '#F5CD31',
     background: 'linear-gradient(180deg, #0B0F26 0%, #041440 100%)',
-    topLogo: 'https://example.com/logo-blue.svg',
+    topLogo: images.logoFinal,
     metaCopy: 'Skip',
   },
 ];
@@ -299,7 +331,7 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
         </div>
         <p class="oz29-subcopy"></p>
         <button class="oz29-cta"></button>
-        <button class="oz29-meta-link"></button>
+        <button class="oz29-step-4-skip-button"></button>
       </div>
     </div>
   `;
@@ -313,7 +345,7 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
     iconWrap: root.querySelector('.oz29-icon-container'),
     subcopy: root.querySelector('.oz29-subcopy'),
     cta: root.querySelector('.oz29-cta'),
-    meta: root.querySelector('.oz29-meta-link'),
+    meta: root.querySelector('.oz29-step-4-skip-button'),
   };
 
   let currentStep = 0;
@@ -323,9 +355,11 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
     if (!step) return;
 
     currentStep = index;
+    els.container.className = 'oz29-card step-' + (index + 1);
     els.container.style.background = step.background;
     els.logo.src = step.topLogo;
-    els.hero.textContent = step.heroCopy;
+    // els.hero.textContent = step.heroCopy;
+    els.hero.innerHTML = step.heroCopy;
     els.subcopy.innerHTML = step.subCopy;
     els.icon.src = step.icon;
     els.cta.textContent = step.buttonText;
@@ -338,13 +372,13 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
     });
   };
 
-  els.cta.addEventListener('click', () => {
-    if (currentStep < steps.length - 1) {
-      applyStep(currentStep + 1);
-    } else {
-      customLog('[oz29-slider] Reached final step.');
-    }
-  });
+  // els.cta.addEventListener('click', () => {
+  //   if (currentStep < steps.length - 1) {
+  //     applyStep(currentStep + 1);
+  //   } else {
+  //     customLog('[oz29-slider] Reached final step.');
+  //   }
+  // });
 
   applyStep(currentStep);
 
@@ -408,7 +442,7 @@ const init = () => {
             };
 
             // • Skip link (only on step 4)
-            const metaBtn = root.querySelector('.oz29-meta-link');
+            const metaBtn = root.querySelector('.oz29-step-4-skip-button');
             if (metaBtn) metaBtn.onclick = closeModal;
 
             // • Final CTA – you probably want to continue the original flow
