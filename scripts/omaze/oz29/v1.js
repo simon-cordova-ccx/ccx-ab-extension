@@ -9,6 +9,8 @@ const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 const images = {
   logo: 'https://cdn-eu.dynamicyield.com/api/9880449/images/55caf913cc71.png',
   logoFinal: 'https://cdn-eu.dynamicyield.com/api/9880449/images/3713eb6555ad.png',
+  stepFourConfetti: 'https://cdn-eu.dynamicyield.com/api/9880449/images/19015f46aaed.gif',
+  stepFourImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/75682b6ccaf9.png',
 }
 
 const styles = `
