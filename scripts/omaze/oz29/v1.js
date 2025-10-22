@@ -20,7 +20,7 @@ const styles = `
     width: 100vw !important;
     height: 100vh !important;
     z-index: 2147483647 !important;  /* highest possible */
-    background: rgba(0,0,0,0.75);    /* optional dark backdrop */
+    background: rgba(0,0,0,0.5);    /* optional dark backdrop */
     display: none;                   /* hidden until opened */
     overflow-y: auto;                /* scroll if content overflows */
     -webkit-overflow-scrolling: touch;
@@ -40,7 +40,6 @@ const styles = `
 /* keep the card 100% of the viewport but give it a max-width for tablets */
 .oz29-card {
     width: 100%;
-    max-width: 420px;
     margin: auto;
     border-radius: 0;
     height: auto;
@@ -49,6 +48,7 @@ const styles = `
     flex-direction: column;
     justify-content: center;
     padding: 1rem 2rem;
+    background-size: cover;
 }
 .oz29-progress {
   display:flex; gap:12px; justify-content:center; margin-bottom:24px;
@@ -67,6 +67,7 @@ const styles = `
   letter-spacing: 0;
   text-align: center;
   color: #081F28;
+  text-transform: none;
 }
 .step-4 .oz29-hero {
   color: white;
@@ -92,6 +93,9 @@ const styles = `
   line-height: 100%;
   text-align: center;
   color: #081F28;
+}
+.oz29-slider .step-4 .oz29-subcopy {
+  display: none;
 }
 .oz29-cta {
   border: none;
@@ -135,6 +139,100 @@ const styles = `
 .oz29-card.step-4 {
   color:#fff;
 }
+
+.oz29-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  display: none;
+}
+.oz29-card.step-4 .oz29-bg-video {
+  display: block;
+}
+.oz29-card.step-4 {
+  position: relative;
+  color: #fff;
+}
+.oz29-step-4-content {
+  display: none;
+  text-align: center;
+  margin: 32px auto;
+}
+.oz29-card.step-4 .oz29-step-4-content {
+  display: block;
+}
+.oz29-card.step-4 .oz29-icon-container {
+  display: none;
+}
+.oz29-step-4-boost,
+.oz29-step-4-draw {
+  color: white;
+  margin: 0;
+  font-family: Gellix;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+}
+.oz29-step-4-image {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+}
+.oz29-step-4-confetti {
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  display: block;
+}
+
+.oz29-step-4-images {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+.oz29-step-4-image {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+  clip-path: inset(18px 0 30px 0);
+}
+.oz29-step-4-confetti {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 200px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@media screen and (min-width: 768px) {
+  .oz29-slider {
+    width: clamp(320px, 57.6vw, 720px);
+    height: clamp(400px, 85vh, 720px);
+    border-radius: clamp(20px, 2.65vw, 40px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    position: absolute;
+  }
+  .oz29-card {
+    border-radius: clamp(20px, 2.65vw, 40px);
+  }
+}
+
 `;
 
 const customLog = (...messages) => {
@@ -280,7 +378,7 @@ const sliderSteps = [
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/52cadc1d39a8.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
-    background: 'linear-gradient(180deg, #FFEB00 0%, #FFE600 100%)',
+    background: 'url(https://iili.io/F0MK7nf.gif)',
     topLogo: images.logo,
   },
   {
@@ -290,7 +388,7 @@ const sliderSteps = [
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/ab9ad66c9197.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
-    background: 'linear-gradient(180deg, #FFEB00 0%, #FFE600 100%)',
+    background: 'url(https://iili.io/F0MK7nf.gif)',
     topLogo: images.logo,
   },
   {
@@ -300,19 +398,20 @@ const sliderSteps = [
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/0c5106a81acc.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
-    background: 'linear-gradient(180deg, #FFEB00 0%, #FFE600 100%)',
+    background: 'url(https://iili.io/F0MK7nf.gif)',
     topLogo: images.logo,
   },
   {
     name: 'Step 4',
     heroCopy: 'Thank you for being part of the <span style="color: #F5CD31;">Omaze Community!</span>',
-    subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Cornwall House Draw!",
-    icon: 'https://example.com/icons/confetti.svg',
+    // subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Cornwall House Draw!",
+    icon: '',
     buttonText: 'Yes Please',
     progressColor: '#F5CD31',
     background: 'linear-gradient(180deg, #0B0F26 0%, #041440 100%)',
     topLogo: images.logoFinal,
     metaCopy: 'Skip',
+    backgroundVideo: '', // Add your video URL
   },
 ];
 
@@ -321,30 +420,43 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
   if (!root) return null;
 
   root.innerHTML = `
-    <div class="oz29-slider">
-      <div class="oz29-card">
-        <div class="oz29-progress">
-          ${steps.map(() => '<span class="oz29-progress-dot"></span>').join('')}
-        </div>
-        <img class="oz29-logo" alt="Omaze logo" />
-        <h2 class="oz29-hero"></h2>
-        <div class="oz29-icon-container">
-          <img class="oz29-icon" alt="" />
-        </div>
-        <p class="oz29-subcopy"></p>
-        <button class="oz29-cta"></button>
-        <button class="oz29-step-4-skip-button"></button>
+  <div class="oz29-slider">
+    <div class="oz29-card">
+      <video class="oz29-bg-video" autoplay loop muted playsinline></video>
+      <div class="oz29-progress">
+        ${steps.map(() => '<span class="oz29-progress-dot"></span>').join('')}
       </div>
+      <img class="oz29-logo" alt="Omaze logo" />
+      <h2 class="oz29-hero"></h2>
+      <div class="oz29-icon-container">
+        <img class="oz29-icon" alt="" />
+      </div>
+      <div class="oz29-step-4-content">
+        <p class="oz29-step-4-boost">Here's your extra boost...</p>
+        <div class="oz29-step-4-images">
+          <img class="oz29-step-4-image" alt="30 Free Entries" />
+          <img class="oz29-step-4-confetti" alt="" />
+        </div>
+        <p class="oz29-step-4-draw">into the Cornwall House Draw!</p>
+      </div>
+      <p class="oz29-subcopy"></p>
+      <button class="oz29-cta"></button>
+      <button class="oz29-step-4-skip-button"></button>
     </div>
-  `;
+  </div>
+`;
 
   const els = {
     container: root.querySelector('.oz29-card'),
+    bgVideo: root.querySelector('.oz29-bg-video'),
     dots: [...root.querySelectorAll('.oz29-progress-dot')],
     logo: root.querySelector('.oz29-logo'),
     hero: root.querySelector('.oz29-hero'),
     icon: root.querySelector('.oz29-icon'),
     iconWrap: root.querySelector('.oz29-icon-container'),
+    step4Content: root.querySelector('.oz29-step-4-content'),
+    step4Image: root.querySelector('.oz29-step-4-image'),
+    step4Confetti: root.querySelector('.oz29-step-4-confetti'),
     subcopy: root.querySelector('.oz29-subcopy'),
     cta: root.querySelector('.oz29-cta'),
     meta: root.querySelector('.oz29-step-4-skip-button'),
@@ -360,13 +472,20 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
     els.container.className = 'oz29-card step-' + (index + 1);
     els.container.style.background = step.background;
     els.logo.src = step.topLogo;
-    // els.hero.textContent = step.heroCopy;
     els.hero.innerHTML = step.heroCopy;
     els.subcopy.innerHTML = step.subCopy;
     els.icon.src = step.icon;
+    els.step4Image.src = images.stepFourImage;
+    els.step4Confetti.src = images.stepFourConfetti;
     els.cta.textContent = step.buttonText;
     els.meta.textContent = step.metaCopy || '';
     els.meta.style.display = step.metaCopy ? 'inline-block' : 'none';
+
+    // Handle background video for step 4
+    if (step.backgroundVideo) {
+      els.bgVideo.src = step.backgroundVideo;
+      els.bgVideo.load();
+    }
 
     els.dots.forEach((dot, idx) => {
       dot.classList.toggle('is-active', idx <= index);
