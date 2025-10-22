@@ -169,44 +169,41 @@ const customLog = (...messages) => {
 };
 
 const createCard = () => {
-   customLog('[createCard] Starting the createCard function...');
+  customLog('[createCard] Starting the createCard function...');
 
-   const cardContainer = document.createElement('div');
-   cardContainer.className = 'ccx-oz30-card-container';
+  const cardContainer = document.createElement('div');
+  cardContainer.className = 'ccx-oz30-card-container';
 
-   const cardLeftSide = document.createElement('div');
-   cardLeftSide.className = 'ccx-oz30-card-left-side';
+  const cardLeftSide = document.createElement('div');
+  cardLeftSide.className = 'ccx-oz30-card-left-side';
 
-   const cardRightSide = document.createElement('div');
-   cardRightSide.className = 'ccx-oz30-card-right-side';
+  const cardRightSide = document.createElement('div');
+  cardRightSide.className = 'ccx-oz30-card-right-side';
 
-   cardContainer.appendChild(cardLeftSide);
-   cardContainer.appendChild(cardRightSide);
+  cardContainer.appendChild(cardLeftSide);
+  cardContainer.appendChild(cardRightSide);
 
-   const cardLeftSideImg = document.createElement('img');
-   cardLeftSideImg.src = SELECTORS.newImageURL;
-   cardLeftSide.appendChild(cardLeftSideImg);
+  const cardLeftSideImg = document.createElement('img');
+  cardLeftSideImg.src = SELECTORS.newImageURL;
+  cardLeftSide.appendChild(cardLeftSideImg);
 
-   const cardRightSideTextTop = document.createElement('p');
-   cardRightSideTextTop.textContent = "\“Winning a million pounds is beyond transformational, it’s incredible, utterly life-changing for our family.\”";
+  const cardRightSideTextTop = document.createElement('p');
+  cardRightSideTextTop.textContent = "\“Winning a million pounds is beyond transformational, it’s incredible, utterly life-changing for our family.\”";
 
-
-  //  const cardRightSideTextBottom = document.createElement('p');
-  //  cardRightSideTextBottom.textContent = "\"Naomi from Worcestershire won £1,000,000 in the August Monthly Millionaire Draw.\"";
   const highlight = (text) => Object.assign(document.createElement('strong'), { textContent: text });
 
   const cardRightSideTextBottom = document.createElement('p');
   cardRightSideTextBottom.append(
-    '"', highlight('Naomi'), ' from Worcestershire won ',
+    '', highlight('Naomi'), ' from Worcestershire won ',
     highlight('£1,000,000'), ' in the ',
-    highlight('August Monthly Millionaire Draw'), '."'
+    highlight('August Monthly Millionaire Draw'), '.'
   );
 
 
-   cardRightSide.appendChild(cardRightSideTextTop);
-   cardRightSide.appendChild(cardRightSideTextBottom);
+  cardRightSide.appendChild(cardRightSideTextTop);
+  cardRightSide.appendChild(cardRightSideTextBottom);
 
-   return cardContainer;
+  return cardContainer;
 }
 // Main initialisation function for OZ30 experiment
 const init = () => {
