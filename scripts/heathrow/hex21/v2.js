@@ -1,4 +1,6 @@
-// --- Config ---
+(function() {
+
+  // --- Config ---
 const SELECTORS = {
   container: 'main > .max-w-limit section:nth-child(1) > div:last-child > div:last-child',
   title: 'main > .max-w-limit section:nth-child(1) > div:last-child > div:last-child h1',
@@ -51,8 +53,8 @@ const hideOriginalUl = ul => {
 const createCustomUl = (originalUl, texts = NEW_PARAGRAPHS) => {
   if (!originalUl) return null;
 
-  const existing = document.querySelector(`ul[${CUSTOM_UL_MARKER}]`);
-  if (existing) return existing;
+  const existing = !!document.querySelector(`ul[${CUSTOM_UL_MARKER}]`);
+  if (existing) return;
 
   const customUl = document.createElement('ul');
   customUl.setAttribute(CUSTOM_UL_MARKER, '1');
@@ -91,6 +93,8 @@ const applyBodyClass = className => document.body.classList.add(className);
 // --- Main flow ---
 (async () => {
   try {
+    applyBodyClass('ccx-heathrow-hex21-v2');
+
     const [CONTROL_HERO_TITLE, CONTROL_HERO_LIST] = await waitForElements([
       SELECTORS.title,
       SELECTORS.ul
@@ -103,10 +107,12 @@ const applyBodyClass = className => document.body.classList.add(className);
 
     // Update title and body class
     updateHeroTitle(CONTROL_HERO_TITLE);
-    applyBodyClass('ccx-heathrow-hex21-v2');
 
     console.log('Custom UL inserted and original hidden. Title updated.');
   } catch (err) {
     console.warn(err);
   }
 })();
+
+})();
+

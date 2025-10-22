@@ -60,6 +60,8 @@ const customLog = (...messages) => {
     console.log(parts.join(" "), ...values);
 };
 
+customLog(' 1 ' + TEST_NAME + ' | ' + VARIATION + ' | URL: ' + CURRENT_URL);
+
 // Helper function to process log items
 const processLogItem = (item, parts, values, style) => {
     if (item instanceof Element) {
@@ -82,26 +84,51 @@ const processLogItem = (item, parts, values, style) => {
 // Waits for DOM elements to be available
 const waitForElements = (configs, callback) => {
     customLog('[waitForElements] Starting to wait for elements...');
+
     if (!configs || !Array.isArray(configs) || configs.length === 0) {
-        throw new Error('[waitForElements] No configs provided.');
-    }
-    if (!window.DYO || !DYO.waitForElementAsync) {
-        throw new Error('[waitForElements] DYO.waitForElementAsync is not available.');
-    }
-    if (typeof callback !== 'function') {
-        throw new Error('[waitForElements] Callback must be a function.');
+        customLog('[waitForElements] No configs provided.');
+        return;
     }
 
-    const promises = configs.map(({ selector, count }) =>
+    if (!window.DYO || !DYO.waitForElementAsync) {
+        customLog('[waitForElements] DYO.waitForElementAsync is not available.');
+        return;
+    }
+
+    if (typeof callback !== 'function') {
+        customLog('[waitForElements] Callback must be a function.');
+        return;
+    }
+
+    const results = new Map();
+    let resolvedCount = 0;
+    const total = configs.length;
+
+    const maybeInvoke = () => {
+        if (resolvedCount !== total) return;
+        const payload = configs.map(({ selector }) => ({
+            selector,
+            elements: results.get(selector) ?? []
+        }));
+        callback(payload);
+    };
+
+    configs.forEach(({ selector, count }) => {
         DYO.waitForElementAsync(selector, count, 100, 150)
             .then(elements => {
                 customLog('[waitForElements] Found ' + elements.length + ' for ' + selector);
-                return { selector, elements };
+                results.set(selector, elements);
             })
-    );
-
-    return Promise.all(promises).then(callback);
-};
+            .catch(error => {
+                customLog('[waitForElements] Selector ' + selector + ' failed:', error);
+                results.set(selector, []);
+            })
+            .finally(() => {
+                resolvedCount += 1;
+                maybeInvoke();
+            });
+    });
+}
 
 // Retrieves UTM source parameter from URL
 const getUTMSourceParam = () => new URLSearchParams(window.location.search).get('utm_source') ?? null;
@@ -204,6 +231,33 @@ function observeProgressAndUpdateText() {
     return observer;
 }
 
+const waitForElementWithRetry = (selector, {
+    interval = 200,
+    attempts = 25,
+    onFound = () => { },
+    onTimeout = () => { }
+} = {}) => {
+    let tries = 0;
+
+    const timer = setInterval(() => {
+        tries += 1;
+        const element = document.querySelector(selector);
+
+        if (element) {
+            clearInterval(timer);
+            customLog('[waitForElementWithRetry] Found element for ' + selector + ' on try ' + tries);
+            onFound(element);
+            return;
+        }
+
+        if (tries >= attempts) {
+            clearInterval(timer);
+            customLog('[waitForElementWithRetry] Timed out for ' + selector + ' after ' + tries + ' tries');
+            onTimeout();
+        }
+    }, interval);
+};
+
 // Main initialization function for OZ28 experiment
 const init = () => {
     try {
@@ -216,43 +270,87 @@ const init = () => {
 
         if (IS_CART_PAGE) {
             customLog('[init] On cart page');
-            return waitForElements(
+            waitForElements(
                 [{ selector: SELECTORS.cartProgress, count: 1 }],
-                (results) => {
+                results => {
                     results[0]?.elements.forEach(handleCartPageTextChanges);
-
-                    observeProgressAndUpdateText();
                 }
             );
+            return;
         }
 
         customLog('[init] On entries page');
+        // if (!IS_CART_PAGE && !utmSourceValue) {
+        //     waitForElements(
+        //         [
+        //             { selector: SELECTORS.subscriptionTabButton, count: 1 },
+        //             { selector: SELECTORS.subscriptionTabTitle, count: 1 },
+        //             { selector: SELECTORS.subscriptionTabImageText, count: 1 },
+        //         ],
+        //         results => {
+        //             results[0]?.elements.forEach(button => handleNoSourceEntriesPageTextChanges(button, null, null));
+        //             results[1]?.elements.forEach(title => handleNoSourceEntriesPageTextChanges(null, title, null));
+        //             results[2]?.elements.forEach(imageText => handleNoSourceEntriesPageTextChanges(null, null, imageText));
+        //         }
+        //     );
+        //     return;
+        // }
         if (!IS_CART_PAGE && !utmSourceValue) {
-            return waitForElements(
-                [
-                    { selector: SELECTORS.subscriptionTabButton, count: 1 },
-                    { selector: SELECTORS.subscriptionTabTitle, count: 1 },
-                    { selector: SELECTORS.subscriptionTabImageText, count: 1 },
-                ],
-                (results) => {
-                    results[0]?.elements.forEach(button => handleNoSourceEntriesPageTextChanges(button, null, null));
-                    results[1]?.elements.forEach(title => handleNoSourceEntriesPageTextChanges(null, title, null));
-                    results[2]?.elements.forEach(imageText => handleNoSourceEntriesPageTextChanges(null, null, imageText));
-                }
-            );
+            waitForElementWithRetry(SELECTORS.subscriptionTabButton, {
+                onFound: () => {
+                    waitForElementWithRetry(SELECTORS.subscriptionTabTitle, {
+                        onFound: () => {
+                            waitForElementWithRetry(SELECTORS.subscriptionTabImageText, {
+                                onFound: () => {
+                                    customLog('[init] All no-source selectors ready');
+                                    document
+                                        .querySelectorAll(SELECTORS.subscriptionTabButton)
+                                        .forEach(button => handleNoSourceEntriesPageTextChanges(button, null, null));
+                                    document
+                                        .querySelectorAll(SELECTORS.subscriptionTabTitle)
+                                        .forEach(title => handleNoSourceEntriesPageTextChanges(null, title, null));
+                                    document
+                                        .querySelectorAll(SELECTORS.subscriptionTabImageText)
+                                        .forEach(text => handleNoSourceEntriesPageTextChanges(null, null, text));
+                                },
+                            });
+                        },
+                    });
+                },
+            });
+            return;
         }
 
+        // if (!IS_CART_PAGE && utmSourceValue !== 'facebook') {
+        //     waitForElements(
+        //         [
+        //             { selector: SELECTORS.newDrawDescription, count: 1 },
+        //             { selector: SELECTORS.subscriptionCardTopLabel, count: 1 },
+        //         ],
+        //         results => {
+        //             results[0]?.elements.forEach(item => handleDigitalEntriesPageTextChanges(item, null));
+        //             results[1]?.elements.forEach(item => handleDigitalEntriesPageTextChanges(null, item));
+        //         }
+        //     );
+        //     return;
+        // }
         if (!IS_CART_PAGE && utmSourceValue !== 'facebook') {
-            return waitForElements(
-                [
-                    { selector: SELECTORS.newDrawDescription, count: 1 },
-                    { selector: SELECTORS.subscriptionCardTopLabel, count: 1 },
-                ],
-                (results) => {
-                    results[0]?.elements.forEach(item => handleDigitalEntriesPageTextChanges(item, null));
-                    results[1]?.elements.forEach(item => handleDigitalEntriesPageTextChanges(null, item));
-                }
-            );
+            waitForElementWithRetry(SELECTORS.newDrawDescription, {
+                onFound: () => {
+                    waitForElementWithRetry(SELECTORS.subscriptionCardTopLabel, {
+                        onFound: () => {
+                            customLog('[init] Digital selectors ready');
+                            document
+                                .querySelectorAll(SELECTORS.newDrawDescription)
+                                .forEach(el => handleDigitalEntriesPageTextChanges(el, null));
+                            document
+                                .querySelectorAll(SELECTORS.subscriptionCardTopLabel)
+                                .forEach(el => handleDigitalEntriesPageTextChanges(null, el));
+                        },
+                    });
+                },
+            });
+            return;
         }
 
         customLog('[init] No action for utm_source=facebook');

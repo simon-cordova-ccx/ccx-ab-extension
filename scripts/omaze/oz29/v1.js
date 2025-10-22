@@ -89,7 +89,7 @@ const styles = `
 .oz29-subcopy {
   font-family: Gellix;
   font-weight: 700;
-  font-size: 27px;
+  font-size: 35px;
   line-height: 100%;
   text-align: center;
   color: #081F28;
@@ -373,7 +373,7 @@ const waitForElements = (configs, callback) => {
 const sliderSteps = [
   {
     name: 'Step 1',
-    heroCopy: 'Welcome back, !!!!',
+    heroCopy: 'Welcome back!',
     subCopy: 'You\'ve helped raise millions for incredible UK charities... and we\'re just getting started.',
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/52cadc1d39a8.gif',
     buttonText: 'Continue',

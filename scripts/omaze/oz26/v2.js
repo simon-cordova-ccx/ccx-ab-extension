@@ -197,7 +197,7 @@ const subscriptionItems = [
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png",
     title: "Supporting a UK Charity",
     highlight: {},
-      description: "This month you’re supporting <strong>Breast Cancer Now </strong> to help fund life-changing research to develop kinder, more effective treatments for everyone living with breast cancer.",
+      description: "You\'re supporting <strong>Refuge</strong>, the UK\'s largest specialist domestic abuse charity, to provide safe homes for women and their children escaping abuse.",
     button: {
       text: "Find out more",
       url: "https://omaze.co.uk/pages/our-charity-partners"
