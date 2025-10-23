@@ -1,5 +1,5 @@
 (function () {
-  console.log('[CCX] Script started (interval watcher)');
+  console.log('[CCX] Script started (SPA-aware interval watcher)');
 
   // --- Config ---
   const SELECTORS = {
@@ -40,11 +40,12 @@
 
   const createCustomUl = (originalUl, texts = NEW_PARAGRAPHS) => {
     if (!originalUl) return null;
-    if (document.querySelector('data-ccx-custom-ul')) {
+    if (document.querySelector('[data-ccx-custom-ul]')) { // ✅ fixed selector
       console.log('[createCustomUl] Custom UL already exists');
       return;
     }
 
+    console.log('[createCustomUl] Creating custom UL...');
     const customUl = document.createElement('ul');
     customUl.setAttribute('data-ccx-custom-ul', '1');
     customUl.className = originalUl.className || '';
@@ -77,83 +78,105 @@
     const handleTitle = () => {
       console.log('[handleTitle] Checking for title element...');
       const el = document.querySelector(targetSelector);
-
-      if (!el) {
-        console.log('[handleTitle] Title element NOT found.');
-        return;
-      }
+      if (!el) return console.log('[handleTitle] Title element NOT found.');
 
       const rawText = el.textContent.trim();
-      console.log('[handleTitle] Found title element:', el, '| Text:', rawText);
+      if (!rawText) return console.log('[handleTitle] Title element empty, skipping.');
 
-      if (!rawText) {
-        console.log('[handleTitle] Title element has no text content, skipping.');
-        return;
-      }
-
-      // Check if prefix already exists
       const hasPrefix = el.textContent.startsWith(PREFIX_TEXT);
-      console.log(`[handleTitle] Already has prefix: ${hasPrefix}`);
-
       if (!hasPrefix) {
-        console.log('[handleTitle] Adding prefix nodes...');
-
-        // Create nodes instead of using innerHTML
+        console.log('[handleTitle] Adding prefix...');
         const prefixNode = document.createTextNode(PREFIX_TEXT);
         const brNode = document.createElement('br');
-
-        // Insert before first child
         el.insertBefore(brNode, el.firstChild);
         el.insertBefore(prefixNode, el.firstChild);
-
-        console.log('[handleTitle] Prefix nodes inserted successfully.');
-        console.log('[handleTitle] New title HTML:', el.innerHTML);
+        console.log('[handleTitle] Prefix inserted.');
       } else {
         console.log('[handleTitle] Prefix already exists, skipping.');
+      }
+
+      // --- Also ensure UL is handled when title appears ---
+      const heroUl = document.querySelector(SELECTORS.ul);
+      const customUl = document.querySelector('[data-ccx-custom-ul]');
+      if (heroUl && !customUl) {
+        console.log('[handleTitle] Found hero UL, creating custom UL...');
+        hideOriginalUl(heroUl);
+        createCustomUl(heroUl, NEW_PARAGRAPHS);
+      } else if (!heroUl) {
+        console.log('[handleTitle] No hero UL found.');
+      } else if (customUl) {
+        console.log('[handleTitle] Custom UL already exists.');
       }
     };
 
     // Initial check
-    console.log('[Observer] Running initial title check...');
     handleTitle();
 
-    // Observe DOM for changes
+    // Watch for DOM changes
     const observer = new MutationObserver((mutations) => {
-      console.log(`[MutationObserver] Detected ${mutations.length} mutations...`);
-      handleTitle();
+      if (mutations.some(m => m.addedNodes.length || m.removedNodes.length)) {
+        handleTitle();
+      }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    console.log('[Observer] Now observing document.body for changes...');
+    console.log('[Observer] Watching document.body for title changes...');
   };
 
   // --- Main flow ---
-  (async () => {
-    console.log('[Main] Initializing...');
+  const runMainFlow = () => {
+    console.log('[Main] (Re)initializing...');
     try {
       document.body.classList.add('ccx-heathrow-hex21-v2');
-      console.log('[Main] Body class applied (ccx-heathrow-hex21-v2)');
+      console.log('[Main] Body class applied');
 
       addStyles(styles);
 
-      // UL work (one-off)
-      try {
-        const heroUl = document.querySelector(SELECTORS.ul);
-        if (!heroUl) {
-          console.warn('[Main] UL not found initially');
-        } else {
-          hideOriginalUl(heroUl);
-          createCustomUl(heroUl, NEW_PARAGRAPHS);
-        }
-      } catch (e) {
-        console.warn('[Main] UL setup skipped/failed:', e);
+      // UL setup
+      const heroUl = document.querySelector(SELECTORS.ul);
+      if (heroUl) {
+        hideOriginalUl(heroUl);
+        createCustomUl(heroUl, NEW_PARAGRAPHS);
+      } else {
+        console.warn('[Main] UL not found initially');
       }
 
-      // Start watching for title element
       observeTitle();
-
+      console.log('[Main] Main flow fully applied');
     } catch (err) {
-      console.warn('[Main] Error encountered:', err);
+      console.warn('[Main] Error in main flow:', err);
     }
+  };
+
+  // --- SPA Page Change Listener ---
+  const observePageChanges = () => {
+    let lastUrl = location.href;
+    console.log('[SPA] Starting page change observer...');
+    const checkUrl = () => {
+      const currentUrl = location.href;
+      if (currentUrl !== lastUrl) {
+        console.log('[SPA] URL changed:', currentUrl);
+        lastUrl = currentUrl;
+
+        // Only reapply when we're on the homepage
+        if (currentUrl === 'https://www.heathrowexpress.com/' || currentUrl === 'https://www.heathrowexpress.com') {
+          console.log('[SPA] On homepage — reapplying main flow...');
+          runMainFlow();
+        } else {
+          console.log('[SPA] Not on homepage — no reapply needed.');
+        }
+      }
+    };
+
+    // Poll for URL changes (safe, lightweight for SPAs)
+    setInterval(checkUrl, 1000);
+    console.log('[SPA] URL watcher active.');
+  };
+
+  // --- Init ---
+  (() => {
+    console.log('[Init] Starting CCX Heathrow Hex21 v2...');
+    runMainFlow();
+    observePageChanges();
   })();
 })();
