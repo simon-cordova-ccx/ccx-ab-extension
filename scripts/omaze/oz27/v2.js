@@ -195,6 +195,7 @@ const styles = `
 .slide-content {
   display: flex;
   flex-direction: row;
+  text-shadown: none;
 }
 
 /* Left side: Image */

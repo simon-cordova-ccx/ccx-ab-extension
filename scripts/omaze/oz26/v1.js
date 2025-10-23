@@ -1,7 +1,7 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "Subs Mgmt - Subscription Value Call-Out";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "1";
+const VARIATION = "2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -86,12 +86,16 @@ const styles = `
   .subs-content h3 {
     margin: 0;
     color: #1a1a1a;
-    display: flex;
-    flex-flow: column;
+    padding-bottom: 2px;
     font-family: Gellix;
     font-weight: 700;
     font-size: 15px;
     line-height: 22.22px;
+  }
+
+  .ccx-25.ccx-container .subs-content h3 {
+    display: inline-block;
+    border-bottom: 2px solid #FFDD00;
   }
 
   .subs-content p {
@@ -110,6 +114,7 @@ const styles = `
     font-size: 14px;
     line-height: 22.22px;
     height: 26px;
+    display: block;
   }
     
   .subs-btn {
@@ -156,8 +161,8 @@ const subscriptionItems = [
     },
     description: "Your chance to win a multi-million house",
     button: {
-      text: "See this month’s house",
-      url: "https://omaze.co.uk/pages/new-forest"
+      text: "See this month's house",
+      url: "https://omaze.co.uk/pages/yorkshire-iii"
     }
   },
   {
@@ -195,8 +200,12 @@ const subscriptionItems = [
   },
   {
     icon: "https://cdn-eu.dynamicyield.com/api/9880449/images/fc255b313fb3.png",
-    title: "Supporting a UK Charity",
-    highlight: {},
+    title: "Supporting UK Charities",
+    highlight: {
+      15: "",
+      25: "200 Entries",
+      50: ""
+    },
     description: "You\'re supporting <strong>Refuge</strong>, the UK\'s largest specialist domestic abuse charity, to provide safe homes for women and their children escaping abuse.",
     button: {
       text: "Find out more",
@@ -260,7 +269,9 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
 
   // Create container
   const container = document.createElement('div');
-  container.className = 'subs-container';
+  // container.className = 'subs-container';
+  container.classList.add('subs-container', 'ccx-container');
+  container.classList.add('ccx-' + price);
 
   const heading = document.createElement('h2');
   heading.textContent = "Your subscription includes:";
@@ -303,16 +314,23 @@ const applyVariationChanges = (price, variation, subscriptionFeatures) => {
   const contentDiv = document.createElement('div');
   contentDiv.className = 'subs-content';
 
-  // Title and highlight
   const titleEl = document.createElement('h3');
-  titleEl.innerHTML = (item.title ? item.title : 'Untitled') +
-    (item.highlight && item.highlight[price] ? ' <span class="subs-highlight">' + item.highlight[price] + '</span>' : "");
+  titleEl.textContent = item.title ? item.title : 'Untitled';
+
+  highlightEl = document.createElement('span');
+  highlightEl.className = 'subs-highlight';
+  if (item.highlight && item.highlight[price]) {
+    highlightEl.textContent = item.highlight[price];
+  } else {
+    highlightEl.style.display = 'none';
+  }
 
   // Description
   const descEl = document.createElement('p');
   descEl.innerHTML = item.description || '';
 
   contentDiv.appendChild(titleEl);
+  contentDiv.appendChild(highlightEl);
   contentDiv.appendChild(descEl);
 
   // Add button if present and valid for Variation 2

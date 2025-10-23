@@ -157,7 +157,7 @@ const subscriptionItems = [
     description: "Your chance to win a multi-million house",
     button: {
       text: "See this month’s house",
-      url: "https://omaze.co.uk/pages/new-forest"
+      url: "https://omaze.co.uk/pages/yorkshire-iii"
     }
   },
   {

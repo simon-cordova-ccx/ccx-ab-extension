@@ -153,13 +153,13 @@
     let lastUrl = location.href;
     console.log('[SPA] Starting page change observer...');
     const checkUrl = () => {
-      const currentUrl = location.href;
+      const currentUrl = location.pathname;
       if (currentUrl !== lastUrl) {
         console.log('[SPA] URL changed:', currentUrl);
         lastUrl = currentUrl;
 
         // Only reapply when we're on the homepage
-        if (currentUrl === 'https://www.heathrowexpress.com/' || currentUrl === 'https://www.heathrowexpress.com') {
+        if (currentUrl === '/') {
           console.log('[SPA] On homepage — reapplying main flow...');
           runMainFlow();
         } else {

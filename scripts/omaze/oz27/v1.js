@@ -11,10 +11,10 @@ const SELECTORS = {
 }
 
 const IMAGES = {
-  image1: 'https://cdn.shopify.com/s/files/1/0275/8390/5878/files/BCN_SHIELDArtboard_1_copy_27WEBSITE.png?v=1758014149',
-  image2: 'https://cdn.shopify.com/s/files/1/0275/8390/5878/files/BCN_SHIELDArtboard_1_copy_27WEBSITE.png?v=1758014149',
-  image3: 'https://cdn.shopify.com/s/files/1/0275/8390/5878/files/BCN_SHIELDArtboard_1_copy_27WEBSITE.png?v=1758014149',
-  image4: 'https://cdn.shopify.com/s/files/1/0275/8390/5878/files/BCN_SHIELDArtboard_1_copy_27WEBSITE.png?v=1758014149',
+  image1: 'https://cdn-eu.dynamicyield.com/api/9880449/images/b424ee2ca29d.png',
+  image2: 'https://cdn-eu.dynamicyield.com/api/9880449/images/61eddeb9d1eb.png',
+  image3: 'https://cdn-eu.dynamicyield.com/api/9880449/images/f8e77cc7acac.png',
+  image4: 'https://cdn-eu.dynamicyield.com/api/9880449/images/636939c668f5.png',
 }
 
 const SLIDE_DATA = [
@@ -203,6 +203,7 @@ const styles = `
   opacity: 1;
   border-radius: 50%;
   border-width: 2px;
+  object-fit: cover;
 }
 
 /* Right side: Text */
