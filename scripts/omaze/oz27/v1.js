@@ -175,13 +175,13 @@ const styles = `
 
 /* Slideshow container */
 .slideshow-container {
-  height: 162px;
   background: #081F28;
   display: flex;
   padding: 1rem 1rem;
   border-radius: 20px;
   box-sizing: border-box;
   position: relative;
+  min-height: 150px;
 }
 
 /* Slide content layout */
@@ -311,7 +311,7 @@ const styles = `
   }
   .slideshow-container {
     background: #081F28A6;
-    height: 141px;
+    min-height: 165px;
     margin: 0 auto;
     box-sizing: border-box;
   }
@@ -355,7 +355,7 @@ const createSlideshowElement = () => {
     imageDiv.classList.add('slide-image');
     const img = document.createElement('img');
     img.src = data.image;
-    img.alt = `${data.name} profile image`;
+    img.alt = data.name + ' profile image';
     img.loading = 'lazy';
     imageDiv.appendChild(img);
 
@@ -402,7 +402,7 @@ const createSlideshowElement = () => {
     const dot = document.createElement('span');
     dot.classList.add('dot');
     dot.dataset.index = index + 1;
-    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+    dot.setAttribute('aria-label', 'Go to slide ' + (index + 1));
     dot.setAttribute('role', 'button');
     dot.setAttribute('tabindex', '0');
     dotContainer.appendChild(dot);
