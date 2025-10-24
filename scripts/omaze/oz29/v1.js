@@ -10,7 +10,8 @@ const images = {
   logo: 'https://cdn-eu.dynamicyield.com/api/9880449/images/55caf913cc71.png',
   logoFinal: 'https://cdn-eu.dynamicyield.com/api/9880449/images/3713eb6555ad.png',
   stepFourConfetti: 'https://cdn-eu.dynamicyield.com/api/9880449/images/19015f46aaed.gif',
-  stepFourImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/75682b6ccaf9.png',
+  // stepFourImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/75682b6ccaf9.png',
+  stepFourImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9bf6b89a6146.png',
 }
 
 const styles = `
@@ -62,7 +63,7 @@ const styles = `
 .oz29-hero {
   font-family: Gellix;
   font-weight: 700;
-  font-size: 25px;
+  font-size: 22px;
   line-height: 100%;
   letter-spacing: 0;
   text-align: center;
@@ -86,13 +87,21 @@ const styles = `
   align-items:center; justify-content:center;
 }
 .oz29-icon { width:110px; height:110px; object-fit:contain; }
+.oz29-card.step-3 .oz29-icon-container img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 5px solid white;
+}
 .oz29-subcopy {
   font-family: Gellix;
   font-weight: 700;
-  font-size: 35px;
-  line-height: 100%;
+  font-size: 26px;
+  line-height: 32px;
   text-align: center;
   color: #081F28;
+  margin-bottom: 0;
 }
 .oz29-slider .step-4 .oz29-subcopy {
   display: none;
@@ -122,6 +131,7 @@ const styles = `
   width: auto;
   background: #FFDD00;
   color: #081F28;
+  margin: 2rem auto;
 }
 .oz29-step-4-skip-button {
   background: none;
@@ -203,7 +213,6 @@ const styles = `
   display: block;
   position: relative;
   z-index: 1;
-  clip-path: inset(18px 0 30px 0);
 }
 .oz29-step-4-confetti {
   position: absolute;
@@ -232,7 +241,6 @@ const styles = `
     border-radius: clamp(20px, 2.65vw, 40px);
   }
 }
-
 `;
 
 const customLog = (...messages) => {
@@ -373,9 +381,9 @@ const waitForElements = (configs, callback) => {
 const sliderSteps = [
   {
     name: 'Step 1',
-    heroCopy: 'Welcome back!',
+    heroCopy: 'Don\'t go yet!',
     subCopy: 'You\'ve helped raise millions for incredible UK charities... and we\'re just getting started.',
-    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/52cadc1d39a8.gif',
+    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/26ddfc90ebbf.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
     background: 'url(https://iili.io/F0MK7nf.gif)',
@@ -383,9 +391,9 @@ const sliderSteps = [
   },
   {
     name: 'Step 2',
-    heroCopy: 'We love having you here',
+    heroCopy: 'Did you know?',
     subCopy: 'You\'ve made a real difference transforming lives and increasing awareness.',
-    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/ab9ad66c9197.gif',
+    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/1fe709902e09.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
     background: 'url(https://iili.io/F0MK7nf.gif)',
@@ -393,9 +401,9 @@ const sliderSteps = [
   },
   {
     name: 'Step 3',
-    heroCopy: 'You\'re a lifesaver',
+    heroCopy: 'You could be the next winner!',
     subCopy: 'Together, we\'re saving lives and creating a world where everyone has a chance.',
-    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/0c5106a81acc.gif',
+    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/379e4a3f8854.jpg',
     buttonText: 'Continue',
     progressColor: '#081F28',
     background: 'url(https://iili.io/F0MK7nf.gif)',
@@ -403,14 +411,15 @@ const sliderSteps = [
   },
   {
     name: 'Step 4',
-    heroCopy: 'Thank you for being part of the <span style="color: #F5CD31;">Omaze Community!</span>',
-    // subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Cornwall House Draw!",
+    // heroCopy: 'Thank you for being part of the <span style="color: #F5CD31;">Omaze Community!</span>',
+    heroCopy: 'Nice one!',
+    // subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Yorkshire House Draw!",
     icon: '',
-    buttonText: 'Yes Please',
+    buttonText: 'I want 45 FREE Entries',
     progressColor: '#F5CD31',
     background: 'linear-gradient(180deg, #0B0F26 0%, #041440 100%)',
     topLogo: images.logoFinal,
-    metaCopy: 'Skip',
+    metaCopy: 'No thanks',
     backgroundVideo: '', // Add your video URL
   },
 ];
@@ -432,12 +441,10 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
         <img class="oz29-icon" alt="" />
       </div>
       <div class="oz29-step-4-content">
-        <p class="oz29-step-4-boost">Here's your extra boost...</p>
         <div class="oz29-step-4-images">
           <img class="oz29-step-4-image" alt="30 Free Entries" />
           <img class="oz29-step-4-confetti" alt="" />
         </div>
-        <p class="oz29-step-4-draw">into the Cornwall House Draw!</p>
       </div>
       <p class="oz29-subcopy"></p>
       <button class="oz29-cta"></button>
@@ -493,14 +500,6 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
     });
   };
 
-  // els.cta.addEventListener('click', () => {
-  //   if (currentStep < steps.length - 1) {
-  //     applyStep(currentStep + 1);
-  //   } else {
-  //     customLog('[oz29-slider] Reached final step.');
-  //   }
-  // });
-
   applyStep(currentStep);
 
   return {
@@ -517,6 +516,11 @@ const init = () => {
 
     document.body.classList.add('ccx-omaze-oz29');
     customLog('[init] Added class ccx-omaze-oz29 to body');
+
+    const localStorageExists = window.localStorage.getItem('ccx-oz30');
+    if (localStorageExists) {
+      return;
+    }
 
     waitForElements(
       [
@@ -558,26 +562,40 @@ const init = () => {
             const closeModal = () => {
               root.classList.remove('show');
               document.body.style.overflow = '';
+              localStorage.setItem('ccx-oz30', true);
+              CCX_CANCEL_SUBSCRIPTION_LINK.style.display = 'none';
+              CONTROL_CANCEL_SUBSCRIPTION_LINK.style.display = 'initial';
               // optional: remove the root after animation finishes
               setTimeout(() => root.remove(), 350);
             };
 
             // • Skip link (only on step 4)
             const metaBtn = root.querySelector('.oz29-step-4-skip-button');
-            if (metaBtn) metaBtn.onclick = closeModal;
+            // metaBtn.onclick = closeModal;
+            if (metaBtn) {
+              metaBtn.addEventListener('click', function () {
+                closeModal();
+                CONTROL_CANCEL_SUBSCRIPTION_LINK.click();
+              })
+            }
 
-            // • Final CTA – you probably want to continue the original flow
+            // Final CTA
             const finalCTA = () => {
               customLog('[oz29-slider] Final CTA clicked – closing slider');
               closeModal();
-              // If you need to actually cancel the subscription, fire the original link:
-              // CONTROL_CANCEL_SUBSCRIPTION_LINK.click();
+
+              // Redirect to the Omaze cart page
+              window.location.href = 'http://omaze.co.uk/cart/43444144406614:1?discount=AUONCJKN45&skip_shop_pay=true';
             };
+
             // Hook the last step’s button
             const ctaBtn = root.querySelector('.oz29-cta');
             ctaBtn.onclick = () => {
-              if (sliderAPI.getStep() === sliderSteps.length - 1) finalCTA();
-              else sliderAPI.next();
+              if (sliderAPI.getStep() === sliderSteps.length - 1) {
+                finalCTA();
+              } else {
+                sliderAPI.next();
+              }
             };
 
             // • Click outside the card
