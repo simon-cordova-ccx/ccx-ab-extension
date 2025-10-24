@@ -1,7 +1,7 @@
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 const TEST_NAME = "OZ-27 | Social Proof in LP Hero Section";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 1";
+const VARIATION = "VARIATION 2";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
@@ -20,32 +20,32 @@ const IMAGES = {
 const SLIDE_DATA = [
   {
     image: IMAGES.image1,
-    name: 'Valeri A',
-    mainText: "\"This is such a great idea to boost funds for charities as well as giving people just a chance to win such great prizes.\"",
+    name: 'Valerie A',
+    mainText: "This is such a great idea to boost funds for charities as well as giving people just a chance to win such great prizes.",
     userInfo: 'a retired cabbie, won a £4M house in Sussex.'
   },
   {
     image: IMAGES.image2,
     name: 'Lukas Kuprian',
-    mainText: "\"Super easy and yet very trustworthy process. Excited to see how my luck is playing out.\"",
+    mainText: "Super easy and yet very trustworthy process. Excited to see how my luck is playing out.",
     userInfo: 'an English teacher, won a £5M house in London.'
   },
   {
     image: IMAGES.image3,
     name: 'Abigail T',
-    mainText: "\"Easy to use site, very clear information and options that work for everyone, great way to support an array of charities.\"",
+    mainText: "Easy to use site, very clear information and options that work for everyone, great way to support an array of charities.",
     userInfo: 'a former nurse, won a £4.5M house in Cornwall.'
   },
   {
     image: IMAGES.image4,
     name: 'Nick I',
-    mainText: "\"Great company doing so much good for so many charities and for us ordinary people hope that one day we could be one of the lucky winners.\"",
+    mainText: "Great company doing so much good for so many charities and for us ordinary people hope that one day we could be one of the lucky winners.",
     userInfo: 'dad-to-be, won a £4.5M house in London.'
   },
   {
     image: IMAGES.image4,
     name: 'Matt C',
-    mainText: "\"I like the opportunity to change my lifestyle as well as being able to help a great charitable cause.\"",
+    mainText: "I like the opportunity to change my lifestyle as well as being able to help a great charitable cause.",
     userInfo: 'dad-to-be, won a £4.5M house in London.'
   }
 ];
@@ -96,6 +96,17 @@ function showSlides(n, container) {
     const activeDot = dots[activeIndex];
     if (activeDot) {
       activeDot.classList.add('active');
+    }
+
+    // 🔹 Send Dynamic Yield event when a slide is viewed
+    if (window.DY && typeof DY.API === 'function') {
+      DY.API("event", {
+        name: 'oz27-saw-slide-' + slideIndex
+      });
+
+      customLog('[DY] Event sent: oz27-saw-slide-' + slideIndex);
+    } else {
+      customLog('[DY] Dynamic Yield not available for slide ' + slideIndex);
     }
   } else {
     customLog('[showSlides] Invalid activeIndex', activeIndex);
@@ -369,7 +380,6 @@ function getInitials(fullName = '') {
     .join('');
 }
 
-
 const createSlideshowElement = () => {
   const wrapper = document.createElement('div');
   wrapper.classList.add('slideshow-wrapper');
@@ -469,7 +479,7 @@ const createSlideshowElement = () => {
     </defs>
     </svg></div>`;
 
-    container.insertAdjacentHTML('beforeend', trustPilotHTML);
+  container.insertAdjacentHTML('beforeend', trustPilotHTML);
 
   return wrapper;
 };
