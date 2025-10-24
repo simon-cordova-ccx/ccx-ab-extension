@@ -424,6 +424,24 @@ const sliderSteps = [
   },
 ];
 
+// ---- DY Event Helper ----
+const sendDYEvent = (stepIndex, stepName = '') => {
+  try {
+    const eventName = 'oz29_slide_' + (stepIndex + 1) + '_viewed';
+    DY.API('event', {
+      name: eventName,
+      properties: {
+        slideIndex: stepIndex + 1,
+        slideName: stepName || 'Slide ' + (stepIndex + 1),
+        timestamp: Date.now(),
+      },
+    });
+    console.log('[oz29] DY event sent: ' + eventName);
+  } catch (err) {
+    console.warn('[oz29] DY tracking failed', err);
+  }
+};
+
 const createOmazeOnboardingSlider = (rootSelector, steps) => {
   const root = document.querySelector(rootSelector);
   if (!root) return null;
@@ -498,6 +516,9 @@ const createOmazeOnboardingSlider = (rootSelector, steps) => {
       dot.classList.toggle('is-active', idx <= index);
       dot.style.backgroundColor = idx <= index ? step.progressColor : 'rgba(255,255,255)';
     });
+
+    // ---- Fire DY event for this slide ----
+    sendDYEvent(index, step.name);
   };
 
   applyStep(currentStep);
@@ -574,6 +595,15 @@ const init = () => {
             // metaBtn.onclick = closeModal;
             if (metaBtn) {
               metaBtn.addEventListener('click', function () {
+                try {
+                  const eventName = `oz29_cta_skip`;
+                  DY.API('event', {
+                    name: eventName,
+                  });
+                  console.log('[oz29] DY event sent: ' + eventName);
+                } catch (err) {
+                  console.warn('[oz29] DY tracking failed', err);
+                }
                 closeModal();
                 CONTROL_CANCEL_SUBSCRIPTION_LINK.click();
               })
@@ -583,6 +613,17 @@ const init = () => {
             const finalCTA = () => {
               customLog('[oz29-slider] Final CTA clicked – closing slider');
               closeModal();
+              
+              try {
+                  const eventName = `oz29_cta_accept`;
+                  DY.API('event', {
+                    name: eventName,
+                  });
+                  console.log('[oz29] DY event sent: ' + eventName);
+                } catch (err) {
+                  console.warn('[oz29] DY tracking failed', err);
+                }
+
 
               // Redirect to the Omaze cart page
               window.location.href = 'http://omaze.co.uk/cart/43444144406614:1?discount=AUONCJKN45&skip_shop_pay=true';
