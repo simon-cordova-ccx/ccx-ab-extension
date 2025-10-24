@@ -321,7 +321,7 @@ const styles = `
 
 .ccx-trustpilot {
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.5rem;
   right: 3rem;
 }
 

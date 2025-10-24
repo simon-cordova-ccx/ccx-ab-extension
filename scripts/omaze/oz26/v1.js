@@ -93,7 +93,7 @@ const styles = `
     line-height: 22.22px;
   }
 
-  .ccx-25.ccx-container .subs-content h3 {
+  .omaze-subs-25-callout-25-v1 .ccx-container .subs-content h3 {
     display: inline-block;
     border-bottom: 2px solid #FFDD00;
   }

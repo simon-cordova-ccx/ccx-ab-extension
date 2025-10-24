@@ -199,7 +199,6 @@ const styles = `
   width: 60px;
   height: 60px;
   display: block;
-  border: 2px solid #FEDC03;
   opacity: 1;
   border-radius: 50%;
   border-width: 2px;

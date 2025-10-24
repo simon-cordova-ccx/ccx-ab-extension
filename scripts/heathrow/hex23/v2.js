@@ -1,7 +1,9 @@
-const LOG_ENABLED = true;
+(function () {
+  const LOG_ENABLED = true;
+  const BODY_CLASS = "ccx-heathrow-hex23-v2";
 
 const ICON_CLOSE = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6.20972 7.53194L1.58194 12.1597C1.4088 12.3329 1.18843 12.4194 0.920833 12.4194C0.653241 12.4194 0.43287 12.3329 0.259722 12.1597C0.0865741 11.9866 0 11.7662 0 11.4986C0 11.231 0.0865741 11.0106 0.259722 10.8375L4.8875 6.20972L0.259722 1.58194C0.0865741 1.4088 0 1.18843 0 0.920833C0 0.653241 0.0865741 0.43287 0.259722 0.259722C0.43287 0.0865741 0.653241 0 0.920833 0C1.18843 0 1.4088 0.0865741 1.58194 0.259722L6.20972 4.8875L10.8375 0.259722C11.0106 0.0865741 11.231 0 11.4986 0C11.7662 0 11.9866 0.0865741 12.1597 0.259722C12.3329 0.43287 12.4194 0.653241 12.4194 0.920833C12.4194 1.18843 12.3329 1.4088 12.1597 1.58194L7.53194 6.20972L12.1597 10.8375C12.3329 11.0106 12.4194 11.231 12.4194 11.4986C12.4194 11.7662 12.3329 11.9866 12.1597 12.1597C11.9866 12.3329 11.7662 12.4194 11.4986 12.4194C11.231 12.4194 11.0106 12.3329 10.8375 12.1597L6.20972 7.53194Z" fill="#CDBAD2"/>
+<path d="M6.20972 7.53194L1.58194 12.1597C1.4088 12.3329 1.18843 12.4194 0.920833 12.4194C0.653241 12.4194 0.43287 12.3329 0.259722 12.1597C0.0865741 11.9866 0 11.7662 0 11.4986C0 11.231 0.0865741 11.0106 0.259722 10.8375L4.8875 6.20972L0.259722 1.58194C0.0865741 1.4088 0 1.18843 0 0.920833C0 0.653241 0.0865741 0.43287 0.259722 0.259722C0.43287 0.0865741 0.653241 0 0.920833 0C1.18843 0 1.4088 0.0865741 1.58194 0.259722L6.20972 4.8875L10.8375 0.259722C11.0106 0.0865741 11.231 0 11.4986 0C11.7662 0 11.9866 0.0865741 12.1597 0.259722C12.3329 0.43287 12.4194 0.653241 12.4194 0.920833C12.4194 1.18843 12.3329 1.4088 12.1597 1.58194L7.53194 6.20972L12.1597 10.8375C12.3329 11.0106 12.4194 11.231 12.4194 11.4986C12.4194 11.7662 12.3329 11.9866 12.1597 12.1597C11.9866 12.3329 11.7662 12.4194 11.4986 12.4194C11.231 12.4194 11.0106 12.3329 10.8375 12.1597L6.20972 7.53194Z" fill="#42174C"/>
 </svg>
 `;
 
@@ -40,419 +42,209 @@ const ICON_KIDS = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" x
 </svg>
 `;
 
-const CAVEATS = [
-    '*15 minute journey time to Heathrow Terminals 2 & 3 with an extra 6 minutes to Terminal 5. A free transfer is available to Terminal 4 taking an extra 4 minutes.',
-    '**Based on an Advance Discounted Single (one way) ticket purchased for travel on all dates 30 days or more in advance. Tickets are only valid on the Heathrow Express Service in the direction for which they have been purchased.',
-    '***Children aged 15 years and under travel free in Standard Class when accompanied by a paying adult, or can travel unaccompanied if they have proof of air travel such as a valid flight booking or boarding pass. Photo ID will be required.',]
+  const USPList = [
+    { icon: ICON_TRAIN, text: "Our trains run every 15 minutes" },
+    { icon: ICON_CLOCK, text: "Tickets start from £10 one way**" },
+    { icon: ICON_SUN, text: "Kids 15 and under travel free***" },
+  ];
 
-const styles = `
-    main .max-w-limit.mx-auto > div > .grid:first-of-type {
-        margin-bottom: 2rem;
-    }
-    .ccx-mobile-container {
-        width: 100%;
-        height: 91px;
-        display: flex;
-        flex-flow: column;
-        gap: 10px;
-        opacity: 1;
-        padding-top: 12px;
-        padding-right: 24px;
-        padding-bottom: 12px;
-        padding-left: 12px;
-        background: #511E62;
-        color: white;
-        position: relative;
-    }
-    span.ccx-close-icon {
-        text-align: right;
-        margin-left: auto;
-        width: 12px;
-        height: 12px;
-        opacity: 1;
-        color: #CDBAD2;
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-    }
-    .ccx-mobile-container ol {
-        list-style-type: disc;
-        padding-left: 2rem;
-    }
-    .ccx-mobile-container ol .ccx-mobile-list-item {
-        font-family: inherit;
-        font-weight: 600;
-        font-size: 14px;
-        letter-spacing: 0;
-    }
-    
-    .ccx-desktop-container {
-        display: none;
-        background: #511E62;
-        width: 100%;
-        color: white;
-        opacity: 1;
-        padding: 1rem 3rem;
-    }
-    ol.ccx-desktop-list {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        gap: 2rem;
-    }
-    li.ccx-desktop-list-item {
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-        flex: 1;
-        justify-content: center;
-    }
-    span.ccx-desktop-list-item__text {
-        font-family: inherit;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 24px;
-        letter-spacing: 0;
-    }
-    .ccx-caveats {
-        padding: 0 1.5rem;
-        margin-bottom: 9rem;
-        max-width: 1600px;
-        display: flex;
-        flex-flow: column;
-    }
-    p.ccx-caveat {
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 24px;
-        max-width: 994px;
-    }
+  const CAVEATS = [
+    '*15 minute journey time to Heathrow Terminals 2 & 3 with an extra 6 minutes to Terminal 5...',
+    '**Based on an Advance Discounted Single (one way) ticket purchased 30+ days in advance...',
+    '***Children 15 and under travel free in Standard Class with a paying adult or valid flight booking...',
+  ];
 
-    @media screen and (min-width: 1024px) {
-        .ccx-container {
-            padding: 0;
-        }
-        .ccx-mobile-container {
-            display: none;
-        }
-        .ccx-desktop-container {
-            display: flex;
-            max-width: 1504px;
-            margin: 0 auto;
-        }
-        .ccx-caveats {
-            padding: 0 3rem;
-            margin-bottom: 0;
-        }
+  const styles = `
+    main .max-w-limit.mx-auto > div > .grid:first-of-type { margin-bottom: 2rem; }
+    .ccx-mobile-container { width:100%;height:91px;display:flex;flex-flow:column;gap:10px;
+      opacity:1;padding:12px 24px 12px 12px;background:#CDBAD0;color:white;position:relative; }
+    span.ccx-close-icon { text-align:right;margin-left:auto;width:12px;height:12px;opacity:1;
+      color:#CDBAD2;position:absolute;top:1rem;right:1rem; }
+    .ccx-mobile-container ol { list-style-type:disc;padding-left:2rem; }
+    .ccx-mobile-container ol .ccx-mobile-list-item { font-family:inherit;font-weight:500;
+      font-size:14px;color:#511E62; }
+    .ccx-desktop-container { display:none;background:#511E62;width:100%;color:white;
+      opacity:1;padding:1rem 3rem; }
+    ol.ccx-desktop-list { width:100%;display:flex;justify-content:space-between;gap:2rem; }
+    li.ccx-desktop-list-item { display:flex;gap:0.75rem;align-items:center;flex:1;justify-content:center; }
+    span.ccx-desktop-list-item__text { font-family:inherit;font-weight:600;font-size:16px;line-height:24px; }
+    .ccx-caveats { padding:0 1.5rem;margin-bottom:9rem;max-width:1600px;display:flex;flex-flow:column; }
+    p.ccx-caveat { font-size:12px;font-weight:400;line-height:24px;max-width:994px; }
+    @media screen and (min-width:1024px){
+      .ccx-container{padding:0;}
+      .ccx-mobile-container{display:none;}
+      .ccx-desktop-container{display:none;max-width:1504px;margin:0 auto;}
+      .ccx-caveats{padding:0 3rem;margin-bottom:0;}
     }
-`;
+  `;
 
-const customLog = (...messages) => {
+  const customLog = (...args) => {
     if (!LOG_ENABLED) return;
+    console.log("%c" + args.join(" "), "background:#2a1f60;color:white;padding:3px 6px;");
+  };
 
-    const style = `
-        background: linear-gradient(90deg, #6a6971, #2a1f60);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-    `;
-
-    const parts = [];
-    const values = [];
-
-    messages.forEach(msg => {
-        if (msg instanceof Element) {
-            // Single DOM element
-            parts.push("%o");
-            values.push(msg);
-
-        } else if (Array.isArray(msg)) {
-            // Handle arrays
-            msg.forEach(item => {
-                if (item instanceof Element) {
-                    parts.push("%o");
-                    values.push(item);
-                } else if (item && typeof item === "object" && "html" in item) {
-                    // Object with HTML string
-                    const wrapper = document.createElement("div");
-                    wrapper.innerHTML = item.html.trim();
-                    const el = wrapper.firstElementChild;
-
-                    parts.push("%o");
-                    values.push(el);
-
-                    // Log other props (e.g., entriesAmount)
-                    const { html, ...rest } = item;
-                    if (Object.keys(rest).length > 0) {
-                        parts.push("%O");
-                        values.push(rest);
-                    }
-                } else {
-                    parts.push("%O");
-                    values.push(item);
-                }
-            });
-
-        } else if (msg && typeof msg === "object" && "html" in msg) {
-            // Single object with HTML string
-            const wrapper = document.createElement("div");
-            wrapper.innerHTML = msg.html.trim();
-            const el = wrapper.firstElementChild;
-
-            parts.push("%o");
-            values.push(el);
-
-            const { html, ...rest } = msg;
-            if (Object.keys(rest).length > 0) {
-                parts.push("%O");
-                values.push(rest);
-            }
-
-        } else {
-            // Normal text/objects
-            if (typeof msg === "string") {
-                parts.push("%c" + msg.toUpperCase());
-                values.push(style);
-            } else {
-                parts.push("%O");
-                values.push(msg);
-            }
-        }
-    });
-
-    console.log(parts.join(" "), ...values);
-};
-
-const createAndAttachContainers = () => {
-    customLog('[createAndAttachContainers] Creating and attaching containers...');
-
-    // Parse URL params
-    const params = new URLSearchParams(window.location.search);
-    const direction = params.get('direction'); // 'toHeathrow' or 'fromHeathrow'
-    const children = parseInt(params.get('children') || '0', 10);
-    const hasChildren = children > 0;
-
-    // Determine journey type and corresponding USPs
-    let USPList = [];
-
-    const BASE_USP = {
-        icon: ICON_TRAIN,
-        text: "Travel on any train on your selected date"
-    };
-
-    if (direction === 'fromHeathrow') {
-        // Heathrow → Paddington
-        USPList = [
-            BASE_USP,
-            {
-                icon: ICON_CLOCK,
-                text: hasChildren ? "Kids under 15 travel free***" : "Trains run every 15 mins*"
-            },
-            {
-                icon: ICON_SUN,
-                text: "First train from Heathrow at 5:12am"
-            }
-        ];
-    } else if (direction === 'toHeathrow') {
-        // Paddington → Heathrow
-        USPList = [
-            BASE_USP,
-            {
-                icon: ICON_CLOCK,
-                text: hasChildren ? "Kids under 15 travel free***" : "Trains run every 15 mins*"
-            },
-            {
-                icon: ICON_SUN,
-                text: "First train from Paddington at 4:34am"
-            }
-        ];
-    } else {
-        customLog('[createAndAttachContainers] No valid direction found, using default USP list.');
-        USPList = [BASE_USP];
-    }
-
-    // Control element - nav second container
-    const CONTROL_ELEMENT_NAV = document.querySelector('nav');
-    if (!CONTROL_ELEMENT_NAV) {
-        console.warn('[createAndAttachContainers] <nav> not found');
-        return;
-    }
-
-    // Outer container
-    const CCX_OUTER_WRAPPER_CONTAINER = document.createElement('div');
-    CCX_OUTER_WRAPPER_CONTAINER.className = 'ccx-container mx-auto';
-
-    // ----- Mobile -----
-    const CCX_MOBILE_CONTAINER = document.createElement('div');
-    CCX_MOBILE_CONTAINER.className = 'ccx-mobile-container';
-
-    const CCX_ELEMENT_MOBILE_LIST = document.createElement('ol');
-    CCX_ELEMENT_MOBILE_LIST.className = 'ccx-mobile-list';
-
-    USPList.forEach(usp => {
-        const li = document.createElement('li');
-        li.className = 'ccx-mobile-list-item';
-        li.textContent = usp.text;
-        CCX_ELEMENT_MOBILE_LIST.appendChild(li);
-    });
-
-    CCX_MOBILE_CONTAINER.appendChild(CCX_ELEMENT_MOBILE_LIST);
-
-    // Close icon
-    const span = document.createElement('span');
-    span.className = 'ccx-close-icon';
-    span.innerHTML = ICON_CLOSE;
-    CCX_MOBILE_CONTAINER.appendChild(span);
-
-    // ----- Desktop -----
-    const CCX_DESKTOP_CONTAINER = document.createElement('div');
-    CCX_DESKTOP_CONTAINER.className = 'ccx-desktop-container';
-
-    const CCX_ELEMENT_DESKTOP_LIST = document.createElement('ol');
-    CCX_ELEMENT_DESKTOP_LIST.className = 'ccx-desktop-list';
-
-    USPList.forEach(usp => {
-        const li = document.createElement('li');
-        li.className = 'ccx-desktop-list-item';
-
-        const spanIcon = document.createElement('span');
-        spanIcon.className = 'ccx-desktop-list-item__icon';
-        spanIcon.innerHTML = usp.icon;
-        li.appendChild(spanIcon);
-
-        const spanText = document.createElement('span');
-        spanText.className = 'ccx-desktop-list-item__text';
-        spanText.textContent = usp.text;
-        li.appendChild(spanText);
-
-        CCX_ELEMENT_DESKTOP_LIST.appendChild(li);
-    });
-
-    CCX_DESKTOP_CONTAINER.appendChild(CCX_ELEMENT_DESKTOP_LIST);
-
-    // ----- Append all -----
-    CCX_OUTER_WRAPPER_CONTAINER.appendChild(CCX_MOBILE_CONTAINER);
-    CCX_OUTER_WRAPPER_CONTAINER.appendChild(CCX_DESKTOP_CONTAINER);
-    CONTROL_ELEMENT_NAV.insertAdjacentElement('beforeend', CCX_OUTER_WRAPPER_CONTAINER);
-};
-
-
-const attachEventListeners = () => {
-    customLog('[attachEventListeners] Attaching event listeners...');
-
-    const CONTROL_ELEMENT_CLOSE_BUTTON = document.querySelector('.ccx-close-icon');
-    const CCX_ELEMENT_WRAPPER_CONTAINER = document.querySelector('.ccx-container');
-    if (!CONTROL_ELEMENT_CLOSE_BUTTON || !CCX_ELEMENT_WRAPPER_CONTAINER) return;
-
-    CONTROL_ELEMENT_CLOSE_BUTTON.addEventListener('click', () => {
-        customLog('[attachEventListeners] Clicked close button');
-        CCX_ELEMENT_WRAPPER_CONTAINER.remove();
-    });
-}
-
-const attachMutationObserver = () => {
-    customLog('[attachMutationObserver] Attaching mutation observer...');
-
-    const targetNode = document.body;
-    const config = { childList: true, subtree: true };
-
-    const handleStructureChange = () => {
-        const CCX_ELEMENT_WRAPPER_CONTAINER = document.querySelector('.ccx-container');
-        const CONTROL_ELEMENT_NAV = document.querySelector('nav');
-
-        if (
-            CCX_ELEMENT_WRAPPER_CONTAINER &&
-            CONTROL_ELEMENT_NAV &&
-            CONTROL_ELEMENT_NAV.lastElementChild !== CCX_ELEMENT_WRAPPER_CONTAINER
-        ) {
-            CONTROL_ELEMENT_NAV.insertAdjacentElement('beforeend', CCX_ELEMENT_WRAPPER_CONTAINER);
-            console.log('[MutationObserver] .ccx-container repositioned inside <nav>');
-        }
-    };
-
-    const observer = new MutationObserver(mutations => {
-        for (const mutation of mutations) {
-            const addedNodes = Array.from(mutation.addedNodes);
-            const removedNodes = Array.from(mutation.removedNodes);
-
-            // Detect when <footer> or <nav> is added or removed
-            const relevantChange = [...addedNodes, ...removedNodes].some(node => {
-                return (
-                    node.tagName === 'FOOTER' ||
-                    node.tagName === 'NAV' ||
-                    (node.querySelector && (node.querySelector('footer') || node.querySelector('nav')))
-                );
-            });
-
-            // Or if the change happened *inside* an existing <nav>
-            const navChanged = mutation.target.tagName === 'NAV';
-
-            if (relevantChange || navChanged) {
-                handleStructureChange();
-            }
-        }
-    });
-
-    observer.observe(targetNode, config);
-};
-
-const addCaveats = (caveats) => {
-    customLog('[addCaveats] Starting the addCaveats function...');
-
-    if (!Array.isArray(caveats) || caveats.length === 0) {
-        customLog('[addCaveats] No caveats provided');
-        return;
-    }
-
-    const caveatsContainer = document.createElement('div');
-    caveatsContainer.className = 'ccx-caveats max-w-limit mx-auto';
-
-    caveats.forEach(caveat => {
-        const p = document.createElement('p');
-        p.className = 'ccx-caveat text-grey-900';
-        p.textContent = caveat;
-        caveatsContainer.appendChild(p);
-    });
-
-    document.querySelector('main')?.appendChild(caveatsContainer);
-    // document.body.appendChild(caveatsContainer);
-};
-
-const addStyles = (css) => {
-    customLog('[addStyles] Starting the addStyles function...');
-
-    if (!css) return;
-
-    if (!css) {
-        customLog('[addStyles] No CSS provided');
-        return;
-    }
-
-    // Check if the style tag already exists
-    if (document.querySelector('.ccx-styles-hex-23-v2')) {
-        customLog('[addStyles] Custom styles already exist.');
-        return;
-    }
-
-    // Create a new <style> element
-    const style = document.createElement('style');
-    style.classList.add('ccx-styles-hex-23-v2');
-    style.appendChild(document.createTextNode(css));
-
-    // Append the style tag to the document head
+  const addStyles = (css) => {
+    if (!css || document.querySelector(".ccx-styles-hex-23-v2")) return;
+    const style = document.createElement("style");
+    style.classList.add("ccx-styles-hex-23-v2");
+    style.textContent = css;
     document.head.appendChild(style);
-    customLog('Custom styles added.');
-};
+    customLog("[addStyles] Styles added.");
+  };
 
-const init = () => {
-    customLog('--- HEATHROW - HEX 23 - V2 ---');
-    document.body.classList.add('ccx-heathrow-hex23-v2');
-    customLog('[init] Initializing...');
-    createAndAttachContainers();
-    attachEventListeners();
-    addStyles(styles);
-    attachMutationObserver();
-    addCaveats(CAVEATS);
-}
+  const ensureContainerPlacement = () => {
+    const container = document.querySelector(".ccx-container");
+    const nav = document.querySelector("nav");
+    if (container && nav && nav.lastElementChild !== container) {
+      nav.insertAdjacentElement("beforeend", container);
+      customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
+    }
+  };
 
-init();
+  const removeContainerIfPresent = () => {
+    const container = document.querySelector(".ccx-container");
+    if (container) {
+      container.remove();
+      customLog("[removeContainerIfPresent] Removed container (not homepage).");
+    }
+  };
+
+  const createAndAttachContainers = () => {
+    if (document.querySelector(".ccx-container")) {
+      customLog("[createAndAttachContainers] Already exists; ensuring placement...");
+      ensureContainerPlacement();
+      return;
+    }
+
+    const nav = document.querySelector("nav");
+    if (!nav) {
+      customLog("[createAndAttachContainers] No <nav> found; skipping.");
+      return;
+    }
+
+    customLog("[createAndAttachContainers] Creating containers...");
+    const wrapper = document.createElement("div");
+    wrapper.className = "ccx-container mx-auto";
+
+    // --- Mobile ---
+    const mobile = document.createElement("div");
+    mobile.className = "ccx-mobile-container";
+    const mobileList = document.createElement("ol");
+    mobileList.className = "ccx-mobile-list";
+    USPList.forEach((usp) => {
+      const li = document.createElement("li");
+      li.className = "ccx-mobile-list-item";
+      li.textContent = usp.text;
+      mobileList.appendChild(li);
+    });
+    mobile.appendChild(mobileList);
+
+    const closeBtn = document.createElement("span");
+    closeBtn.className = "ccx-close-icon";
+    closeBtn.innerHTML = ICON_CLOSE;
+    mobile.appendChild(closeBtn);
+
+    // --- Desktop ---
+    const desktop = document.createElement("div");
+    desktop.className = "ccx-desktop-container";
+    const desktopList = document.createElement("ol");
+    desktopList.className = "ccx-desktop-list";
+    USPList.forEach((usp) => {
+      const li = document.createElement("li");
+      li.className = "ccx-desktop-list-item";
+      const icon = document.createElement("span");
+      icon.className = "ccx-desktop-list-item__icon";
+      icon.innerHTML = usp.icon;
+      const text = document.createElement("span");
+      text.className = "ccx-desktop-list-item__text";
+      text.textContent = usp.text;
+      li.append(icon, text);
+      desktopList.appendChild(li);
+    });
+    desktop.appendChild(desktopList);
+
+    wrapper.append(mobile, desktop);
+    nav.insertAdjacentElement("beforeend", wrapper);
+
+    closeBtn.addEventListener("click", () => {
+      wrapper.remove();
+      customLog("[closeBtn] Container closed manually.");
+    });
+
+    ensureContainerPlacement();
+  };
+
+  const attachMutationObserver = () => {
+    const observer = new MutationObserver(() => ensureContainerPlacement());
+    observer.observe(document.body, { childList: true, subtree: true });
+    customLog("[MutationObserver] Watching DOM for <nav> changes.");
+  };
+
+  const addCaveats = (list) => {
+    if (document.querySelector(".ccx-caveats") || !list?.length) return;
+    const container = document.createElement("div");
+    container.className = "ccx-caveats max-w-limit mx-auto";
+    list.forEach((text) => {
+      const p = document.createElement("p");
+      p.className = "ccx-caveat text-grey-900";
+      p.textContent = text;
+      container.appendChild(p);
+    });
+    document.querySelector("main")?.appendChild(container);
+    customLog("[addCaveats] Added caveats section.");
+  };
+
+  async function applyPageChanges() {
+    try {
+      const isHomePage = window.location.pathname === "/";
+      customLog(`[applyPageChanges] Path: ${window.location.pathname}`);
+
+      if (!isHomePage) {
+        removeContainerIfPresent();
+        return;
+      }
+
+      document.body.classList.add(BODY_CLASS);
+      addStyles(styles);
+      createAndAttachContainers();
+      addCaveats(CAVEATS);
+      ensureContainerPlacement();
+      attachMutationObserver();
+      customLog("[applyPageChanges] Homepage logic complete ✅");
+    } catch (err) {
+      console.warn("[applyPageChanges] Error:", err);
+    }
+  }
+
+  // --- SPA route tracking ---
+  function patchHistoryMethod(method) {
+    const original = history[method];
+    history[method] = function (...args) {
+      const result = original.apply(this, args);
+      window.dispatchEvent(new Event("locationchange"));
+      return result;
+    };
+  }
+  ["pushState", "replaceState"].forEach(patchHistoryMethod);
+  window.addEventListener("popstate", () =>
+    window.dispatchEvent(new Event("locationchange"))
+  );
+
+  window.addEventListener("locationchange", () => {
+    customLog("[Router] Route changed:", window.location.pathname);
+    setTimeout(() => applyPageChanges(), 300);
+  });
+
+  // --- Debounced resize handling ---
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      customLog("[Resize] Validating placement after resize...");
+      ensureContainerPlacement();
+    }, 250);
+  });
+
+  // --- Initial load ---
+  applyPageChanges();
+})();
