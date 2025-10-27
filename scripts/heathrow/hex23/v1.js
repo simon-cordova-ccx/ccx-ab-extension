@@ -189,21 +189,6 @@ const createAndAttachContainers = async () => {
   customLog("[createAndAttachContainers] Inserted container successfully.");
 };
 
-
-  const addCaveats = (list) => {
-    if (!Array.isArray(list) || list.length === 0 || document.querySelector(".ccx-caveats")) return;
-    const container = document.createElement("div");
-    container.className = "ccx-caveats max-w-limit mx-auto";
-    list.forEach((c) => {
-      const p = document.createElement("p");
-      p.className = "ccx-caveat text-grey-900";
-      p.textContent = c;
-      container.appendChild(p);
-    });
-    document.querySelector("main")?.appendChild(container);
-    customLog("[addCaveats] Added caveats section.");
-  };
-
   async function applyPageChanges() {
     try {
       const pathname = window.location.pathname || "";
