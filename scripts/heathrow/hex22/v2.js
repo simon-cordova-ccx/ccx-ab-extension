@@ -112,6 +112,7 @@
             container.remove();
             customLog("[removeContainerIfPresent] Removed container (not fares page).");
         }
+        document.body.classList.remove(BODY_CLASS);
     };
 
     const createAndAttachContainers = () => {
@@ -150,10 +151,41 @@
 
         let wrapper = document.querySelector(".ccx-container");
         if (wrapper) {
-            customLog("[createAndAttachContainers] Already exists, ensuring placement...");
+            customLog("[createAndAttachContainers] Updating existing banner from URL params...");
+            // Rebuild mobile list
+            const mobileList = wrapper.querySelector(".ccx-mobile-list");
+            if (mobileList) {
+                mobileList.innerHTML = "";
+                USPList.forEach((usp) => {
+                    const li = document.createElement("li");
+                    li.className = "ccx-mobile-list-item";
+                    li.textContent = usp.text;
+                    mobileList.appendChild(li);
+                });
+            }
+
+            // Rebuild desktop list
+            const desktopList = wrapper.querySelector(".ccx-desktop-list");
+            if (desktopList) {
+                desktopList.innerHTML = "";
+                USPList.forEach((usp) => {
+                    const li = document.createElement("li");
+                    li.className = "ccx-desktop-list-item";
+                    const iconSpan = document.createElement("span");
+                    iconSpan.className = "ccx-desktop-list-item__icon";
+                    iconSpan.innerHTML = usp.icon;
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "ccx-desktop-list-item__text";
+                    textSpan.textContent = usp.text;
+                    li.append(iconSpan, textSpan);
+                    desktopList.appendChild(li);
+                });
+            }
+
             ensureContainerPlacement();
             return;
         }
+
 
         wrapper = document.createElement("div");
         wrapper.className = "ccx-container mx-auto";
@@ -224,7 +256,7 @@
             await waitForElement("nav");
             createAndAttachContainers();
             ensureContainerPlacement();
-            customLog("[applyPageChanges] Complete ✅");
+            customLog("[applyPageChanges] Complete");
         } catch (err) {
             console.warn("[applyPageChanges] Error:", err);
         }
@@ -246,9 +278,47 @@
     );
 
     window.addEventListener("locationchange", () => {
+        // Keep watchers' last values in sync with the new URL
+        window.__ccxHrefWatcherLast = window.location.href;
+        window.__ccxSearchWatcherLast = window.location.search;
+
         customLog("[Router] Route changed:", window.location.pathname);
         setTimeout(() => applyPageChanges(), 300);
     });
+
+    // --- Robust URL watcher: reacts to ANY href change (path or search) ---
+    // Deduped globally so re-inits from the A/B tool don't create multiple intervals
+    if (!window.__ccxHrefWatcherId) {
+        window.__ccxHrefWatcherLast = window.location.href;
+        window.__ccxHrefWatcherId = setInterval(() => {
+            const href = window.location.href;
+            if (href !== window.__ccxHrefWatcherLast) {
+                window.__ccxHrefWatcherLast = href;
+                customLog("[URL] Href changed:", href);
+                setTimeout(() => applyPageChanges(), 300);
+            }
+        }, 200);
+    }
+
+
+    // Also catch native hash changes just in case
+    window.addEventListener("hashchange", () => {
+        customLog("[Router] hashchange:", window.location.href);
+        setTimeout(() => applyPageChanges(), 300);
+    });
+
+    // --- Listen for URL search param changes (SPA param updates) ---
+    if (!window.__ccxSearchWatcherId) {
+        window.__ccxSearchWatcherLast = window.location.search;
+        window.__ccxSearchWatcherId = setInterval(() => {
+            const s = window.location.search;
+            if (s !== window.__ccxSearchWatcherLast) {
+                window.__ccxSearchWatcherLast = s;
+                customLog("[URL Params] Detected change in search params:", s);
+                setTimeout(() => applyPageChanges(), 300);
+            }
+        }, 500);
+    }
 
     // --- Handle viewport changes ---
     let resizeTimer;
