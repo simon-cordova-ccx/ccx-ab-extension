@@ -206,7 +206,7 @@ const styles = `
 .slide-content {
   display: flex;
   flex-direction: row;
-  text-shadown: none;
+  text-shadow: none;
 }
 
 /* Left side: Image */
