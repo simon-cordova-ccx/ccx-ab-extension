@@ -216,7 +216,7 @@ const init = () => {
       (results) => {
         console.log(results[0]?.elements);
 
-        const CONTROL_CAMPAIGN_HERO_SUBTEXT = results[0]?.elements;
+        const CONTROL_CAMPAIGN_HERO_SUBTEXT = results[0]?.elements[0];
 
         const CCX_OUTER_CONTAINER = document.querySelector('.ccx-oz30-card-container');
 

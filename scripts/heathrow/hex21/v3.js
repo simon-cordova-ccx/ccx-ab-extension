@@ -156,11 +156,6 @@
       document.body.classList.add(BODY_CLASS);
       console.log("[Main] BODY_CLASS added:", BODY_CLASS);
 
-      container.style.display = "flex";
-      container.style.flexDirection = "row-reverse";
-      container.style.marginTop = "2rem";
-      console.log("[Main] Container styles applied.");
-
       const isHomePage = window.location.href === 'https://www.heathrowexpress.com/';
 
       if (isHomePage) {
@@ -170,12 +165,20 @@
         const ccxList = document.querySelector('ul[data-ccx-custom-ul]');
         if (ccxList) {
           ccxList.style.display = 'block';
+          container.style.display = "flex";
+          container.style.flexDirection = "row-reverse";
+          container.style.marginTop = "2rem";
+          console.log("[Main] Container styles applied.");
         }
       } else {
         const ccxList = document.querySelector('ul[data-ccx-custom-ul]');
         if (ccxList) {
           ccxList.style.display = 'none';
         }
+        container.style.display = "initial";
+        container.style.flexDirection = "initial";
+        container.style.marginTop = "initial";
+        console.log("[Main] Container styles applied.");
       }
 
       console.log("[Main] Page transformation complete!");

@@ -538,7 +538,7 @@ const init = () => {
     document.body.classList.add('ccx-omaze-oz29');
     customLog('[init] Added class ccx-omaze-oz29 to body');
 
-    const localStorageExists = window.localStorage.getItem('ccx-oz30');
+    const localStorageExists = window.localStorage.getItem('ccx-oz29');
     if (localStorageExists) {
       return;
     }
@@ -583,7 +583,7 @@ const init = () => {
             const closeModal = () => {
               root.classList.remove('show');
               document.body.style.overflow = '';
-              localStorage.setItem('ccx-oz30', true);
+              localStorage.setItem('ccx-oz29', true);
               CCX_CANCEL_SUBSCRIPTION_LINK.style.display = 'none';
               CONTROL_CANCEL_SUBSCRIPTION_LINK.style.display = 'initial';
               // optional: remove the root after animation finishes
