@@ -14,6 +14,8 @@ const images = {
   stepFourImage: 'https://cdn-eu.dynamicyield.com/api/9880449/images/9bf6b89a6146.png',
 }
 
+const videoURL = 'https://iili.io/F1LifxS.gif';
+
 const styles = `
 .oz29-slider-root {
     position: fixed !important;      /* fixed to the viewport */
@@ -136,7 +138,6 @@ const styles = `
 .oz29-step-4-skip-button {
   background: none;
   border: none;
-  margin-top: 16px;
   font-family: Gellix;
   font-weight: 500;
   color: #FFFFFF;
@@ -148,6 +149,7 @@ const styles = `
 }
 .oz29-card.step-4 {
   color:#fff;
+  background-position: center center !important;
 }
 
 .oz29-bg-video {
@@ -382,7 +384,7 @@ const sliderSteps = [
   {
     name: 'Step 1',
     heroCopy: 'Don\'t go yet!',
-    subCopy: 'You\'ve helped raise millions for incredible UK charities... and we\'re just getting started.',
+    subCopy: 'You\'re giving up the chance to win a multi-million pound house and bank huge cash prizes.',
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/26ddfc90ebbf.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
@@ -392,7 +394,7 @@ const sliderSteps = [
   {
     name: 'Step 2',
     heroCopy: 'Did you know?',
-    subCopy: 'You\'ve made a real difference transforming lives and increasing awareness.',
+    subCopy: 'With your monthly subscription, you\'ve helped raise over £100M for UK charities.',
     icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/1fe709902e09.gif',
     buttonText: 'Continue',
     progressColor: '#081F28',
@@ -402,8 +404,9 @@ const sliderSteps = [
   {
     name: 'Step 3',
     heroCopy: 'You could be the next winner!',
-    subCopy: 'Together, we\'re saving lives and creating a world where everyone has a chance.',
-    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/379e4a3f8854.jpg',
+    subCopy: 'Like Hannah, who\'s monthly subscription won her the keys to a £4M Lake District House.',
+    // icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/379e4a3f8854.jpg',
+    icon: 'https://cdn-eu.dynamicyield.com/api/9880449/images/42a68baec6ff.png',
     buttonText: 'Continue',
     progressColor: '#081F28',
     background: 'url(https://iili.io/F0MK7nf.gif)',
@@ -411,13 +414,11 @@ const sliderSteps = [
   },
   {
     name: 'Step 4',
-    // heroCopy: 'Thank you for being part of the <span style="color: #F5CD31;">Omaze Community!</span>',
     heroCopy: 'Nice one!',
-    // subCopy: "Here's your extra boost... <strong>30 FREE ENTRIES</strong> into the Yorkshire House Draw!",
     icon: '',
     buttonText: 'I want 45 FREE Entries',
     progressColor: '#F5CD31',
-    background: 'linear-gradient(180deg, #0B0F26 0%, #041440 100%)',
+    background: 'url(' + videoURL + ')',
     topLogo: images.logoFinal,
     metaCopy: 'No thanks',
     backgroundVideo: '', // Add your video URL
