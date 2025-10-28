@@ -161,9 +161,22 @@
       container.style.marginTop = "2rem";
       console.log("[Main] Container styles applied.");
 
-      updateHeroTitle(titleEl);
-      hideOriginalUl(originalUl);
-      createCustomUl(originalUl, NEW_PARAGRAPHS);
+      const isHomePage = window.location.href === 'https://www.heathrowexpress.com/';
+
+      if (isHomePage) {
+        updateHeroTitle(titleEl);
+        hideOriginalUl(originalUl);
+        createCustomUl(originalUl, NEW_PARAGRAPHS);
+        const ccxList = document.querySelector('ul[data-ccx-custom-ul]');
+        if (ccxList) {
+          ccxList.style.display = 'block';
+        }
+      } else {
+        const ccxList = document.querySelector('ul[data-ccx-custom-ul]');
+        if (ccxList) {
+          ccxList.style.display = 'none';
+        }
+      }
 
       console.log("[Main] Page transformation complete!");
     } catch (err) {
