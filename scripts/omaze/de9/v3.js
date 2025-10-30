@@ -267,7 +267,7 @@ const createContainer = () => {
 
   const ccxContainerTitle = document.createElement('h1');
   ccxContainerTitle.classList.add('ccx-container__title');
-  ccxContainerTitle.textContent = 'Lerne unseren Gewinner des Plauer-See-Hauses kennen';
+  ccxContainerTitle.textContent = 'Lerne den Gewinner des Hauses am Plauer See kennen';
   ccxContainer.appendChild(ccxContainerTitle);
 
   const ccxParagraph = document.createElement("p");
@@ -275,7 +275,7 @@ const createContainer = () => {
   const ccxParagraphTextInitial = document.createTextNode("Schau dir an, wie ");
   const ccxSpan = document.createElement("span");
   const ccxSpanText = document.createTextNode("Burak B. aus Berlin ");
-  const ccxParagraphTextRemaining = document.createTextNode(" erfährt, dass er das Haus am Plauer See gewonnen hat.");
+  const ccxParagraphTextRemaining = document.createTextNode(" erfährt, dass er das Haus am Plauer See gewonnen hat - ein Moment, der alles verändert");
 
   ccxSpan.appendChild(ccxSpanText);
   ccxParagraph.appendChild(ccxParagraphTextInitial);
@@ -320,6 +320,8 @@ const createContainer = () => {
 };
 
 const openVideoModal = (videoUrl) => {
+  document.body.style.overflow = "hidden";
+
   // Create backdrop
   const backdrop = document.createElement("div");
   backdrop.classList.add("ccx-video-backdrop");
@@ -342,6 +344,7 @@ const openVideoModal = (videoUrl) => {
   // Click backdrop to close
   backdrop.addEventListener("click", (e) => {
     if (e.target === backdrop) {
+      document.body.style.overflow = "";
       document.body.removeChild(backdrop);
     }
   });
@@ -368,7 +371,7 @@ const updateLiveRentSellHeader = () => {
   }
 
   if (liveRentSellHeader) {
-    liveRentSellHeader.textContent = 'EXPLORE THE LANDHAUS IN OBERBAYERN';
+    liveRentSellHeader.textContent = 'Entdecke das Landhaus in Oberbayern';
   }
 }
 

@@ -90,7 +90,9 @@ const styles = `
   border-width: 2px;
   border: 2px solid #081F28;
   box-shadow: 0px 4px 34px 0px #00000026;
-  background: #121a2f;
+  background: url(https://iili.io/F1LifxS.gif);
+  background-position: top center;
+  background-color: #121a2f;
 }
 
 .ccx-slide h2 {
@@ -147,7 +149,7 @@ const styles = `
 /* ---------- TIMELINE STYLES ---------- */
 
 .ccx-timeline__header {
-  text-transform: uppercase;
+  text-transform: none;
   text-align: center;
   margin-bottom: 2rem;
   color: #000000;
@@ -593,7 +595,7 @@ const createSliderContainer = () => {
       newText: `Wir haben bereits mehr als 100 Mio. € in Preisen vergeben, die Leben verändern – von Häusern und Autos bis hin zu Geldpreisen.`
     },
     {
-      heading: '13 years',
+      heading: '13 JAHRE',
       text: `Launched in 2012, Omaze have been <span>delivering dreams</span> for over a decade around the world.`,
       newText: `Seit 2012 hilft Omaze Menschen dabei, ihr Leben zu verändern und gleichzeitig Gutes zu tun.`,
     },
