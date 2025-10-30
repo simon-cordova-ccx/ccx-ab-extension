@@ -71,9 +71,36 @@ const styles = `
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.ccx-container__polygon:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  opacity: 0.8;
+/* Modal Backdrop */
+.ccx-video-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal Container */
+.ccx-video-modal {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive iframe */
+.ccx-video-modal iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 `;
 
@@ -257,14 +284,31 @@ const createContainer = () => {
 
   ccxContainer.appendChild(ccxParagraph);
 
+  // Video Container
   const ccxVideoContainer = document.createElement("div");
   ccxVideoContainer.classList.add("ccx-container__video-container");
-  const ccxVideo = document.createElement("video");
-  ccxVideo.classList.add("ccx-container__video");
-  ccxVideo.src = VIDEO_URL || "";
-  ccxVideo.controls = false;
-  ccxVideoContainer.appendChild(ccxVideo);
 
+  // Responsive image replacing background
+  const ccxImg = document.createElement("img");
+  ccxImg.src = "https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712";
+  ccxImg.srcset = `
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=390 390w,
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=960 960w,
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=1280 1280w,
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=1920 1920w,
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=2560 2560w,
+    https://cdn.shopify.com/s/files/1/0698/8919/6213/files/DEH1_PLAUER_SEE_HAUS_GP_WINNER_BURAK_16x9_5788548a-a15c-4591-8348-628320d077e7.jpg?v=1754506712&width=3840 3840w
+  `;
+  ccxImg.loading = "eager";
+  ccxImg.width = 1920;
+  ccxImg.height = 1080;
+  ccxImg.alt = "";
+  ccxImg.style.width = "100%";
+  ccxImg.style.height = "100%";
+  ccxImg.style.objectFit = "cover";
+  ccxVideoContainer.appendChild(ccxImg);
+
+  // Play button overlay
   const ccxPolygonWrapper = document.createElement("div");
   ccxPolygonWrapper.classList.add("ccx-container__polygon");
   ccxPolygonWrapper.innerHTML = POLYGON;
@@ -275,24 +319,44 @@ const createContainer = () => {
   return ccxContainer;
 };
 
+const openVideoModal = (videoUrl) => {
+  // Create backdrop
+  const backdrop = document.createElement("div");
+  backdrop.classList.add("ccx-video-backdrop");
+
+  // Create modal container
+  const modal = document.createElement("div");
+  modal.classList.add("ccx-video-modal");
+
+  // Add iframe for YouTube video
+  const iframe = document.createElement("iframe");
+  iframe.src = videoUrl;
+  iframe.title = "YouTube video player";
+  iframe.allow =
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  iframe.allowFullscreen = true;
+  modal.appendChild(iframe);
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  // Click backdrop to close
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) {
+      document.body.removeChild(backdrop);
+    }
+  });
+};
+
 const attachEventListeners = () => {
   const CCX_VIDEO_PLAY_BUTTON = document.querySelector('.ccx-container__polygon');
-  const CCX_VIDEO = document.querySelector('.ccx-container__video');
 
-  if (CCX_VIDEO && CCX_VIDEO_PLAY_BUTTON) {
+  if (CCX_VIDEO_PLAY_BUTTON) {
     CCX_VIDEO_PLAY_BUTTON.addEventListener("click", () => {
-      if (CCX_VIDEO.paused) {
-        customLog('[attachEventListeners] Play button clicked');
-        CCX_VIDEO.play();
-        CCX_VIDEO_PLAY_BUTTON.style.display = "none";
-      } else {
-        customLog('[attachEventListeners] Pause button clicked');
-        CCX_VIDEO.pause();
-        CCX_VIDEO_PLAY_BUTTON.style.display = "block";
-      }
+      customLog('[attachEventListeners] Play button clicked');
+      openVideoModal("https://www.youtube.com/embed/iqUZ4PwjqJk?autoplay=1");
     });
   }
-}
+};
 
 const updateLiveRentSellHeader = () => {
   // live-rent-sell > h1
