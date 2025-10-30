@@ -1,5 +1,3 @@
-// TODO: CAROUSEL - UPDATE URLS AND IMAGES 
-
 const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-9 | LP Trust Testing";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
@@ -8,7 +6,23 @@ const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
+const IMAGE_TRUSTPILOT = 'https://cdn-eu.dynamicyield.com/api/9880449/images/0a589bf2ea2e.png';
+
 const styles = `
+.ccx-omaze-de9-v1__trustpilot {
+  width: 111px;
+  height: 40px;
+  position: absolute;
+  left: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 13px;
+}
+@media screen and (min-width: 991px) {
+  .ccx-omaze-de9-v1__trustpilot {
+    display: none;
+  }
+}
 .ccx-omaze-de9-v1 {
   background: white;
   padding-bttom: 2rem;
@@ -279,7 +293,6 @@ const createContainer = () => {
   return ccxContainer;
 };
 
-// --- Isolated event listener setup ---
 const attachEventListeners = (containerEl) => {
   if (!containerEl) {
     console.warn('[attachEventListeners] No container element provided.');
@@ -311,6 +324,29 @@ const init = () => {
 
     document.body.classList.add('ccx-omaze-de9-v1');
     customLog('[init] Added class ccx-omaze-de9-v1 to body');
+
+    waitForElements(
+      [
+        { selector: '#main-nav', count: 1 }
+      ],
+      function (results) {
+        console.log(results);
+        addStyles(styles);
+
+        const CONTROL_MAIN_NAV = results[0].elements[0];
+        if (!CONTROL_MAIN_NAV) {
+          customLog('[init] Login element not found');
+          return;
+        }
+
+        const TRUSTPILOT_IMAGE = document.createElement('img');
+        TRUSTPILOT_IMAGE.src = IMAGE_TRUSTPILOT;
+        TRUSTPILOT_IMAGE.alt = 'Trustpilot';
+        TRUSTPILOT_IMAGE.classList.add('ccx-omaze-de9-v1__trustpilot');
+
+        CONTROL_MAIN_NAV.insertAdjacentElement('beforeend', TRUSTPILOT_IMAGE);
+      }
+    );
 
     waitForElements(
       [

@@ -1,5 +1,3 @@
-// TODO: HOW DOES IT WORK SECTION?
-
 const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-9 | LP Trust Testing";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
