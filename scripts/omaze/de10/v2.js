@@ -8,7 +8,9 @@ const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";
 
 const SELECTORS = {
-  controlTrophyContainer: '#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child > div:last-child'
+  controlTrophyContainer: '#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child > div:last-child',
+  firstParagraphContainer: '#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child > div:first-of-type',
+  secondParagraphContainer: '#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child > div:first-of-type + div'
 }
 
 const IMAGES = {
@@ -158,12 +160,14 @@ const bindSlideshowEvents = (wrapper) => {
 };
 
 const styles = `
+#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child {
+  margin-top: 4rem !important;
+}
 #enter-now-material-tab-buttons-design .slideshow-wrapper {
   padding-bottom: 0;
   position: relative;
   max-width: 390px;
-  margin: 0 auto;
-  margin-top: 1rem !important;
+  margin: 1rem auto !important;
 }
 
 .mySlides {
@@ -250,7 +254,7 @@ const styles = `
   font-family: Gellix, sans-serif;
   font-weight: 500;
   font-size: 14px;
-  line-height: 16.8px;
+  line-height: 17.8px;
   vertical-align: middle;
   margin: 0;
 }
@@ -611,6 +615,50 @@ const init = () => {
 
     document.body.classList.add('ccx-omaze-de10-v2');
     customLog('[init] Added class ccx-omaze-de10-v2 to body');
+
+    waitForElements(
+      [
+        { selector: SELECTORS.firstParagraphContainer, count: 1 }
+      ],
+      function (results) {
+        console.log(results);
+        addStyles(styles);
+
+        const CONTROL_FIRST_PARAGRAPH = results[0].elements[0];
+        if (!CONTROL_FIRST_PARAGRAPH) {
+          customLog('[init] Trophy Container not found');
+          return;
+        } else {
+          customLog('[init] Trophy Container found');
+        }
+
+        CONTROL_FIRST_PARAGRAPH.style.display = 'none';
+        customLog('[init] FIRST PARAGRAPH CONTAINER hidden');
+
+      }
+    );
+    
+    waitForElements(
+      [
+        { selector: SELECTORS.secondParagraphContainer, count: 1 }
+      ],
+      function (results) {
+        console.log(results);
+        addStyles(styles);
+
+        const CONTROL_SECOND_PARAGRAPH = results[0].elements[0];
+        if (!CONTROL_SECOND_PARAGRAPH) {
+          customLog('[init] Trophy Container not found');
+          return;
+        } else {
+          customLog('[init] Trophy Container found');
+        }
+
+        CONTROL_SECOND_PARAGRAPH.style.display = 'none';
+        customLog('[init] SECOND PARAGRAPH CONTAINER hidden');
+
+      }
+    );
 
     waitForElements(
       [
