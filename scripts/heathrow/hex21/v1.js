@@ -26,7 +26,7 @@ const waitForElement = (selector, interval = WAIT_INTERVAL, maxAttempts = MAX_AT
 async function applyHomepageChanges() {
   if (!isHomePage()) return;
 
-  console.log("Applying homepage logic...");
+  // console.log("Applying homepage logic...");
 
   try {
     const container = await waitForElement(SELECTORS.container);
@@ -38,9 +38,9 @@ async function applyHomepageChanges() {
 
     // Add marker class
     document.body.classList.add(BODY_CLASS);
-    console.log("Homepage layout applied ✅");
+    // console.log("Homepage layout applied ✅");
   } catch (err) {
-    console.warn("Homepage init error:", err.message);
+    // console.warn("Homepage init error:", err.message);
   }
 }
 
@@ -81,7 +81,7 @@ window.addEventListener("popstate", () => window.dispatchEvent(new Event("locati
 
 // --- React to Route Changes ---
 window.addEventListener("locationchange", () => {
-  console.log("Route changed:", window.location.pathname);
+  // console.log("Route changed:", window.location.pathname);
   if (isHomePage()) {
     // Wait a moment before applying, to allow SPA render to complete
     setTimeout(() => applyHomepageChanges(), 300);

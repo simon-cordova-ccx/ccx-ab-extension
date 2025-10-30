@@ -108,7 +108,7 @@ const waitForElement = (selector, timeout = 8000) => new Promise((resolve) => {
     style.classList.add("ccx-styles-hex-23-v1");
     style.appendChild(document.createTextNode(css));
     document.head.appendChild(style);
-    customLog("[addStyles] Styles injected.");
+    // customLog("[addStyles] Styles injected.");
   };
 
   const ensureContainerPlacement = () => {
@@ -118,7 +118,7 @@ const waitForElement = (selector, timeout = 8000) => new Promise((resolve) => {
 
     if (heroCTA.nextElementSibling !== container) {
       heroCTA.insertAdjacentElement("afterend", container);
-      customLog("[ensureContainerPlacement] Repositioned after hero CTA.");
+      // customLog("[ensureContainerPlacement] Repositioned after hero CTA.");
     }
   };
 
@@ -126,7 +126,7 @@ const waitForElement = (selector, timeout = 8000) => new Promise((resolve) => {
     const container = document.querySelector(".ccx-container");
     if (container) {
       container.remove();
-      customLog("[removeContainerIfPresent] Removed container (not target page).");
+      // customLog("[removeContainerIfPresent] Removed container (not target page).");
     }
     const caveats = document.querySelector(".ccx-caveats");
     if (caveats) caveats.remove();
@@ -135,7 +135,7 @@ const waitForElement = (selector, timeout = 8000) => new Promise((resolve) => {
 
 const createAndAttachContainers = async () => {
   if (document.querySelector(".ccx-container")) {
-    customLog("[createAndAttachContainers] Already exists, ensuring placement...");
+    // customLog("[createAndAttachContainers] Already exists, ensuring placement...");
     ensureContainerPlacement();
     return;
   }
@@ -144,11 +144,11 @@ const createAndAttachContainers = async () => {
   const heroSelector = "main.flex-1 > .max-w-limit button.bg-green, main .max-w-limit button.bg-green, button.bg-green";
   let heroCTA = document.querySelector(heroSelector);
   if (!heroCTA) {
-    customLog("[createAndAttachContainers] Hero CTA not found — waiting for it to render...");
+    // customLog("[createAndAttachContainers] Hero CTA not found — waiting for it to render...");
     heroCTA = await waitForElement(heroSelector, 8000);
   }
   if (!heroCTA) {
-    customLog("[createAndAttachContainers] Hero CTA still not found after wait — aborting.");
+    // customLog("[createAndAttachContainers] Hero CTA still not found after wait — aborting.");
     return;
   }
 
@@ -186,7 +186,7 @@ const createAndAttachContainers = async () => {
   heroCTA.insertAdjacentElement("afterend", wrapper);
   ensureContainerPlacement();
 
-  customLog("[createAndAttachContainers] Inserted container successfully.");
+  // customLog("[createAndAttachContainers] Inserted container successfully.");
 };
 
   async function applyPageChanges() {
@@ -194,21 +194,21 @@ const createAndAttachContainers = async () => {
       const pathname = window.location.pathname || "";
       const isTargetPage = (pathname === "/") || pathname.includes("/searchresults");
 
-      customLog(`[applyPageChanges] Checking route: ${pathname}`);
+      // customLog(`[applyPageChanges] Checking route: ${pathname}`);
 
       if (!isTargetPage) {
         removeContainerIfPresent();
         return;
       }
 
-      customLog("[applyPageChanges] On homepage — applying logic...");
+      // customLog("[applyPageChanges] On homepage — applying logic...");
       document.body.classList.add(BODY_CLASS);
       addStyles(styles);
       await createAndAttachContainers();
       ensureContainerPlacement();
-      customLog("[applyPageChanges] Complete");
+      // customLog("[applyPageChanges] Complete");
     } catch (err) {
-      console.warn("[applyPageChanges] Error:", err);
+      // console.warn("[applyPageChanges] Error:", err);
     }
   }
 
@@ -232,7 +232,7 @@ const createAndAttachContainers = async () => {
     window.__ccxHrefWatcherLast = window.location.href;
     window.__ccxSearchWatcherLast = window.location.search;
 
-    customLog("[Router] Route changed:", window.location.pathname);
+    // customLog("[Router] Route changed:", window.location.pathname);
     setTimeout(() => applyPageChanges(), 300);
   });
 
@@ -244,7 +244,7 @@ const createAndAttachContainers = async () => {
       const href = window.location.href;
       if (href !== window.__ccxHrefWatcherLast) {
         window.__ccxHrefWatcherLast = href;
-        customLog("[URL] Href changed:", href);
+        // customLog("[URL] Href changed:", href);
         setTimeout(() => applyPageChanges(), 300);
       }
     }, 200);
@@ -255,7 +255,7 @@ const createAndAttachContainers = async () => {
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      customLog("[Resize] Validating container placement...");
+      // customLog("[Resize] Validating container placement...");
       ensureContainerPlacement();
     }, 250);
   });

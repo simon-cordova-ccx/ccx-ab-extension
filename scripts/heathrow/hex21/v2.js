@@ -1,5 +1,5 @@
 (function () {
-  console.log("[CCX] Script started (SPA route-aware)");
+  // console.log("[CCX] Script started (SPA route-aware)");
 
   // --- Config ---
   const BODY_CLASS = "ccx-heathrow-hex21-v2";
@@ -43,19 +43,19 @@
     style.classList.add("ccx-styles-hex21-v3");
     style.appendChild(document.createTextNode(css));
     document.head.appendChild(style);
-    console.log("[addStyles] Styles injected");
+    // console.log("[addStyles] Styles injected");
   };
 
   const hideOriginalUl = (ul) => {
     if (!ul) return;
     ul.setAttribute("aria-hidden", "true");
-    console.log("[hideOriginalUl] UL hidden");
+    // console.log("[hideOriginalUl] UL hidden");
   };
 
   const createCustomUl = (originalUl, texts = NEW_PARAGRAPHS) => {
     if (!originalUl) return null;
     if (document.querySelector("[data-ccx-custom-ul]")) {
-      console.log("[createCustomUl] Custom UL already exists");
+      // console.log("[createCustomUl] Custom UL already exists");
       return;
     }
 
@@ -79,7 +79,7 @@
     });
 
     originalUl.insertAdjacentElement("afterend", customUl);
-    console.log("[createCustomUl] Custom UL created");
+    // console.log("[createCustomUl] Custom UL created");
     return customUl;
   };
 
@@ -90,20 +90,20 @@
 
     const hasPrefix = rawText.startsWith(PREFIX_TEXT);
     if (!hasPrefix) {
-      console.log("[handleTitle] Adding prefix nodes...");
+      // console.log("[handleTitle] Adding prefix nodes...");
       const prefixNode = document.createTextNode(PREFIX_TEXT);
       const brNode = document.createElement("br");
       titleEl.insertBefore(brNode, titleEl.firstChild);
       titleEl.insertBefore(prefixNode, titleEl.firstChild);
-      console.log("[handleTitle] Prefix nodes inserted.");
+      // console.log("[handleTitle] Prefix nodes inserted.");
     } else {
-      console.log("[handleTitle] Prefix already exists, skipping.");
+      // console.log("[handleTitle] Prefix already exists, skipping.");
     }
   };
 
   // --- Main homepage logic ---
   async function applyPageChanges() {
-    console.log("[Main] Running page logic...");
+    // console.log("[Main] Running page logic...");
 
     document.body.classList.add(BODY_CLASS);
     addStyles(styles);
@@ -114,7 +114,7 @@
       hideOriginalUl(heroUl);
       createCustomUl(heroUl, NEW_PARAGRAPHS);
     } catch (e) {
-      console.warn("[Main] UL setup skipped:", e);
+      // console.warn("[Main] UL setup skipped:", e);
     }
 
     // Title logic
@@ -122,7 +122,7 @@
       const titleEl = await waitForElement(SELECTORS.title);
       handleTitle(titleEl);
     } catch (e) {
-      console.warn("[Main] Title setup skipped:", e);
+      // console.warn("[Main] Title setup skipped:", e);
     }
   }
 
@@ -143,7 +143,7 @@
   );
 
   window.addEventListener("locationchange", () => {
-    console.log("[Router] Route changed:", window.location.pathname);
+    // console.log("[Router] Route changed:", window.location.pathname);
     // Delay slightly to let the SPA render
     setTimeout(() => applyPageChanges(), 300);
   });

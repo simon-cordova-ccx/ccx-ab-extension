@@ -93,7 +93,7 @@
         style.className = "ccx-styles-hex-22-v2";
         style.textContent = css;
         document.head.appendChild(style);
-        customLog("[addStyles] Injected.");
+        // customLog("[addStyles] Injected.");
     };
 
     const ensureContainerPlacement = () => {
@@ -102,7 +102,7 @@
         if (!container || !nav) return;
         if (nav.lastElementChild !== container) {
             nav.insertAdjacentElement("beforeend", container);
-            customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
+            // customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
         }
     };
 
@@ -110,7 +110,7 @@
         const container = document.querySelector(".ccx-container");
         if (container) {
             container.remove();
-            customLog("[removeContainerIfPresent] Removed container (not fares page).");
+            // customLog("[removeContainerIfPresent] Removed container (not fares page).");
         }
         document.body.classList.remove(BODY_CLASS);
     };
@@ -145,13 +145,13 @@
 
         const nav = document.querySelector("nav");
         if (!nav) {
-            customLog("[createAndAttachContainers] <nav> not found.");
+            // customLog("[createAndAttachContainers] <nav> not found.");
             return;
         }
 
         let wrapper = document.querySelector(".ccx-container");
         if (wrapper) {
-            customLog("[createAndAttachContainers] Updating existing banner from URL params...");
+            // customLog("[createAndAttachContainers] Updating existing banner from URL params...");
             // Rebuild mobile list
             const mobileList = wrapper.querySelector(".ccx-mobile-list");
             if (mobileList) {
@@ -232,7 +232,7 @@
 
         closeBtn.addEventListener("click", () => {
             wrapper.remove();
-            customLog("[closeBtn] Removed container.");
+            // customLog("[closeBtn] Removed container.");
         });
 
         ensureContainerPlacement();
@@ -243,22 +243,22 @@
             const pathname = window.location.pathname || "";
             const isFaresPage = pathname.includes("/booking/fares");
 
-            customLog(`[applyPageChanges] Checking route: ${pathname}`);
+            // customLog(`[applyPageChanges] Checking route: ${pathname}`);
 
             if (!isFaresPage) {
                 removeContainerIfPresent();
                 return;
             }
 
-            customLog("[applyPageChanges] On fares page — applying logic...");
+            // customLog("[applyPageChanges] On fares page — applying logic...");
             document.body.classList.add(BODY_CLASS);
             addStyles(styles);
             await waitForElement("nav");
             createAndAttachContainers();
             ensureContainerPlacement();
-            customLog("[applyPageChanges] Complete");
+            // customLog("[applyPageChanges] Complete");
         } catch (err) {
-            console.warn("[applyPageChanges] Error:", err);
+            // console.warn("[applyPageChanges] Error:", err);
         }
     }
 
@@ -282,7 +282,7 @@
         window.__ccxHrefWatcherLast = window.location.href;
         window.__ccxSearchWatcherLast = window.location.search;
 
-        customLog("[Router] Route changed:", window.location.pathname);
+        // customLog("[Router] Route changed:", window.location.pathname);
         setTimeout(() => applyPageChanges(), 300);
     });
 
@@ -294,7 +294,7 @@
             const href = window.location.href;
             if (href !== window.__ccxHrefWatcherLast) {
                 window.__ccxHrefWatcherLast = href;
-                customLog("[URL] Href changed:", href);
+                // customLog("[URL] Href changed:", href);
                 setTimeout(() => applyPageChanges(), 300);
             }
         }, 200);
@@ -303,7 +303,7 @@
 
     // Also catch native hash changes just in case
     window.addEventListener("hashchange", () => {
-        customLog("[Router] hashchange:", window.location.href);
+        // customLog("[Router] hashchange:", window.location.href);
         setTimeout(() => applyPageChanges(), 300);
     });
 
@@ -314,7 +314,7 @@
             const s = window.location.search;
             if (s !== window.__ccxSearchWatcherLast) {
                 window.__ccxSearchWatcherLast = s;
-                customLog("[URL Params] Detected change in search params:", s);
+                // customLog("[URL Params] Detected change in search params:", s);
                 setTimeout(() => applyPageChanges(), 300);
             }
         }, 500);
@@ -325,7 +325,7 @@
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            customLog("[Resize] Checking container placement after resize...");
+            // customLog("[Resize] Checking container placement after resize...");
             ensureContainerPlacement();
         }, 250);
     });
