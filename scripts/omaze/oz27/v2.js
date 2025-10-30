@@ -552,13 +552,13 @@ const addStyles = (css) => {
 
   if (!css) return;
 
-  if (document.querySelector('.ccx-styles-OZ27-v1')) {
+  if (document.querySelector('.ccx-styles-OZ27-v2')) {
     customLog('[addStyles] Custom styles already exist.');
     return;
   }
 
   const style = document.createElement('style');
-  style.classList.add('ccx-styles-OZ27-v1');
+  style.classList.add('ccx-styles-OZ27-v2');
   style.appendChild(document.createTextNode(css));
   document.head.appendChild(style);
   customLog('Custom styles added.');
@@ -639,8 +639,8 @@ const init = () => {
     customLog(TEST_NAME + ' | ' + VARIATION);
     customLog('[init] Current URL: ' + CURRENT_URL);
 
-    document.body.classList.add('ccx-omaze-oz27-v1');
-    customLog('[init] Added class ccx-omaze-oz27-v1 to body');
+    document.body.classList.add('ccx-omaze-oz27-v2');
+    customLog('[init] Added class ccx-omaze-oz27-v2 to body');
 
     waitForElements(
       [

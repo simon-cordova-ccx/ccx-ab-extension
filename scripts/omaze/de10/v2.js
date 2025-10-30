@@ -1,4 +1,3 @@
-
 const LOG_ENABLED = true;
 const TEST_NAME = "OZDE-10 | Trust Pilot on the Entries Page";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
@@ -161,7 +160,7 @@ const bindSlideshowEvents = (wrapper) => {
 
 const styles = `
 #enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child {
-  margin-top: 4rem !important;
+  padding-top: 2.5rem !important;
 }
 #enter-now-material-tab-buttons-design .slideshow-wrapper {
   padding-bottom: 0;
@@ -341,6 +340,12 @@ const styles = `
 
 
 
+@media (min-width: 768px) {
+  #enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child {
+    margin-top: 4rem !important;
+    padding-top: 0 !important;
+  }
+}
 @media (min-width: 992px) {
   .slideshow-wrapper {
     padding: 0;
