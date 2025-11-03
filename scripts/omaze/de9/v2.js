@@ -156,7 +156,6 @@ const styles = `
   font-family: Gellix;
   font-weight: 500;
   font-size: 18px;
-  line-height: 100%;
   letter-spacing: 0px;
   vertical-align: middle;
 }
@@ -284,6 +283,7 @@ const styles = `
   font-size: 14px;
   letter-spacing: 0px;
   vertical-align: middle;
+  line-height: normal;
 }
 
 .ccx-content .ccx-date {
@@ -639,14 +639,6 @@ const createHowDoesItWorkSection = () => {
   const paragraph_two = document.createElement('p');
   paragraph_two.textContent = 'In der Übrersicht siehst du alle Verlosungen und die wichtigsten Termine auf einen Blick.';
   container.appendChild(paragraph_two);
-
-  // const timelineContainer = document.createElement('div');
-  // timelineContainer.classList.add('ccx-timeline-container');
-  // container.appendChild(timelineContainer);
-
-  // const timelineHeader = document.createElement('h3');
-  // timelineHeader.textContent = 'The Omaze Oberbayern House Draw';
-  // timelineContainer.appendChild(timelineHeader);
 
   const timelineComponent = createTimeline();
 

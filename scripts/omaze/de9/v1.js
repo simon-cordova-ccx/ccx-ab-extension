@@ -78,8 +78,6 @@ const styles = `
   height: 64px;
   width: auto;
   object-fit: contain;
-  filter: grayscale(100%);       /* optional style */
-  opacity: 0.9;                  /* optional style */
 }
 
 /* Pause on hover (optional) */
