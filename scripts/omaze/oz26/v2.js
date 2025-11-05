@@ -471,8 +471,8 @@ function init() {
     customLog('[init] Current URL: ' + CURRENT_URL);
     customLog('[init] Environment: ' + ENVIRONMENT);
 
-    document.body.classList.add('omaze-subs-25-callout-25-v1');
-    customLog('[init] Added class omaze-subs-25-callout-25-v1 to body');
+    document.body.classList.add('omaze-subs-26-callout-26-v1');
+    customLog('[init] Added class omaze-subs-26-callout-26-v1 to body');
 
     const elementSelectors = [selectors.SELECTOR_SUBS_FEATURES, selectors.ACTIVE_TIER_CARD];
 

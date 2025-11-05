@@ -1,7 +1,7 @@
 const LOG_ENABLED = true;
 const TEST_NAME = "OZ-27 | Social Proof in LP Hero Section";
 const SOURCE_TYPE = "SOURCE = NO SOURCE";
-const VARIATION = "VARIATION 2";
+const VARIATION = "NEW CONTROL";
 const CURRENT_URL = window.location.href;
 const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 const ENVIRONMENT = IS_STAGING_ENV ? "staging" : "production";

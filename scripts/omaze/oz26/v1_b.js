@@ -118,7 +118,7 @@ const styles = `
     display: inline-block;
     margin-top: 10px;
     padding: 8px 14px;
-    background: #ffe600;
+    background: #FFDD00;
     color: #081F28;
     font-weight: 700;
     font-size: 12px;
