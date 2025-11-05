@@ -38,7 +38,7 @@ const styles = `
     align-items:flex-start;
     justify-content:center; 
     flex:0 0 auto;
-    padding-top: 40px;
+    align-self: center;
   }
   .ccx-arrow-btn { 
     background:none; 
@@ -95,11 +95,13 @@ const styles = `
     line-height: 120%;
     letter-spacing: 0;
     vertical-align: middle;
+    text-shadow: none;
   }
   .ccx-omaze-oz32-v1 .ccx-desc {
-    font-weight: 700;
+    // font-weight: 700;
   }
   .ccx-desc {
+    text-shadow: none;
     margin: 0;
     color: #FFFFFF;
     text-align: left;
@@ -141,9 +143,14 @@ const styles = `
       margin: 0 auto;
       border: 2px solid #FFDD00;
       background: #081F28A6;
+      height: 141px;
+      min-height: auto;
     }
     .ccx-slider-bottom {
-      padding-right: 2rem;
+      padding-right: 1rem;
+    }
+    .ccx-slider-top {
+      min-height: 6rem;
     }
   }
 
@@ -386,10 +393,10 @@ function createCCXSlider(CONTROL_HMA_LAST_H3, SLIDE_DATA, ARROW_LEFT, ARROW_RIGH
         pDesc.textContent = slide.name.replace(/,/g, ''); // only name
       } else if (variation === 'variation-1') {
         img.src = slide.image;
-        img.alt = `${slide.name} testimonial`;
+        img.alt = slide.name + ' testimonial';
         media.appendChild(img);
         pMain.textContent = slide.mainText;
-        pDesc.innerHTML = `<strong>${slide.name}</strong> ${slide.userInfo}`;
+        pDesc.innerHTML = '<strong>' + slide.name + '</strong> ' + slide.userInfo;
       }
     });
   };
@@ -405,9 +412,9 @@ function createCCXSlider(CONTROL_HMA_LAST_H3, SLIDE_DATA, ARROW_LEFT, ARROW_RIGH
   } else if (variation === 'variation-1') {
     media.appendChild(img);
     img.src = first.image;
-    img.alt = `${first.name} testimonial`;
+    img.alt = first.name + ' testimonial';
     pMain.textContent = first.mainText;
-    pDesc.innerHTML = `<strong>${first.name}</strong> ${first.userInfo}`;
+    pDesc.innerHTML = '<strong>' + first.name + '</strong> ' + first.userInfo;
   }
 
   // === Navigation ===
@@ -483,10 +490,10 @@ const addStyles = (css, variation) => {
   if (!variation) variation = 'control';
 
   // create a class name that depends on the variation
-  const styleClass = `ccx-styles-oz32-${variation.toLowerCase().replace(/\s+/g, '-')}`;
+  const styleClass = 'ccx-styles-oz32-' + variation.toLowerCase().replace(/\s+/g, '-') + '';
 
   // if styles for this variation already exist, don't add again
-  if (document.querySelector(`.${styleClass}`)) return;
+  if (document.querySelector('.' + styleClass)) return;
 
   const style = document.createElement('style');
   style.classList.add(styleClass);
