@@ -18,7 +18,7 @@
         strikeThroughPrice: "35 €",
         newPrice: "32 €",
         buttonText: 'Jetzt mitmachen',
-        buttonLink: 'https://omaze.de/cart/51859472908469:1?discount=TSTD3EU&storefront=true'
+        buttonLink: 'https://omaze.de/cart/51859472842933:1?discount=TSTD3EU&storefront=true'
       },
       {
         iconText: '3 € RABATT',
@@ -40,7 +40,7 @@
         strikeThroughPrice: "10 €",
         newPrice: "7 €",
         buttonText: 'Jetzt mitmachen',
-        buttonLink: 'https://omaze.de/cart/51859472842933:1?discount=TSTD3EU&storefront=true'
+        buttonLink: 'https://omaze.de/cart/51859472908469:1?discount=TSTD3EU&storefront=true'
       },
     ],
     mobile: [
@@ -54,7 +54,7 @@
         strikeThroughPrice: "10 €",
         newPrice: "7 €",
         buttonText: 'Mitmachen',
-        buttonLink: 'https://omaze.de/cart/51859472908469:1?discount=TSTD3EU&storefront=true'
+        buttonLink: 'https://omaze.de/cart/51859472842933:1?discount=TSTD3EU&storefront=true'
       },
       {
         iconText: '3 € RABATT',
@@ -78,7 +78,7 @@
         strikeThroughPrice: "35 €",
         newPrice: "32 €",
         buttonText: 'Mitmachen',
-        buttonLink: 'https://omaze.de/cart/51859472842933:1?discount=TSTD3EU&storefront=true'
+        buttonLink: 'https://omaze.de/cart/51859472908469:1?discount=TSTD3EU&storefront=true'
       },
     ]
   };
@@ -130,7 +130,7 @@
     .ccx-mobile-card .ccx-card-inner {
       background: white;
       border-radius: 20px;
-      padding-top: 3rem;
+      padding-top: 52px;
       padding-bottom: 1rem;
       }
     .ccx-mobile-card .ccx-card-inner .discount-tag {
@@ -154,6 +154,10 @@
       align-items: center;
       width: 179px;
     }
+    .ccx-mobile-card .ccx-card-inner .discount-tag span {
+      text-shadow: 0px 4px 4px #00000033;
+      width: 109px;
+    }
     .ccx-mobile-card .ccx-card-inner .discount-tag__heading {
       font-family: Gellix;
       font-weight: 700;
@@ -164,6 +168,7 @@
       color: #081F28;
       margin: 0;
       margin-bottom: 1rem;
+      height: 48px;
     }
     .ccx-mobile-card .ccx-card-inner .discount-tag__sub-heading {
       font-family: Gellix;
@@ -175,15 +180,46 @@
       margin-bottom: 1rem;
     }
     .ccx-mobile-card .ccx-card-inner .emoji-container {
-        background: #F4F3E0;
-        display: inline-block;
-        padding-top: 4px;
-        padding-right: 4px;
-        padding-bottom: 4px;
-        padding-left: 10px;
-        opacity: 1;
-        border-radius: 99px;
-        margin-bottom: 1rem;
+      background: #F4F3E0;
+      height: 30px;
+      padding-top: 4px;
+      padding-right: 4px;
+      padding-bottom: 4px;
+      padding-left: 10px;
+      margin-bottom: 1rem;
+      opacity: 1;
+      border-radius: 99px;
+      display: flex;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+      align-items: center;
+      gap: 7px;
+      max-width: 256px;
+      margin-bottom: 1rem;
+    }
+
+    .ccx-mobile-card .ccx-card-inner .emoji-container .emoji-container-icon {
+      display: block;
+    }
+
+    .ccx-mobile-card .ccx-card-inner .emoji-container .emoji-container-text {
+      color: #C06717;
+      font-family: Gellix;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 100%;
+      text-align: center;
+      vertical-align: bottom;
+    }
+    
+    .ccx-mobile-card .ccx-card-inner .emoji-container .emoji-container-span {
+      font-family: Gellix;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 100%;
+      text-align: center;
+      vertical-align: bottom;
     }
 
     .ccx-mobile-card .ccx-card-inner .price {
@@ -191,8 +227,10 @@
       margin-bottom: 1rem;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end;
       gap: 1rem;
+      height: 43px;
+
     }
     .ccx-mobile-card .ccx-card-inner .price .strike {
       font-family: Gellix;
@@ -207,6 +245,7 @@
       font-size: 43px;
       text-align: center;
       color: #0193A7;
+      line-height: normal;
     }
     .ccx-card-inner .cta-button {
       display: block;
@@ -246,9 +285,9 @@
       }
       .ccx-desktop-card {
         display: flex;
+        justify-content: center;
         background: white;
-        padding: 0.7rem;
-        padding-top: 75px;
+        padding: 4.5rem 0.75rem;
         border: 1px solid #E6E6E6;
         width: 380px;
         height: 431px;
@@ -257,6 +296,9 @@
         border-radius: 20px;
         border-width: 1px;
         position: relative;
+      }
+      .ccx-desktop-card .ccx-card-inner {
+        width: 100%;
       }
       .ccx-desktop-card .discount-tag {
         width: 201px;
@@ -277,6 +319,14 @@
         font-weight: 700;
         font-size: 18px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        align-items: center;
+      }
+      .ccx-desktop-card .ccx-card-inner .discount-tag span {
+        text-shadow: 0px 4px 4px #00000033;
+        width: 109px;
       }
       .ccx-desktop-card  .ccx-card-inner h3 {
         font-family: Gellix;
@@ -297,7 +347,21 @@
         border-radius: 99px;
         display: flex;
         justify-content: center;
-        margin-bottom: 1.5rem;
+        align-items: center;
+        width: max-content;
+        margin: 0 auto;
+        margin-bottom: 1rem;
+        box-sizing: content-box;
+      }
+
+      .ccx-desktop-card .ccx-card-inner .emoji-container-text {
+        font-family: Gellix;
+        font-size: 16px;
+      }
+      .ccx-desktop-card .ccx-card-inner .emoji-container-span {
+        font-family: Gellix;
+        font-weight: 700;
+        font-size: 16px;
       }
 
       .ccx-desktop-card .ccx-card-inner .horizontal-line {
@@ -469,23 +533,30 @@
       cardElement.setAttribute('data-test', 'mobile-card-variant-payg');
 
       // inner container wrapping everything
-      cardElement.innerHTML = `
-      <div class="ccx-card-inner">
-        <div class="discount-tag">${card.iconText}</div>
-        <h3 class="discount-tag__heading">${card.heading}</h3>
-        ${card.subHeading ? `<h3 class="discount-tag__sub-heading">${card.subHeading}</h3>` : ''}
-        <div class="emoji-container">
-          <span>${card.emojiContainerIcon}</span>
-          <span>${card.emojiContainerText}</span>
-          <span class="light">${card.emojiContainerSpan}</span>
-        </div>
-        <div class="price">
-          <span class="strike">${card.strikeThroughPrice}</span>
-          <span class="new">${card.newPrice}</span>
-        </div>
-        <a href="${card.buttonLink}" class="cta-button">${card.buttonText}</a>
-      </div>
-    `;
+      cardElement.innerHTML =
+        '<div class="ccx-card-inner">' +
+        '<div class="discount-tag">' +
+        '<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M10.3618 22.9583C10.0889 22.9583 9.81519 22.9038 9.5407 22.7946C9.2662 22.6853 9.0192 22.5214 8.79969 22.3031L0.63649 14.1399C0.415163 13.9192 0.25375 13.6754 0.15225 13.4086C0.05075 13.1419 0 12.8707 0 12.5948C0 12.3189 0.05075 12.0437 0.15225 11.7692C0.25375 11.4949 0.415163 11.248 0.63649 11.0285L10.991 0.655219C11.1916 0.455038 11.4287 0.29584 11.7024 0.177625C11.9759 0.0592085 12.2585 0 12.5504 0H20.7438C21.354 0 21.8725 0.214982 22.2995 0.644947C22.7262 1.07511 22.9396 1.59208 22.9396 2.19584V10.3892C22.9396 10.6841 22.885 10.965 22.7759 11.2321C22.6665 11.4991 22.5088 11.7317 22.3028 11.9299L11.9181 22.3031C11.6998 22.5214 11.4541 22.6853 11.181 22.7946C10.9079 22.9038 10.6348 22.9583 10.3618 22.9583ZM18.0715 6.37849C18.4942 6.37849 18.8535 6.23168 19.1494 5.93805C19.4454 5.64443 19.5934 5.28777 19.5934 4.86807C19.5934 4.44536 19.4459 4.08608 19.1509 3.79024C18.8558 3.4942 18.4976 3.34618 18.0761 3.34618C17.6548 3.34618 17.2969 3.49369 17.0025 3.78873C16.7082 4.08376 16.5611 4.44204 16.5611 4.86354C16.5611 5.28485 16.7079 5.64271 17.0016 5.93715C17.2952 6.23137 17.6518 6.37849 18.0715 6.37849Z" fill="white"/>' +
+        '</svg>' +
+        '<span>' + card.iconText + '</span>' +
+        '</div>' +
+        '<h3 class="discount-tag__heading">' + card.heading + '</h3>' +
+        (card.subHeading
+          ? '<h3 class="discount-tag__sub-heading">' + card.subHeading + '</h3>'
+          : '') +
+        '<div class="emoji-container">' +
+        '<span class="emoji-container-icon">' + card.emojiContainerIcon + '</span>' +
+        '<span class="emoji-container-text">' + card.emojiContainerText + '</span>' +
+        '<span class="emoji-container-span">' + card.emojiContainerSpan + '</span>' +
+        '</div>' +
+        '<div class="price">' +
+        '<span class="strike">' + card.strikeThroughPrice + '</span>' +
+        '<span class="new">' + card.newPrice + '</span>' +
+        '</div>' +
+        '<a href="' + card.buttonLink + '" class="cta-button">' + card.buttonText + '</a>' +
+        '</div>';
+
       parentContainer.appendChild(cardElement);
     });
   };
@@ -505,23 +576,28 @@
       cardElement.setAttribute('data-test', 'desktop-card-variant-payg');
 
       // inner container wrapping everything
-      cardElement.innerHTML = `
-      <div class="ccx-card-inner">
-        <div class="discount-tag">${card.iconText}</div>
-        <h3>${card.heading}</h3>
-        <div class="emoji-container">
-          <span>${card.emojiContainerIcon}</span>
-          <span>${card.emojiContainerText}</span>
-          <span class="light">${card.emojiContainerSpan}</span>
-        </div>
-        <div class="horizontal-line"></div>
-        <div class="price">
-          <span class="strike">${card.strikeThroughPrice}</span>
-          <span class="new">${card.newPrice}</span>
-        </div>
-        <a href="${card.buttonLink}" class="cta-button">${card.buttonText}</a>
-      </div>
-    `;
+      cardElement.innerHTML =
+        '<div class="ccx-card-inner">' +
+        '<div class="discount-tag">' +
+        '<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M10.3618 22.9583C10.0889 22.9583 9.81519 22.9038 9.5407 22.7946C9.2662 22.6853 9.0192 22.5214 8.79969 22.3031L0.63649 14.1399C0.415163 13.9192 0.25375 13.6754 0.15225 13.4086C0.05075 13.1419 0 12.8707 0 12.5948C0 12.3189 0.05075 12.0437 0.15225 11.7692C0.25375 11.4949 0.415163 11.248 0.63649 11.0285L10.991 0.655219C11.1916 0.455038 11.4287 0.29584 11.7024 0.177625C11.9759 0.0592085 12.2585 0 12.5504 0H20.7438C21.354 0 21.8725 0.214982 22.2995 0.644947C22.7262 1.07511 22.9396 1.59208 22.9396 2.19584V10.3892C22.9396 10.6841 22.885 10.965 22.7759 11.2321C22.6665 11.4991 22.5088 11.7317 22.3028 11.9299L11.9181 22.3031C11.6998 22.5214 11.4541 22.6853 11.181 22.7946C10.9079 22.9038 10.6348 22.9583 10.3618 22.9583ZM18.0715 6.37849C18.4942 6.37849 18.8535 6.23168 19.1494 5.93805C19.4454 5.64443 19.5934 5.28777 19.5934 4.86807C19.5934 4.44536 19.4459 4.08608 19.1509 3.79024C18.8558 3.4942 18.4976 3.34618 18.0761 3.34618C17.6548 3.34618 17.2969 3.49369 17.0025 3.78873C16.7082 4.08376 16.5611 4.44204 16.5611 4.86354C16.5611 5.28485 16.7079 5.64271 17.0016 5.93715C17.2952 6.23137 17.6518 6.37849 18.0715 6.37849Z" fill="white"/>' +
+        '</svg>' +
+        '<span>' + card.iconText + '</span>' +
+        '</div>' +
+        '<h3>' + card.heading + '</h3>' +
+        '<div class="emoji-container">' +
+        '<span class="emoji-container-icon">' + card.emojiContainerIcon + '</span>' +
+        '<span class="emoji-container-text">' + card.emojiContainerText + '</span>' +
+        '<span class="emoji-container-span">' + card.emojiContainerSpan + '</span>' +
+        '</div>' +
+        '<div class="horizontal-line"></div>' +
+        '<div class="price">' +
+        '<span class="strike">' + card.strikeThroughPrice + '</span>' +
+        '<span class="new">' + card.newPrice + '</span>' +
+        '</div>' +
+        '<a href="' + card.buttonLink + '" class="cta-button">' + card.buttonText + '</a>' +
+        '</div>';
+
       parentContainer.appendChild(cardElement);
     });
   }
