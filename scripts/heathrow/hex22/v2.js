@@ -1,5 +1,5 @@
 (function () {
-    const LOG_ENABLED = true;
+    const LOG_ENABLED = false;
     const BODY_CLASS = "ccx-heathrow-hex22-v2";
 
     const ICON_CLOSE = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,22 +31,6 @@
 </g>
 </svg>
 `;
-
-    const ICON_KIDS = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0_2170_156" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
-<rect width="24" height="24" fill="#D9D9D9"/>
-</mask>
-<g mask="url(#mask0_2170_156)">
-<path d="M7.00007 5.9038C6.49241 5.9038 6.05782 5.72305 5.69632 5.36155C5.33482 5.00005 5.15407 4.56546 5.15407 4.0578C5.15407 3.55013 5.33482 3.11546 5.69632 2.7538C6.05782 2.3923 6.49241 2.21155 7.00007 2.21155C7.50774 2.21155 7.94232 2.3923 8.30382 2.7538C8.66549 3.11546 8.84632 3.55013 8.84632 4.0578C8.84632 4.56546 8.66549 5.00005 8.30382 5.36155C7.94232 5.72305 7.50774 5.9038 7.00007 5.9038ZM16.8271 11.1538C16.4424 11.1538 16.1122 11.0174 15.8366 10.7445C15.5609 10.4715 15.4231 10.14 15.4231 9.75005C15.4231 9.35255 15.5609 9.01921 15.8366 8.75005C16.1122 8.48088 16.4424 8.3463 16.8271 8.3463C17.2244 8.3463 17.5577 8.48088 17.8271 8.75005C18.0962 9.01921 18.2308 9.35096 18.2308 9.7453C18.2308 10.1395 18.0962 10.4728 17.8271 10.7453C17.5577 11.0176 17.2244 11.1538 16.8271 11.1538ZM5.11557 21.75V14.9615H3.53857V9.0193C3.53857 8.52213 3.71557 8.09655 4.06957 7.74255C4.42357 7.38855 4.84916 7.21155 5.34632 7.21155H8.30782C8.66166 7.21155 8.98057 7.3023 9.26457 7.4838C9.54857 7.66513 9.76616 7.91413 9.91732 8.2308L12.9538 14.6173L14.6136 12.7078C14.7404 12.5463 14.8978 12.42 15.0858 12.3288C15.2737 12.2378 15.472 12.1923 15.6808 12.1923H18.1346C18.5139 12.1923 18.8363 12.325 19.1018 12.5905C19.3673 12.856 19.5001 13.1785 19.5001 13.5578V17.0385H18.5001V21.75H15.1538V14.3423L13.8021 15.8463H11.8616L9.50007 10.6288V21.75H5.11557Z" fill="white"/>
-</g>
-</svg>
-`;
-
-    const CAVEATS = [
-        "*15 minute journey time to Heathrow Terminals 2 & 3 with an extra 6 minutes to Terminal 5. A free transfer is available to Terminal 4 taking an extra 4 minutes.",
-        "**Based on an Advance Discounted Single (one way) ticket purchased for travel on all dates 30 days or more in advance. Tickets are only valid on the Heathrow Express Service in the direction for which they have been purchased.",
-        "***Children aged 15 years and under travel free in Standard Class when accompanied by a paying adult, or can travel unaccompanied if they have proof of air travel such as a valid flight booking or boarding pass. Photo ID will be required.",
-    ];
 
     const styles = `
     main .max-w-limit.mx-auto > div > .grid:first-of-type { margin-bottom: 2rem; }
@@ -93,7 +77,7 @@
         style.className = "ccx-styles-hex-22-v2";
         style.textContent = css;
         document.head.appendChild(style);
-        // customLog("[addStyles] Injected.");
+        customLog("[addStyles] Injected.");
     };
 
     const ensureContainerPlacement = () => {
@@ -102,7 +86,7 @@
         if (!container || !nav) return;
         if (nav.lastElementChild !== container) {
             nav.insertAdjacentElement("beforeend", container);
-            // customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
+            customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
         }
     };
 
@@ -110,17 +94,20 @@
         const container = document.querySelector(".ccx-container");
         if (container) {
             container.remove();
-            // customLog("[removeContainerIfPresent] Removed container (not fares page).");
+            customLog("[removeContainerIfPresent] Removed container (not fares page).");
         }
         document.body.classList.remove(BODY_CLASS);
     };
 
     const createAndAttachContainers = () => {
+        // --- Sanitize URL params ---
         const params = new URLSearchParams(window.location.search);
-        const direction = params.get("direction");
-        const children = parseInt(params.get("children") || "0", 10);
+        const rawDirection = params.get("direction") || "";
+        const direction = rawDirection.replace(/[^a-zA-Z]/g, ""); // allow only letters
+        const children = Math.max(0, parseInt(params.get("children") || "0", 10));
         const hasChildren = children > 0;
 
+        // --- USP definition ---
         const BASE_USP = {
             icon: ICON_TRAIN,
             text: "Travel on any train on your selected date",
@@ -130,13 +117,23 @@
         if (direction === "fromHeathrow") {
             USPList = [
                 BASE_USP,
-                { icon: ICON_CLOCK, text: hasChildren ? "Kids under 15 travel free***" : "Trains run every 15 mins*" },
+                {
+                    icon: ICON_CLOCK,
+                    text: hasChildren
+                        ? "Kids under 15 travel free***"
+                        : "Trains run every 15 mins*",
+                },
                 { icon: ICON_SUN, text: "First train from Heathrow at 5:12am" },
             ];
         } else if (direction === "toHeathrow") {
             USPList = [
                 BASE_USP,
-                { icon: ICON_CLOCK, text: hasChildren ? "Kids under 15 travel free***" : "Trains run every 15 mins*" },
+                {
+                    icon: ICON_CLOCK,
+                    text: hasChildren
+                        ? "Kids under 15 travel free***"
+                        : "Trains run every 15 mins*",
+                },
                 { icon: ICON_SUN, text: "First train from Paddington at 4:34am" },
             ];
         } else {
@@ -145,17 +142,18 @@
 
         const nav = document.querySelector("nav");
         if (!nav) {
-            // customLog("[createAndAttachContainers] <nav> not found.");
+            customLog("[createAndAttachContainers] <nav> not found.");
             return;
         }
 
+        // --- Rebuild existing container if it exists ---
         let wrapper = document.querySelector(".ccx-container");
         if (wrapper) {
-            // customLog("[createAndAttachContainers] Updating existing banner from URL params...");
-            // Rebuild mobile list
+            customLog("[createAndAttachContainers] Updating existing banner from URL params...");
+
             const mobileList = wrapper.querySelector(".ccx-mobile-list");
             if (mobileList) {
-                mobileList.innerHTML = "";
+                mobileList.textContent = "";
                 USPList.forEach((usp) => {
                     const li = document.createElement("li");
                     li.className = "ccx-mobile-list-item";
@@ -164,19 +162,29 @@
                 });
             }
 
-            // Rebuild desktop list
             const desktopList = wrapper.querySelector(".ccx-desktop-list");
             if (desktopList) {
-                desktopList.innerHTML = "";
+                desktopList.textContent = "";
                 USPList.forEach((usp) => {
                     const li = document.createElement("li");
                     li.className = "ccx-desktop-list-item";
+
+                    // Safe SVG parser
                     const iconSpan = document.createElement("span");
                     iconSpan.className = "ccx-desktop-list-item__icon";
-                    iconSpan.innerHTML = usp.icon;
+                    const parser = new DOMParser();
+                    const svgDoc = parser.parseFromString(usp.icon, "image/svg+xml");
+                    const svgEl = svgDoc.documentElement;
+                    svgEl.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach((el) => el.remove());
+                    Array.from(svgEl.attributes).forEach((attr) => {
+                        if (attr.name.startsWith("on")) svgEl.removeAttribute(attr.name);
+                    });
+                    iconSpan.appendChild(svgEl);
+
                     const textSpan = document.createElement("span");
                     textSpan.className = "ccx-desktop-list-item__text";
                     textSpan.textContent = usp.text;
+
                     li.append(iconSpan, textSpan);
                     desktopList.appendChild(li);
                 });
@@ -186,11 +194,11 @@
             return;
         }
 
-
+        // --- Create fresh container ---
         wrapper = document.createElement("div");
         wrapper.className = "ccx-container mx-auto";
 
-        // --- Mobile ---
+        // Mobile
         const mobile = document.createElement("div");
         mobile.className = "ccx-mobile-container";
         const mobileList = document.createElement("ol");
@@ -203,12 +211,20 @@
         });
         mobile.appendChild(mobileList);
 
+        // Close button (SVG sanitized)
         const closeBtn = document.createElement("span");
         closeBtn.className = "ccx-close-icon";
-        closeBtn.innerHTML = ICON_CLOSE;
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(ICON_CLOSE, "image/svg+xml");
+        const svgEl = svgDoc.documentElement;
+        svgEl.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach((el) => el.remove());
+        Array.from(svgEl.attributes).forEach((attr) => {
+            if (attr.name.startsWith("on")) svgEl.removeAttribute(attr.name);
+        });
+        closeBtn.appendChild(svgEl);
         mobile.appendChild(closeBtn);
 
-        // --- Desktop ---
+        // Desktop
         const desktop = document.createElement("div");
         desktop.className = "ccx-desktop-container";
         const desktopList = document.createElement("ol");
@@ -216,12 +232,21 @@
         USPList.forEach((usp) => {
             const li = document.createElement("li");
             li.className = "ccx-desktop-list-item";
+
             const iconSpan = document.createElement("span");
             iconSpan.className = "ccx-desktop-list-item__icon";
-            iconSpan.innerHTML = usp.icon;
+            const svgDoc2 = parser.parseFromString(usp.icon, "image/svg+xml");
+            const svgEl2 = svgDoc2.documentElement;
+            svgEl2.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach((el) => el.remove());
+            Array.from(svgEl2.attributes).forEach((attr) => {
+                if (attr.name.startsWith("on")) svgEl2.removeAttribute(attr.name);
+            });
+            iconSpan.appendChild(svgEl2);
+
             const textSpan = document.createElement("span");
             textSpan.className = "ccx-desktop-list-item__text";
             textSpan.textContent = usp.text;
+
             li.append(iconSpan, textSpan);
             desktopList.appendChild(li);
         });
@@ -232,7 +257,7 @@
 
         closeBtn.addEventListener("click", () => {
             wrapper.remove();
-            // customLog("[closeBtn] Removed container.");
+            customLog("[closeBtn] Removed container.");
         });
 
         ensureContainerPlacement();
@@ -243,20 +268,20 @@
             const pathname = window.location.pathname || "";
             const isFaresPage = pathname.includes("/booking/fares");
 
-            // customLog(`[applyPageChanges] Checking route: ${pathname}`);
+            customLog(`[applyPageChanges] Checking route: ${pathname}`);
 
             if (!isFaresPage) {
                 removeContainerIfPresent();
                 return;
             }
 
-            // customLog("[applyPageChanges] On fares page — applying logic...");
+            customLog("[applyPageChanges] On fares page — applying logic...");
             document.body.classList.add(BODY_CLASS);
             addStyles(styles);
             await waitForElement("nav");
             createAndAttachContainers();
             ensureContainerPlacement();
-            // customLog("[applyPageChanges] Complete");
+            customLog("[applyPageChanges] Complete");
         } catch (err) {
             // console.warn("[applyPageChanges] Error:", err);
         }
@@ -282,28 +307,26 @@
         window.__ccxHrefWatcherLast = window.location.href;
         window.__ccxSearchWatcherLast = window.location.search;
 
-        // customLog("[Router] Route changed:", window.location.pathname);
+        customLog("[Router] Route changed:", window.location.pathname);
         setTimeout(() => applyPageChanges(), 300);
     });
 
     // --- Robust URL watcher: reacts to ANY href change (path or search) ---
-    // Deduped globally so re-inits from the A/B tool don't create multiple intervals
     if (!window.__ccxHrefWatcherId) {
         window.__ccxHrefWatcherLast = window.location.href;
         window.__ccxHrefWatcherId = setInterval(() => {
             const href = window.location.href;
             if (href !== window.__ccxHrefWatcherLast) {
                 window.__ccxHrefWatcherLast = href;
-                // customLog("[URL] Href changed:", href);
+                customLog("[URL] Href changed:", href);
                 setTimeout(() => applyPageChanges(), 300);
             }
         }, 200);
     }
 
-
     // Also catch native hash changes just in case
     window.addEventListener("hashchange", () => {
-        // customLog("[Router] hashchange:", window.location.href);
+        customLog("[Router] hashchange:", window.location.href);
         setTimeout(() => applyPageChanges(), 300);
     });
 
@@ -314,7 +337,7 @@
             const s = window.location.search;
             if (s !== window.__ccxSearchWatcherLast) {
                 window.__ccxSearchWatcherLast = s;
-                // customLog("[URL Params] Detected change in search params:", s);
+                customLog("[URL Params] Detected change in search params:", s);
                 setTimeout(() => applyPageChanges(), 300);
             }
         }, 500);
@@ -325,7 +348,7 @@
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            // customLog("[Resize] Checking container placement after resize...");
+            customLog("[Resize] Checking container placement after resize...");
             ensureContainerPlacement();
         }, 250);
     });

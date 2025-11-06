@@ -79,7 +79,7 @@
     style.classList.add("ccx-styles-hex-23-v2");
     style.textContent = css;
     document.head.appendChild(style);
-    // customLog("[addStyles] Styles added.");
+    customLog("[addStyles] Styles added.");
   };
 
   const ensureContainerPlacement = () => {
@@ -87,7 +87,7 @@
     const nav = document.querySelector("nav");
     if (container && nav && nav.lastElementChild !== container) {
       nav.insertAdjacentElement("beforeend", container);
-      // customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
+      customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
     }
   };
 
@@ -95,79 +95,97 @@
     const container = document.querySelector(".ccx-container");
     if (container) {
       container.remove();
-      // customLog("[removeContainerIfPresent] Removed container (not homepage).");
+      customLog("[removeContainerIfPresent] Removed container (not homepage).");
     }
   };
 
-  const createAndAttachContainers = () => {
-    if (document.querySelector(".ccx-container")) {
-      // customLog("[createAndAttachContainers] Already exists; ensuring placement...");
-      ensureContainerPlacement();
-      return;
-    }
+const safeParseSVG = (svgStr) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgStr, "image/svg+xml");
+  const el = doc.documentElement;
+  el.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach(n => n.remove());
+  Array.from(el.attributes).forEach(attr => {
+    if (attr.name.startsWith("on")) el.removeAttribute(attr.name);
+  });
+  return el;
+};
 
-    const nav = document.querySelector("nav");
-    if (!nav) {
-      // customLog("[createAndAttachContainers] No <nav> found; skipping.");
-      return;
-    }
-
-    // customLog("[createAndAttachContainers] Creating containers...");
-    const wrapper = document.createElement("div");
-    wrapper.className = "ccx-container mx-auto";
-
-    // --- Mobile ---
-    const mobile = document.createElement("div");
-    mobile.className = "ccx-mobile-container";
-    const mobileList = document.createElement("ol");
-    mobileList.className = "ccx-mobile-list";
-    USPList.forEach((usp) => {
-      const li = document.createElement("li");
-      li.className = "ccx-mobile-list-item";
-      li.textContent = usp.text;
-      mobileList.appendChild(li);
-    });
-    mobile.appendChild(mobileList);
-
-    const closeBtn = document.createElement("span");
-    closeBtn.className = "ccx-close-icon";
-    closeBtn.innerHTML = ICON_CLOSE;
-    mobile.appendChild(closeBtn);
-
-    // --- Desktop ---
-    const desktop = document.createElement("div");
-    desktop.className = "ccx-desktop-container";
-    const desktopList = document.createElement("ol");
-    desktopList.className = "ccx-desktop-list";
-    USPList.forEach((usp) => {
-      const li = document.createElement("li");
-      li.className = "ccx-desktop-list-item";
-      const icon = document.createElement("span");
-      icon.className = "ccx-desktop-list-item__icon";
-      icon.innerHTML = usp.icon;
-      const text = document.createElement("span");
-      text.className = "ccx-desktop-list-item__text";
-      text.textContent = usp.text;
-      li.append(icon, text);
-      desktopList.appendChild(li);
-    });
-    desktop.appendChild(desktopList);
-
-    wrapper.append(mobile, desktop);
-    nav.insertAdjacentElement("beforeend", wrapper);
-
-    closeBtn.addEventListener("click", () => {
-      wrapper.remove();
-      // customLog("[closeBtn] Container closed manually.");
-    });
-
+const createAndAttachContainers = () => {
+  if (document.querySelector(".ccx-container")) {
+    customLog("[createAndAttachContainers] Already exists; ensuring placement...");
     ensureContainerPlacement();
-  };
+    return;
+  }
+
+  const nav = document.querySelector("nav");
+  if (!nav) {
+    customLog("[createAndAttachContainers] No <nav> found; skipping.");
+    return;
+  }
+
+  customLog("[createAndAttachContainers] Creating containers...");
+  const wrapper = document.createElement("div");
+  wrapper.className = "ccx-container mx-auto";
+
+  // --- Mobile ---
+  const mobile = document.createElement("div");
+  mobile.className = "ccx-mobile-container";
+  const mobileList = document.createElement("ol");
+  mobileList.className = "ccx-mobile-list";
+  USPList.forEach((usp) => {
+    const li = document.createElement("li");
+    li.className = "ccx-mobile-list-item";
+    li.textContent = usp.text;
+    mobileList.appendChild(li);
+  });
+  mobile.appendChild(mobileList);
+
+  const closeBtn = document.createElement("span");
+  closeBtn.className = "ccx-close-icon";
+  // Safely parse and attach the SVG icon instead of using innerHTML
+  const closeSvg = safeParseSVG(ICON_CLOSE);
+  closeBtn.appendChild(closeSvg);
+  mobile.appendChild(closeBtn);
+
+  // --- Desktop ---
+  const desktop = document.createElement("div");
+  desktop.className = "ccx-desktop-container";
+  const desktopList = document.createElement("ol");
+  desktopList.className = "ccx-desktop-list";
+  USPList.forEach((usp) => {
+    const li = document.createElement("li");
+    li.className = "ccx-desktop-list-item";
+
+    // Safely render USP icon
+    const icon = document.createElement("span");
+    icon.className = "ccx-desktop-list-item__icon";
+    const safeIconSvg = safeParseSVG(usp.icon);
+    icon.appendChild(safeIconSvg);
+
+    const text = document.createElement("span");
+    text.className = "ccx-desktop-list-item__text";
+    text.textContent = usp.text;
+
+    li.append(icon, text);
+    desktopList.appendChild(li);
+  });
+  desktop.appendChild(desktopList);
+
+  wrapper.append(mobile, desktop);
+  nav.insertAdjacentElement("beforeend", wrapper);
+
+  closeBtn.addEventListener("click", () => {
+    wrapper.remove();
+    customLog("[closeBtn] Container closed manually.");
+  });
+
+  ensureContainerPlacement();
+};
 
   const attachMutationObserver = () => {
     const observer = new MutationObserver(() => ensureContainerPlacement());
     observer.observe(document.body, { childList: true, subtree: true });
-    // customLog("[MutationObserver] Watching DOM for <nav> changes.");
+    customLog("[MutationObserver] Watching DOM for <nav> changes.");
   };
 
   const addCaveats = (list) => {
@@ -181,13 +199,13 @@
       container.appendChild(p);
     });
     document.querySelector("main")?.appendChild(container);
-    // customLog("[addCaveats] Added caveats section.");
+    customLog("[addCaveats] Added caveats section.");
   };
 
   async function applyPageChanges() {
     try {
       const isHomePage = window.location.pathname === "/";
-      // customLog(`[applyPageChanges] Path: ${window.location.pathname}`);
+      customLog(`[applyPageChanges] Path: ${window.location.pathname}`);
 
       if (!isHomePage) {
         removeContainerIfPresent();
@@ -200,7 +218,7 @@
       addCaveats(CAVEATS);
       ensureContainerPlacement();
       attachMutationObserver();
-      // customLog("[applyPageChanges] Homepage logic complete ✅");
+      customLog("[applyPageChanges] Homepage logic complete ✅");
     } catch (err) {
       // console.warn("[applyPageChanges] Error:", err);
     }
@@ -221,7 +239,7 @@
   );
 
   window.addEventListener("locationchange", () => {
-    // customLog("[Router] Route changed:", window.location.pathname);
+    customLog("[Router] Route changed:", window.location.pathname);
     setTimeout(() => applyPageChanges(), 300);
   });
 
@@ -230,7 +248,7 @@
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      // customLog("[Resize] Validating placement after resize...");
+      customLog("[Resize] Validating placement after resize...");
       ensureContainerPlacement();
     }, 250);
   });

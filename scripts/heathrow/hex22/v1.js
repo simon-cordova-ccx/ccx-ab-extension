@@ -1,5 +1,5 @@
 (function () {
-  const LOG_ENABLED = true;
+  const LOG_ENABLED = false;
   const BODY_CLASS = "ccx-heathrow-hex22-v1";
 
   const ICON_CLOSE = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +84,7 @@
     style.classList.add("ccx-styles-hex-22-v1");
     style.textContent = css;
     document.head.appendChild(style);
-    // customLog("[addStyles] Styles added.");
+    customLog("[addStyles] Styles added.");
   };
 
   const ensureContainerPlacement = () => {
@@ -95,18 +95,18 @@
     // Ensure container stays correctly placed inside <nav>
     if (nav.lastElementChild !== container) {
       nav.insertAdjacentElement("beforeend", container);
-      // customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
+      customLog("[ensureContainerPlacement] Repositioned container inside <nav>.");
     }
   };
 
   const createAndAttachContainers = () => {
     if (document.querySelector(".ccx-container")) {
-      // customLog("[createAndAttachContainers] Already exists, ensuring placement...");
+      customLog("[createAndAttachContainers] Already exists, ensuring placement...");
       ensureContainerPlacement();
       return;
     }
 
-    // customLog("[createAndAttachContainers] Creating containers...");
+    customLog("[createAndAttachContainers] Creating containers...");
     const nav = document.querySelector("nav");
     if (!nav) return;
 
@@ -128,7 +128,20 @@
 
     const closeBtn = document.createElement("span");
     closeBtn.className = "ccx-close-icon";
-    closeBtn.innerHTML = ICON_CLOSE;
+
+    // parse the SVG string into a real DOM node
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(ICON_CLOSE, "image/svg+xml");
+    const svgEl = svgDoc.documentElement;
+
+    // strip any scripts or event attributes (defensive)
+    svgEl.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach(el => el.remove());
+    Array.from(svgEl.attributes).forEach(attr => {
+      if (attr.name.startsWith("on")) svgEl.removeAttribute(attr.name);
+    });
+
+    // append the clean SVG node
+    closeBtn.appendChild(svgEl);
     mobile.appendChild(closeBtn);
 
     // Desktop container
@@ -141,7 +154,14 @@
       li.className = "ccx-desktop-list-item";
       const iconSpan = document.createElement("span");
       iconSpan.className = "ccx-desktop-list-item__icon";
-      iconSpan.innerHTML = usp.icon;
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(usp.icon, "image/svg+xml");
+      const svgEl = svgDoc.documentElement;
+      svgEl.querySelectorAll("script,[onload],[onclick],[onmouseover]").forEach(el => el.remove());
+      Array.from(svgEl.attributes).forEach(attr => {
+        if (attr.name.startsWith("on")) svgEl.removeAttribute(attr.name);
+      });
+      iconSpan.appendChild(svgEl);
       const textSpan = document.createElement("span");
       textSpan.className = "ccx-desktop-list-item__text";
       textSpan.textContent = usp.text;
@@ -154,7 +174,7 @@
     nav.insertAdjacentElement("beforeend", wrapper);
 
     closeBtn.addEventListener("click", () => {
-      // customLog("[closeBtn] Removed container");
+      customLog("[closeBtn] Removed container");
       wrapper.remove();
     });
 
@@ -165,7 +185,7 @@
     const container = document.querySelector(".ccx-container");
     if (container) {
       container.remove();
-      // customLog("[removeContainerIfPresent] Removed container (not fares page).");
+      customLog("[removeContainerIfPresent] Removed container (not fares page).");
     }
   };
 
@@ -174,19 +194,19 @@
       const pathname = window.location.pathname || "";
       const isFaresPage = pathname.includes("/booking/fares");
 
-      // customLog(`[applyPageChanges] Checking route: ${pathname}`);
+      customLog(`[applyPageChanges] Checking route: ${pathname}`);
 
       if (!isFaresPage) {
         removeContainerIfPresent();
         return;
       }
 
-      // customLog("[applyPageChanges] On fares page — applying logic...");
+      customLog("[applyPageChanges] On fares page — applying logic...");
       document.body.classList.add(BODY_CLASS);
       addStyles(styles);
       await waitForElement("nav");
       createAndAttachContainers();
-      // customLog("[applyPageChanges] Complete ✅");
+      customLog("[applyPageChanges] Complete ✅");
     } catch (err) {
       // console.warn("[applyPageChanges] Error:", err);
     }
@@ -208,7 +228,7 @@
   );
 
   window.addEventListener("locationchange", () => {
-    // customLog("[Router] Route changed:", window.location.pathname);
+    customLog("[Router] Route changed:", window.location.pathname);
     setTimeout(() => applyPageChanges(), 300);
   });
 
@@ -217,7 +237,7 @@
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      // customLog("[Resize] Validating container placement...");
+      customLog("[Resize] Validating container placement...");
       ensureContainerPlacement();
     }, 250);
   });
