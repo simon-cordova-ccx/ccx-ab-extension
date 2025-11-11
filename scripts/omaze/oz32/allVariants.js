@@ -296,7 +296,6 @@
     }, { once: true });
   };
 
-
   const handlePrevClick = (state, render) => {
     const { data } = state;
     state.index = state.index === 0 ? data.length - 1 : state.index - 1;

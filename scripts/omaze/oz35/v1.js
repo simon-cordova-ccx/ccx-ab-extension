@@ -1,11 +1,9 @@
 (function () {
-  const LOG_ENABLED = true;
+  const LOG_ENABLED = false;
   const TEST_ID = "OZ35";
   const TEST_NAME = "Multi-Video Hero Test on House Landing Page";
   const VARIATION = "variation-1";
   const CURRENT_URL = window.location.href;
-  const SOURCE_TYPE = "NO SOURCE";
-  const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 
   const SELECTORS = {
     HOME_BANNER_VIDEO: '.home--banner video',
@@ -216,10 +214,10 @@ function handleResize() {
       waitForElements(
         [
           { selector: SELECTORS.HOME_BANNER_VIDEO, count: 1 },
-          { selector: SELECTORS.enterNowButtons, count: 4 },
+          { selector: SELECTORS.enterNowButtons, count: 3 },
         ],
         function (results) {
-          const styleClass = 'ccx-styles-oz32-' + VARIATION.toLowerCase().replace(/\s+/g, '-');
+          const styleClass = 'ccx-styles-oz35-' + VARIATION.toLowerCase().replace(/\s+/g, '-');
 
           if (document.querySelector('.' + styleClass)) return;
 
