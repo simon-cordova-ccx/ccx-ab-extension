@@ -9,6 +9,7 @@
 
   const SELECTORS = {
     CONTROL_FORM_CART_LOGIN_WIDGET: '#begin-checkout > .grid > div:nth-child(2) cart-login-widget',
+    CONTROL_FORM_CART_LOGIN_WIDGET_PRICE_ELEMENT: '#begin-checkout > .grid > div:nth-child(2) cart-login-widget .total-price strong.text-3xl',
   }
 
   const STYLES = `
@@ -160,7 +161,7 @@
 
   const addBodyClass = (bodyClass) => {
     // If the class for this variation already exists, don't add again
-    if (!document.querySelector('.' + bodyClass)) {
+    if (!document.body.classList.contains(bodyClass)) {
       document.body.classList.add(bodyClass); // Add class to the body element
       customLog('[init] Added class ' + bodyClass + ' to body');
     }
@@ -183,80 +184,91 @@
       .catch(() => { });
   }
 
-const createCCXContainerElement = (CONTROL_FORM_CART_LOGIN_WIDGET) => {
-  // Create the container div
-  const container = document.createElement('div');
-  container.classList.add('ccx-container');
-  CONTROL_FORM_CART_LOGIN_WIDGET.insertAdjacentElement('afterbegin', container);
-  console.log('[CCX] Created .ccx-container and inserted at top.');
+  const createCCXContainerElement = (CONTROL_FORM_CART_LOGIN_WIDGET) => {
+    // Create the container div
+    const container = document.createElement('div');
+    container.classList.add('ccx-container');
+    CONTROL_FORM_CART_LOGIN_WIDGET.insertAdjacentElement('afterbegin', container);
+    // customLog('[CCX] Created .ccx-container and inserted at top.');
 
-  // Create the info element with two spans
-  const infoElement = document.createElement('div');
-  infoElement.classList.add('ccx-info');
+    // Create the info element with two spans
+    const infoElement = document.createElement('div');
+    infoElement.classList.add('ccx-info');
 
-  const leftSpan = document.createElement('span');
-  leftSpan.classList.add('ccx-left-text');
-  leftSpan.textContent = 'Bestellsumme:';
+    const leftSpan = document.createElement('span');
+    leftSpan.classList.add('ccx-left-text');
+    leftSpan.textContent = 'Bestellsumme:';
 
-  const rightSpan = document.createElement('span');
-  rightSpan.classList.add('ccx-right-text');
+    const rightSpan = document.createElement('span');
+    rightSpan.classList.add('ccx-right-text');
 
-  const totalPriceElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('.total-price strong.text-3xl');
-  if (totalPriceElement) {
-    rightSpan.textContent = totalPriceElement.textContent.trim();
-    console.log('[CCX] Found total price element:', totalPriceElement.textContent.trim());
-  } else {
-    rightSpan.textContent = '—';
-    console.warn('[CCX] Total price element not found.');
+    const totalPriceElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('.total-price strong.text-3xl');
+    if (totalPriceElement) {
+      rightSpan.textContent = totalPriceElement.textContent.trim();
+      // customLog('[CCX] Found total price element:', totalPriceElement.textContent.trim());
+    } else {
+      rightSpan.textContent = '—';
+      console.warn('[CCX] Total price element not found.');
+    }
+
+    infoElement.appendChild(leftSpan);
+    infoElement.appendChild(rightSpan);
+    container.appendChild(infoElement);
+    // customLog('[CCX] Added .ccx-info with left and right spans.');
+
+    // Create the button
+    const button = document.createElement('a');
+    button.classList.add('ccx-button');
+    button.href = 'https://omaze.de/account/login?return_to=/cart';
+    button.textContent = 'Weiter';
+    container.appendChild(button);
+    // customLog('[CCX] Added "Weiter" button.');
+
+    // Move the target element after the button
+    const targetElement = document.querySelector(
+      '#begin-checkout cart-login-widget > div:nth-child(2) > div.flex.flex-col.gap-6 > div'
+    );
+    if (targetElement) {
+      container.appendChild(targetElement);
+      targetElement.classList.add('ccx-account-question');
+      // customLog('[CCX] Moved target checkout element after the button.');
+    } else {
+      console.warn('[CCX] Target checkout element not found.');
+    }
+
+    // --- NEW: Grab two more elements and append them to the end of the container ---
+    const firstElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('[issubscriptionpurchase] > div:last-of-type > p');
+    const secondElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('#begin-checkout > .grid > div:nth-child(2) cart-login-widget [issubscriptionpurchase] > div:last-of-type > div:last-of-type');
+
+    if (firstElement) {
+      container.appendChild(firstElement);
+      firstElement.classList.add('ccx-available-payments-text')
+      // customLog('[CCX] Appended first element (<p>) to the container.');
+    } else {
+      console.warn('[CCX] First element (<p>) not found.');
+    }
+
+    if (secondElement) {
+      container.appendChild(secondElement);
+      // customLog('[CCX] Appended second element (<div>) to the container.');
+    } else {
+      console.warn('[CCX] Second element (<div>) not found.');
+    }
+
+    // customLog('[CCX] Container build complete.');
+  };
+
+  const attachEventListeners = () => {
+    customLog('[CCX] Attaching event listeners.');
+
+    document.querySelector('.ccx-button').addEventListener('click', () => {
+      customLog('[CCX] Weiter button clicked.');
+      DY.API("event", {
+        name: "de14-cta-click"
+      });
+      customLog('[bindEvents] Logged de14-cta-click event for controlInput.');
+    });
   }
-
-  infoElement.appendChild(leftSpan);
-  infoElement.appendChild(rightSpan);
-  container.appendChild(infoElement);
-  console.log('[CCX] Added .ccx-info with left and right spans.');
-
-  // Create the button
-  const button = document.createElement('a');
-  button.classList.add('ccx-button');
-  button.href = 'https://omaze.de/account/login?return_to=/cart';
-  button.textContent = 'Weiter';
-  container.appendChild(button);
-  console.log('[CCX] Added "Weiter" button.');
-
-  // Move the target element after the button
-  const targetElement = document.querySelector(
-    '#begin-checkout cart-login-widget > div:nth-child(2) > div.flex.flex-col.gap-6 > div'
-  );
-  if (targetElement) {
-    container.appendChild(targetElement);
-    targetElement.classList.add('ccx-account-question');
-    console.log('[CCX] Moved target checkout element after the button.');
-  } else {
-    console.warn('[CCX] Target checkout element not found.');
-  }
-
-  // --- NEW: Grab two more elements and append them to the end of the container ---
-  const firstElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('[issubscriptionpurchase] > div:last-of-type > p');
-  const secondElement = CONTROL_FORM_CART_LOGIN_WIDGET.querySelector('#begin-checkout > .grid > div:nth-child(2) cart-login-widget [issubscriptionpurchase] > div:last-of-type > div:last-of-type');
-
-  if (firstElement) {
-    container.appendChild(firstElement);
-    firstElement.classList.add('ccx-available-payments-text')
-    console.log('[CCX] Appended first element (<p>) to the container.');
-  } else {
-    console.warn('[CCX] First element (<p>) not found.');
-  }
-
-  if (secondElement) {
-    container.appendChild(secondElement);
-    console.log('[CCX] Appended second element (<div>) to the container.');
-  } else {
-    console.warn('[CCX] Second element (<div>) not found.');
-  }
-
-  console.log('[CCX] Container build complete.');
-};
-
 
   const init = () => {
     try {
@@ -266,25 +278,22 @@ const createCCXContainerElement = (CONTROL_FORM_CART_LOGIN_WIDGET) => {
       waitForElements(
         [
           { selector: SELECTORS.CONTROL_FORM_CART_LOGIN_WIDGET, count: 1 },
+          { selector: SELECTORS.CONTROL_FORM_CART_LOGIN_WIDGET_PRICE_ELEMENT, count: 1 },
         ],
         function (results) {
-          const bodyClass = 'ccx-' + TEST_ID.toLowerCase() + '-' + VARIATION.toLowerCase().replace(/\s+/g, '-') + '';
-          console.log(bodyClass);
-          // if the class for this variation already exists, don't add again
-          if (document.querySelector('.' + bodyClass)) return;
-          document.body.classList.add(bodyClass); // Add class to the body element
-          customLog('[init] Added class ' + bodyClass + ' to body');
-
           // Add styles
           addStyles(STYLES, VARIATION);
+
+          // Add body class
+          const bodyClass = 'ccx-' + TEST_ID.toLowerCase() + '-' + VARIATION.toLowerCase().replace(/\s+/g, '-') + '';
           addBodyClass(bodyClass);
 
           const CONTROL_FORM_CART_LOGIN_WIDGET = results[0].elements[0];
           if (!CONTROL_FORM_CART_LOGIN_WIDGET) return;
 
-          customLog(CONTROL_FORM_CART_LOGIN_WIDGET);
-
           createCCXContainerElement(CONTROL_FORM_CART_LOGIN_WIDGET);
+
+          attachEventListeners();
         }
       );
 

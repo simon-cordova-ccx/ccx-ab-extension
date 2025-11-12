@@ -92,7 +92,7 @@
 
   const addBodyClass = (bodyClass) => {
     // If the class for this variation already exists, don't add again
-    if (!document.querySelector('.' + bodyClass)) {
+    if (!document.body.classList.contains(bodyClass)) {
       document.body.classList.add(bodyClass); // Add class to the body element
       customLog('[init] Added class ' + bodyClass + ' to body');
     }
