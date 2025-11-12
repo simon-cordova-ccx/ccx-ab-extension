@@ -1,14 +1,12 @@
 (function () {
   const LOG_ENABLED = true;
-  const TEST_ID = "";
-  const TEST_NAME = "";
+  const TEST_ID = "2-3";
+  const TEST_NAME = "Entries Page Header Content [Comprehension & Guidance]";
   const VARIATION = "variation-1";
   const CURRENT_URL = window.location.href;
-  const SOURCE_TYPE = "NO SOURCE";
-  const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 
   const SELECTORS = {
-    FIRST_ELEMENT: 'body',
+    CONTROL_TOP_CONTAINER: '#enter-now-material-tab-buttons-design > [id*=nav-latest] > div:first-child',
   }
 
   const STYLES = ``;
@@ -115,6 +113,30 @@
       .catch(() => { });
   }
 
+const replaceSubHeaderElement = function (CONTROL_TOP_CONTAINER) {
+  if (!CONTROL_TOP_CONTAINER) {
+    customLog('[replaceSubHeaderElement] ERROR: CONTROL_TOP_CONTAINER not found.');
+    return;
+  }
+
+  customLog('[replaceSubHeaderElement] Replacing SubHeader Element', CONTROL_TOP_CONTAINER);
+
+  // Hide inner <div> if it exists
+  var innerDiv = CONTROL_TOP_CONTAINER.querySelector('div');
+  if (innerDiv) {
+    innerDiv.style.display = 'none';
+  } else {
+    customLog('[replaceSubHeaderElement] No inner <div> found to hide.');
+  }
+
+  // Find and replace paragraph text
+  var subHeaderP = CONTROL_TOP_CONTAINER.querySelector('p');
+  if (subHeaderP) {
+    subHeaderP.textContent = 'Plus £500,000 Cash!';
+  }
+};
+
+
   const init = () => {
     try {
       customLog(TEST_ID + ' | ' + VARIATION + ' | ' + TEST_NAME);
@@ -122,7 +144,7 @@
 
       waitForElements(
         [
-          { selector: SELECTORS.FIRST_ELEMENT, count: 1 },
+          { selector: SELECTORS.CONTROL_TOP_CONTAINER, count: 1 },
         ],
         function (results) {
           const bodyClass = 'ccx-' + TEST_ID.toLowerCase() + '-' + VARIATION.toLowerCase().replace(/\s+/g, '-') + '';
@@ -131,10 +153,12 @@
           addStyles(STYLES, VARIATION);
           addBodyClass(bodyClass);
 
-          const FIRST_ELEMENT = results[0].elements[0];
-          if (!FIRST_ELEMENT) return;
+          const CONTROL_TOP_CONTAINER = results[0].elements[0];
+          if (!CONTROL_TOP_CONTAINER) return;
 
-          customLog(FIRST_ELEMENT);
+          customLog('CONTROL_TOP_CONTAINER found:', CONTROL_TOP_CONTAINER);
+
+          replaceSubHeaderElement(CONTROL_TOP_CONTAINER);
         }
       );
 

@@ -1,14 +1,12 @@
 (function () {
   const LOG_ENABLED = true;
-  const TEST_ID = "";
-  const TEST_NAME = "";
+  const TEST_ID = "2-3";
+  const TEST_NAME = " Entries Page Content Hierarchy";
   const VARIATION = "variation-1";
   const CURRENT_URL = window.location.href;
-  const SOURCE_TYPE = "NO SOURCE";
-  const IS_STAGING_ENV = CURRENT_URL.includes('staging');
 
   const SELECTORS = {
-    FIRST_ELEMENT: 'body',
+    CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS: '#enter-now-material-tab-buttons-design > [id*=nav-latest] [id*=subscription-tab-pane] [data-test="card-variant-subscription"]',
   }
 
   const STYLES = ``;
@@ -122,7 +120,7 @@
 
       waitForElements(
         [
-          { selector: SELECTORS.FIRST_ELEMENT, count: 1 },
+          { selector: SELECTORS.CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS, count: 3 },
         ],
         function (results) {
           const bodyClass = 'ccx-' + TEST_ID.toLowerCase() + '-' + VARIATION.toLowerCase().replace(/\s+/g, '-') + '';
@@ -131,10 +129,26 @@
           addStyles(STYLES, VARIATION);
           addBodyClass(bodyClass);
 
-          const FIRST_ELEMENT = results[0].elements[0];
-          if (!FIRST_ELEMENT) return;
+          const CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS = results[0].elements;
+          if (!CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS) return;
 
-          customLog(FIRST_ELEMENT);
+          customLog(CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS);
+
+          CONTROL_SUBSCRIPTIONS_CONTAINER_CARDS.forEach(card => {
+            const lastChild = card.querySelector('.text-white > div:last-child');
+            const lastChildStyles = "background: #FFDD00 !important; padding: 0.25rem 0.75rem !important;";
+            lastChild.setAttribute("style", lastChildStyles);
+
+            const lastChildIcon = lastChild.querySelector('svg');
+            lastChildIcon.setAttribute("style", "display: none !important;");
+
+            const backgroundColourContainer = lastChild.querySelector('div');
+            backgroundColourContainer.setAttribute("style", "justify-content: center !important;");
+
+            const textSpan = lastChild.querySelector('span');
+            textSpan.setAttribute("style", "font-size: 13px !important;");
+            textSpan.setAttribute("style", "color: #081F28 !important;");
+          });
         }
       );
 

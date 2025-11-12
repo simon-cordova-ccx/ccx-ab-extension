@@ -14,22 +14,22 @@
 
   const SLIDE_DATA = [
     {
-      name: 'Karim P,',
+      name: 'Karim P',
       mainText: "Schön etwas gutes zu tun und gleichzeitig die Chance zu haben etwas zu gewinnen!",
       userInfo: ' 8.Oktober 2025'
     },
     {
-      name: 'Felix,',
+      name: 'Felix',
       mainText: "Wie immer gut und vertrauenswürdig. Übersichtliche Website und einfache Abwicklung.",
       userInfo: '6.Oktober 2025'
     },
     {
-      name: 'Jürgen A,',
+      name: 'Jürgen A',
       mainText: "Einfache und schnelle Abwicklung, angenehme Kommunikation und ein soziales Unternehmen. Sehr gut.",
       userInfo: '5.Oktober 2025'
     },
     {
-      name: 'Jeanette,',
+      name: 'Jeanette',
       mainText: "Unkompliziert und einfach! Tolle Sache! Spenden und eventuell mit etwas Glück sogar noch gewinnen 😊 ",
       userInfo: '3.Oktober 2025'
     },
@@ -668,6 +668,7 @@
       customLog('[init] Added class ' + bodyClass + ' to body');
     }
   }
+
   const waitForElements = (configs, callback) => {
     if (!configs || !Array.isArray(configs) || configs.length === 0) return;
     if (!window.DYO || !DYO.waitForElementAsync) return;
@@ -886,7 +887,7 @@
         pMain.innerHTML = formatted;
 
         // Bold name and add date
-        pDesc.innerHTML = '<strong>' + slide.name + '</strong>' + slide.userInfo;
+        pDesc.innerHTML = '<strong>' + slide.name + '</strong>, ' + slide.userInfo;
       });
     };
 
@@ -898,13 +899,12 @@
 
     const firstFormatted = first.mainText.replace(/😊/g, '<span class="no-italic">😊</span>');
     pMain.innerHTML = firstFormatted;
-    pDesc.innerHTML = '<strong>' + first.name + '</strong> ' + first.userInfo;
+    pDesc.innerHTML = '<strong>' + first.name + '</strong>, ' + first.userInfo;
 
     // === Navigation ===
     leftBtn.addEventListener('click', () => handlePrevClick(state, render));
     rightBtn.addEventListener('click', () => handleNextClick(state, render));
   }
-
 
   const handleSlideshowPosition = (CONTROL_HMA_LAST_H3) => {
     const slideshowWrapper = document.querySelector('.ccx-slider-wrapper');
@@ -1056,7 +1056,6 @@
       document.body.style.overflow = '';
     });
   }
-
 
   const init = () => {
     try {
